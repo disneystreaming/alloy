@@ -1,0 +1,5 @@
+alloy.DiscriminatedUnionTrait$Provider
+alloy.RestJsonTrait$Provider
+alloy.UncheckedExamplesTrait$Provider
+alloy.UntaggedUnionTrait$Provider
+alloy.UuidFormatTrait$Provider
