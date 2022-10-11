@@ -28,10 +28,13 @@ jobs:
             distribution: adopt
             java-version: 11
 
+      - name: Get mill version
+        run: echo "MILL_VERSION=$(cat .mill-version)" >> $GITHUB_ENV
+
       - name: Setup Mill
         uses: jodersky/setup-mill@master
         with:
-          mill-version: 0.10.5
+          mill-version: ${{ env.MILL_VERSION }}
 
       - name: Check formatting
         run: mill -k --disable-ticker __.checkFormat
