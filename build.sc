@@ -18,11 +18,7 @@ trait BaseModule extends Module {
 }
 
 trait BaseMunitTests extends TestModule.Munit {
-  def ivyDeps =
-    Agg(
-      ivy"org.scalameta::munit::1.0.0-M6",
-      ivy"org.scalameta::munit-scalacheck::1.0.0-M6"
-    )
+  def ivyDeps = Deps.munit.all
 }
 
 trait BasePublishModule extends BaseModule with PublishModule {
@@ -51,7 +47,7 @@ trait BasePublishModule extends BaseModule with PublishModule {
 
 trait BaseJavaModule extends JavaModule with BasePublishModule
 
-trait BaseScalaModule
+trait BaseScalaNoPublishModule
     extends mill.scalalib.bsp.ScalaMetalsSupport
     with ScalafmtModule
     with TpolecatModule {
@@ -59,9 +55,11 @@ trait BaseScalaModule
   def semanticDbVersion = T.input("4.4.34")
 }
 
+trait BaseScalaModule extends BaseScalaNoPublishModule with BasePublishModule
+
 object core extends BaseJavaModule {
   def ivyDeps = Agg(
-    ivy"software.amazon.smithy:smithy-model:1.25.2"
+    Deps.smithy.model
   )
 
   /** Exclude smithy file from source jars to avoid conflict with smithy files
@@ -81,11 +79,51 @@ object core extends BaseJavaModule {
     )
   }
 
-  object test extends this.Tests with BaseScalaModule with BaseMunitTests {
+  object test
+      extends this.Tests
+      with BaseScalaNoPublishModule
+      with BaseMunitTests {
     def ivyDeps = {
       super.ivyDeps() ++ Agg(
-        ivy"software.amazon.smithy:smithy-aws-traits:1.25.2"
+        Deps.smithy.awsTraits
       )
     }
+  }
+}
+
+object openapi extends BaseScalaModule {
+
+  def moduleDeps = Seq(core)
+
+  def ivyDeps = Agg(
+    Deps.scala.compat,
+    Deps.smithy.openapi,
+    Deps.cats.core
+  )
+
+  object test extends this.Tests with BaseMunitTests
+}
+
+object Deps {
+  val smithy = new {
+    val version = "1.25.2"
+    val model = ivy"software.amazon.smithy:smithy-model:$version"
+    val awsTraits = ivy"software.amazon.smithy:smithy-aws-traits:$version"
+    val openapi = ivy"software.amazon.smithy:smithy-openapi:$version"
+  }
+
+  val cats = new {
+    val core = ivy"org.typelevel::cats-core:2.8.0"
+  }
+
+  val scala = new {
+    val compat = ivy"org.scala-lang.modules::scala-collection-compat:2.8.1"
+  }
+
+  val munit = new {
+    val all = Agg(
+      ivy"org.scalameta::munit::1.0.0-M6",
+      ivy"org.scalameta::munit-scalacheck::1.0.0-M6"
+    )
   }
 }
