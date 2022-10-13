@@ -81,5 +81,11 @@ object core extends BaseJavaModule {
     )
   }
 
-  object test extends this.Tests with BaseScalaModule with BaseMunitTests
+  object test extends this.Tests with BaseScalaModule with BaseMunitTests {
+    def ivyDeps = {
+      super.ivyDeps() ++ Agg(
+        ivy"software.amazon.smithy:smithy-aws-traits:1.25.2"
+      )
+    }
+  }
 }
