@@ -8,12 +8,12 @@ import software.amazon.smithy.model.validation.ValidationEvent
 import software.amazon.smithy.aws.traits.protocols.RestJson1Trait
 
 import scala.jdk.CollectionConverters._
-import alloy.RestJsonTrait
+import alloy.SimpleRestJsonTrait
 
-final class RestJsonHttpHeaderValidatorSpec extends munit.FunSuite {
+final class SimpleRestJsonHttpHeaderValidatorSpec extends munit.FunSuite {
 
   test("reject models with content-type header") {
-    val validator = new RestJsonHttpHeaderValidator()
+    val validator = new SimpleRestJsonHttpHeaderValidator()
     val member = MemberShape
       .builder()
       .id("test#struct$testing")
@@ -29,7 +29,7 @@ final class RestJsonHttpHeaderValidatorSpec extends munit.FunSuite {
       .id("test#TestService")
       .version("1")
       .addOperation(op)
-      .addTrait(new RestJsonTrait())
+      .addTrait(new SimpleRestJsonTrait())
       .build()
 
     val model =
@@ -40,7 +40,7 @@ final class RestJsonHttpHeaderValidatorSpec extends munit.FunSuite {
     val expected = List(
       ValidationEvent
         .builder()
-        .id("RestJsonHttpHeader")
+        .id("SimpleRestJsonHttpHeader")
         .shape(member)
         .severity(Severity.WARNING)
         .message(
@@ -52,7 +52,7 @@ final class RestJsonHttpHeaderValidatorSpec extends munit.FunSuite {
   }
 
   test("accept random arbitrary header") {
-    val validator = new RestJsonHttpHeaderValidator()
+    val validator = new SimpleRestJsonHttpHeaderValidator()
     val member = MemberShape
       .builder()
       .id("test#struct$testing")
@@ -71,7 +71,7 @@ final class RestJsonHttpHeaderValidatorSpec extends munit.FunSuite {
   }
 
   test("accept other header in closure of rest-json service") {
-    val validator = new RestJsonHttpHeaderValidator()
+    val validator = new SimpleRestJsonHttpHeaderValidator()
     val member = MemberShape
       .builder()
       .id("test#struct$testing")
@@ -87,7 +87,7 @@ final class RestJsonHttpHeaderValidatorSpec extends munit.FunSuite {
       .id("test#TestService")
       .version("1")
       .addOperation(op)
-      .addTrait(new RestJsonTrait())
+      .addTrait(new SimpleRestJsonTrait())
       .build()
 
     val model =
@@ -98,7 +98,7 @@ final class RestJsonHttpHeaderValidatorSpec extends munit.FunSuite {
   }
 
   test("accept content-type header as part of different protocol") {
-    val validator = new RestJsonHttpHeaderValidator()
+    val validator = new SimpleRestJsonHttpHeaderValidator()
     val member = MemberShape
       .builder()
       .id("test#struct$testing")

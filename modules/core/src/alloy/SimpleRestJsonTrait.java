@@ -6,15 +6,15 @@ import software.amazon.smithy.model.shapes.ShapeId;
 import software.amazon.smithy.model.traits.AnnotationTrait;
 import software.amazon.smithy.model.traits.AbstractTrait;
 
-public class RestJsonTrait extends AnnotationTrait {
+public class SimpleRestJsonTrait extends AnnotationTrait {
 
-	public static ShapeId ID = ShapeId.from("alloy#restJson");
+	public static ShapeId ID = ShapeId.from("alloy#simpleRestJson");
 
-	public RestJsonTrait(ObjectNode node) {
+	public SimpleRestJsonTrait(ObjectNode node) {
 		super(ID, node);
 	}
 
-	public RestJsonTrait() {
+	public SimpleRestJsonTrait() {
 		super(ID, Node.objectNode());
 	}
 
@@ -24,8 +24,8 @@ public class RestJsonTrait extends AnnotationTrait {
 		}
 
 		@Override
-		public RestJsonTrait createTrait(ShapeId target, Node node) {
-			return new RestJsonTrait(node.expectObjectNode());
+		public SimpleRestJsonTrait createTrait(ShapeId target, Node node) {
+			return new SimpleRestJsonTrait(node.expectObjectNode());
 		}
 	}
 }

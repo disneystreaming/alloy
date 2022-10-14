@@ -1,6 +1,6 @@
 package alloy.openapi
 
-import alloy.RestJsonTrait
+import alloy.SimpleRestJsonTrait
 import software.amazon.smithy.jsonschema.Schema
 import software.amazon.smithy.model.Model
 import software.amazon.smithy.model.knowledge.HttpBinding
@@ -15,10 +15,11 @@ import software.amazon.smithy.openapi.fromsmithy.protocols.AlloyAbstractRestProt
 import scala.jdk.CollectionConverters._
 
 //port of package software.amazon.smithy.openapi.fromsmithy.protocols.AwsRestJson1Protocol
-class AlloyOpenApiProtocol extends AlloyAbstractRestProtocol[RestJsonTrait] {
+class AlloyOpenApiProtocol
+    extends AlloyAbstractRestProtocol[SimpleRestJsonTrait] {
 
-  override def getProtocolType(): Class[RestJsonTrait] =
-    classOf[RestJsonTrait]
+  override def getProtocolType(): Class[SimpleRestJsonTrait] =
+    classOf[SimpleRestJsonTrait]
 
   def getDocumentMediaType(): String = "application/json"
 
@@ -32,7 +33,7 @@ class AlloyOpenApiProtocol extends AlloyAbstractRestProtocol[RestJsonTrait] {
   }
 
   def createDocumentSchema(
-      context: Context[RestJsonTrait],
+      context: Context[SimpleRestJsonTrait],
       shape: Shape,
       bindings: List[HttpBinding],
       mt: AlloyAbstractRestProtocol.MessageType

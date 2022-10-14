@@ -7,7 +7,7 @@ import scala.util.Using
 
 final class OpenApiConversionSpec extends munit.FunSuite {
 
-  test("OpenAPI conversion from alloy#restJson protocol") {
+  test("OpenAPI conversion from alloy#simpleRestJson protocol") {
     val model = Model
       .assembler()
       .addImport(getClass().getClassLoader().getResource("foo.smithy"))

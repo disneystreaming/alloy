@@ -24,4 +24,4 @@ namespace alloy
     untagged,
 ])
 @trait(selector: "service")
-structure restJson {}
+structure simpleRestJson {}

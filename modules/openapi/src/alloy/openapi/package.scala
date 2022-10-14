@@ -16,7 +16,7 @@ import scala.jdk.CollectionConverters._
 package object openapi {
 
   /** Creates open-api representations for all services in a model that are
-    * annotated with the `alloy#restJson` trait.
+    * annotated with the `alloy#simpleRestJson` trait.
     */
   def convert(
       model: Model,
