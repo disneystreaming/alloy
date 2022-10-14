@@ -1,6 +1,6 @@
 package alloy.validation
 
-import alloy.RestJsonTrait
+import alloy.SimpleRestJsonTrait
 import software.amazon.smithy.model.Model
 import software.amazon.smithy.model.pattern.UriPattern
 import software.amazon.smithy.model.shapes._
@@ -9,9 +9,9 @@ import software.amazon.smithy.model.validation._
 
 import scala.jdk.CollectionConverters._
 
-final class RestJsonValidationSpec extends munit.FunSuite {
+final class SimpleRestJsonValidationSpec extends munit.FunSuite {
 
-  private def validator = new RestJsonValidator()
+  private def validator = new SimpleRestJsonValidator()
 
   test(
     "validation events are returned when operations are missing http trait"
@@ -26,7 +26,7 @@ final class RestJsonValidationSpec extends munit.FunSuite {
       .builder()
       .id("test#serv")
       .version("1")
-      .addTrait(new RestJsonTrait())
+      .addTrait(new SimpleRestJsonTrait())
       .addOperation(op)
       .build()
 
@@ -36,11 +36,11 @@ final class RestJsonValidationSpec extends munit.FunSuite {
     val expected = List(
       ValidationEvent
         .builder()
-        .id("RestJson")
+        .id("SimpleRestJson")
         .shape(op)
         .severity(Severity.ERROR)
         .message(
-          "Operations tied to alloy#restJson services must be annotated with the @http trait"
+          "Operations tied to alloy#simpleRestJson services must be annotated with the @http trait"
         )
         .build()
     )
@@ -68,7 +68,7 @@ final class RestJsonValidationSpec extends munit.FunSuite {
       .builder()
       .id("test#serv")
       .version("1")
-      .addTrait(new RestJsonTrait())
+      .addTrait(new SimpleRestJsonTrait())
       .addOperation(op)
       .build()
 
@@ -80,7 +80,7 @@ final class RestJsonValidationSpec extends munit.FunSuite {
   }
 
   test(
-    "validation events are not returned when service is not restJson"
+    "validation events are not returned when service is not simpleRestJson"
   ) {
     val op = OperationShape
       .builder()
@@ -108,9 +108,9 @@ final class RestJsonValidationSpec extends munit.FunSuite {
     val modelString =
       """|namespace foo
          |
-         |use alloy#restJson
+         |use alloy#simpleRestJson
          |
-         |@restJson
+         |@simpleRestJson
          |service HelloService {
          |  version : "1",
          |  operations : [Greet]

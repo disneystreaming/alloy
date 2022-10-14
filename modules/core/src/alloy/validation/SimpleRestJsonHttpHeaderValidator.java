@@ -1,6 +1,6 @@
 package alloy.validation;
 
-import alloy.RestJsonTrait;
+import alloy.SimpleRestJsonTrait;
 import software.amazon.smithy.model.Model;
 import software.amazon.smithy.model.traits.HttpHeaderTrait;
 import software.amazon.smithy.model.validation.AbstractValidator;
@@ -14,13 +14,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public final class RestJsonHttpHeaderValidator extends AbstractValidator {
+public final class SimpleRestJsonHttpHeaderValidator extends AbstractValidator {
 
 	List<String> disallowedHeaderNames = java.util.Arrays.asList("content-type");
 
 	@Override
 	public List<ValidationEvent> validate(Model model) {
-		Stream<ServiceShape> restJsonServices = model.getShapesWithTrait(RestJsonTrait.class).stream()
+		Stream<ServiceShape> restJsonServices = model.getShapesWithTrait(SimpleRestJsonTrait.class).stream()
 				.flatMap(service -> OptionHelper.toStream(service.asServiceShape()));
 		Walker walker = new Walker(NeighborProvider.withTraitRelationships(model, NeighborProvider.of(model)));
 

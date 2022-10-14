@@ -1,6 +1,6 @@
 package alloy.validation;
 
-import alloy.RestJsonTrait;
+import alloy.SimpleRestJsonTrait;
 import software.amazon.smithy.model.Model;
 import software.amazon.smithy.model.shapes.Shape;
 import software.amazon.smithy.model.traits.HttpTrait;
@@ -12,11 +12,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public final class RestJsonValidator extends AbstractValidator {
+public final class SimpleRestJsonValidator extends AbstractValidator {
 
 	@Override
 	public List<ValidationEvent> validate(Model model) {
-		return model.getShapesWithTrait(RestJsonTrait.class).stream().flatMap(restJson -> {
+		return model.getShapesWithTrait(SimpleRestJsonTrait.class).stream().flatMap(restJson -> {
 			return restJson.asServiceShape().get().getAllOperations().stream().flatMap(operationShapeId -> {
 				Optional<Shape> maybeOperation = model.getShape(operationShapeId);
 				Stream<ValidationEvent> emptyStream = Stream.empty();
@@ -24,7 +24,7 @@ public final class RestJsonValidator extends AbstractValidator {
 					if (op.getTrait(HttpTrait.class).isPresent()) {
 						return emptyStream;
 					} else {
-						String id = RestJsonTrait.ID.toString();
+						String id = SimpleRestJsonTrait.ID.toString();
 						return Stream.of(error(op,
 								"Operations tied to " + id + " services must be annotated with the @http trait"));
 					}

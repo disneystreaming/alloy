@@ -1,10 +1,10 @@
 namespace foo
 
-use alloy#restJson
+use alloy#simpleRestJson
 use alloy#discriminated
 use alloy#untagged
 
-@restJson
+@simpleRestJson
 service HelloWorldService {
   version: "0.0.1",
   errors: [GeneralServerError],
