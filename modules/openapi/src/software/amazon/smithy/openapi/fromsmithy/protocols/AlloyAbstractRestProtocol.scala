@@ -37,10 +37,10 @@ import scala.jdk.CollectionConverters._
   * HTTP binding traits.
   *
   * <p>This class handles adding query string, path, header, payload, and
-  * document bodies to HTTP messages using an {@link HttpBindingIndex}. Inline
-  * schemas as created for query string, headers, and path parameters that do
-  * not utilize the correct types or set an explicit type/format (for example,
-  * this class ensures that a timestamp shape serialized in the query string is
+  * document bodies to HTTP messages using an HttpBindingIndex. Inline schemas
+  * as created for query string, headers, and path parameters that do not
+  * utilize the correct types or set an explicit type/format (for example, this
+  * class ensures that a timestamp shape serialized in the query string is
   * serialized using the date-time format).
   *
   * <p>This class is currently package-private, but may be made public in the
@@ -89,7 +89,7 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
     operation
       .getTrait(classOf[HttpTrait])
       .asScala
-      .map((httpTrait: HttpTrait) => {
+      .map((_: HttpTrait) => {
         val method =
           context.getOpenApiProtocol.getOperationMethod(context, operation)
         val uri =
@@ -97,14 +97,13 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
         val builder =
           OperationObject.builder.operationId(operation.getId.getName)
         val bindingIndex = HttpBindingIndex.of(context.getModel)
-        val eventStreamIndex = EventStreamIndex.of(context.getModel)
         createPathParameters(context, operation).foreach(builder.addParameter)
         createQueryParameters(context, operation).foreach(builder.addParameter)
         createRequestHeaderParameters(context, operation)
           .foreach(builder.addParameter)
-        createRequestBody(context, bindingIndex, eventStreamIndex, operation)
+        createRequestBody(context, bindingIndex, operation)
           .foreach(builder.requestBody)
-        createResponses(context, bindingIndex, eventStreamIndex, operation)
+        createResponses(context, bindingIndex, operation)
           .foreach { case (k, v) => builder.putResponse(k, v) }
         Operation.create(method, uri, builder)
       })
@@ -280,7 +279,6 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
   private def createRequestBody(
       context: Context[T],
       bindingIndex: HttpBindingIndex,
-      eventStreamIndex: EventStreamIndex,
       operation: OperationShape
   ) = {
     val payloadBindings =
@@ -291,7 +289,7 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
         bindingIndex.getRequestBindings(operation).values().asScala
       )
     if (payloadBindings.isEmpty)
-      createRequestDocument(mediaType, context, bindingIndex, operation)
+      createRequestDocument(context, bindingIndex, operation)
     else
       createRequestPayload(
         mediaType,
@@ -333,7 +331,6 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
   }
 
   private def createRequestDocument(
-      mediaType: Option[String],
       context: Context[T],
       bindingIndex: HttpBindingIndex,
       operation: OperationShape
@@ -374,7 +371,6 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
   private def createResponses(
       context: Context[T],
       bindingIndex: HttpBindingIndex,
-      eventStreamIndex: EventStreamIndex,
       operation: OperationShape
   ) = {
     // Hack to ensure that the model contains the potentially updated
@@ -390,7 +386,6 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
         updateResponsesMapWithResponseStatusAndObject(
           context,
           bindingIndex,
-          eventStreamIndex,
           operation,
           output,
           result
@@ -400,7 +395,6 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
       updateResponsesMapWithResponseStatusAndObject(
         context,
         bindingIndex,
-        eventStreamIndex,
         operation,
         error,
         result
@@ -412,7 +406,6 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
   private def updateResponsesMapWithResponseStatusAndObject(
       context: Context[T],
       bindingIndex: HttpBindingIndex,
-      eventStreamIndex: EventStreamIndex,
       operation: OperationShape,
       shape: StructureShape,
       responses: util.Map[String, ResponseObject]
@@ -427,7 +420,6 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
     val response = createResponse(
       context,
       bindingIndex,
-      eventStreamIndex,
       statusCode,
       operationOrError
     )
@@ -437,7 +429,6 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
   private def createResponse(
       context: Context[T],
       bindingIndex: HttpBindingIndex,
-      eventStreamIndex: EventStreamIndex,
       statusCode: String,
       operationOrError: Shape
   ) = {
@@ -456,9 +447,7 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
     addResponseContent(
       context,
       bindingIndex,
-      eventStreamIndex,
       responseBuilder,
-      statusCode,
       operationOrError
     )
     responseBuilder.build
@@ -482,9 +471,7 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
   private def addResponseContent(
       context: Context[T],
       bindingIndex: HttpBindingIndex,
-      eventStreamIndex: EventStreamIndex,
       responseBuilder: ResponseObject.Builder,
-      statusCode: String,
       operationOrError: Shape
   ) = {
     val payloadBindings = bindingIndex.getResponseBindings(
