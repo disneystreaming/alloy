@@ -3,3 +3,8 @@ alloy.SimpleRestJsonTrait$Provider
 alloy.UncheckedExamplesTrait$Provider
 alloy.UntaggedUnionTrait$Provider
 alloy.UuidFormatTrait$Provider
+alloy.proto.GrpcTrait$Provider
+alloy.proto.ProtoEnabledTrait$Provider
+alloy.proto.ProtoIndexTrait$Provider
+alloy.proto.ProtoNumTypeTrait$Provider
+alloy.proto.ProtoReservedFieldsTrait$Provider

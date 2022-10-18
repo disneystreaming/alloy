@@ -1,0 +1,136 @@
+package alloy.proto.validation
+
+import munit.FunSuite
+import software.amazon.smithy.model.Model
+import software.amazon.smithy.model.shapes._
+import alloy.proto.{
+  ProtoReservedFieldsTrait,
+  ProtoIndexTrait,
+  ProtoReservedFieldsTraitValue
+}
+
+import scala.jdk.CollectionConverters._
+import scala.annotation.nowarn
+
+class ProtoReservedFieldsTraitValidatorSuite extends FunSuite {
+
+  val string = StringShape.builder.id("com.example#String").build
+
+  test("well-formed structure") {
+    val foo = StructureShape.builder
+      .id("com.example#Foo")
+      .addTrait(
+        ProtoReservedFieldsTrait
+          .builder()
+          .add(ProtoReservedFieldsTraitValue.builder().number(3).build())
+          .build()
+      )
+      .addMember(
+        "bar",
+        string.getId,
+        _.addTrait(new ProtoIndexTrait(1)): @nowarn
+      )
+      .build
+    val model = Model.builder
+      .addShapes(string, foo)
+      .build
+    val events = new ProtoReservedFieldsTraitValidator()
+      .validate(model)
+      .asScala
+      .toList
+    assertEquals(events.length, 0)
+  }
+
+  test("reserved field number") {
+    val foo = StructureShape.builder
+      .id("com.example#Foo")
+      .addTrait(
+        ProtoReservedFieldsTrait
+          .builder()
+          .add(ProtoReservedFieldsTraitValue.builder().number(1).build())
+          .build()
+      )
+      .addMember(
+        "bar",
+        string.getId,
+        _.addTrait(new ProtoIndexTrait(1)): @nowarn
+      )
+      .build
+    val model = Model.builder
+      .addShapes(string, foo)
+      .build
+    val events = new ProtoReservedFieldsTraitValidator()
+      .validate(model)
+      .asScala
+      .toList
+    assertEquals(events.length, 1)
+    assertEquals(
+      events(0).getEventId(),
+      ProtoReservedFieldsTraitValidator.RESERVED_NUMBER_IN_STRUCTURE
+    )
+  }
+
+  test("reserved field name") {
+    val foo = StructureShape.builder
+      .id("com.example#Foo")
+      .addTrait(
+        ProtoReservedFieldsTrait
+          .builder()
+          .add(ProtoReservedFieldsTraitValue.builder().name("bar").build())
+          .build()
+      )
+      .addMember(
+        "bar",
+        string.getId,
+        _.addTrait(new ProtoIndexTrait(1)): @nowarn
+      )
+      .build
+    val model = Model.builder
+      .addShapes(string, foo)
+      .build
+    val events = new ProtoReservedFieldsTraitValidator()
+      .validate(model)
+      .asScala
+      .toList
+    assertEquals(events.length, 1)
+    assertEquals(
+      events(0).getEventId(),
+      ProtoReservedFieldsTraitValidator.RESERVED_NAME_IN_STRUCTURE
+    )
+  }
+
+  test("reserved field range") {
+    val foo = StructureShape.builder
+      .id("com.example#Foo")
+      .addTrait(
+        ProtoReservedFieldsTrait
+          .builder()
+          .add(
+            ProtoReservedFieldsTraitValue
+              .builder()
+              .range(new ProtoReservedFieldsTraitValue.Range(1, 10))
+              .build()
+          )
+          .build()
+      )
+      .addMember(
+        "bar",
+        string.getId,
+        _.addTrait(new ProtoIndexTrait(2)): @nowarn
+      )
+      .build
+    val model = Model.builder
+      .addShapes(string, foo)
+      .build
+    val events = new ProtoReservedFieldsTraitValidator()
+      .validate(model)
+      .asScala
+      .toList
+    assertEquals(events.length, 1)
+    assertEquals(
+      events(0).getEventId(),
+      ProtoReservedFieldsTraitValidator.RESERVED_NUMBER_IN_STRUCTURE
+    )
+  }
+
+}
