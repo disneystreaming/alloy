@@ -45,7 +45,7 @@ string discriminated
 /// }
 /// would normally be encoded in JSON as
 /// { "one": { "a": 123 } }
-/// When it is marked with `@untagged`, it is
+/// When it is annotated with `@untagged`, it is
 /// instead encoded as:
 /// { "a": 123 }. Therefore the parser will need to try
 /// each different alternative in the union before it can
