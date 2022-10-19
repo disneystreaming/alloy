@@ -17,7 +17,7 @@ namespace alloy
 /// }
 /// would normally be encoded in JSON as:
 /// { "one": { "a": 123 } }
-/// when tagged with `@discriminated("type")`, it will
+/// when annotated with `@discriminated("type")`, it will
 /// instead be encoded as:
 /// { "a": 123, "type": "one" }
 /// This is more efficient than using an untagged encoding,
