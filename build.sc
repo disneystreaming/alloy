@@ -57,6 +57,15 @@ trait BaseScalaNoPublishModule
 
 trait BaseScalaModule extends BaseScalaNoPublishModule with BasePublishModule
 
+trait BaseCrossScalaModule
+    extends mill.scalalib.bsp.ScalaMetalsSupport
+    with ScalafmtModule
+    with TpolecatModule
+    with CrossScalaModule
+    with BasePublishModule {
+  def semanticDbVersion = T.input("4.4.34")
+}
+
 object core extends BaseJavaModule {
   def ivyDeps = Agg(
     Deps.smithy.model
@@ -91,7 +100,13 @@ object core extends BaseJavaModule {
   }
 }
 
-object openapi extends BaseScalaModule {
+val scalaVersionsMap = Map("2.13" -> "2.13.7", "2.12" -> "2.12.15")
+object openapi extends Cross[OpenapiModule](scalaVersionsMap.keys.toList: _*)
+class OpenapiModule(crossVersion: String) extends BaseCrossScalaModule {
+
+  def artifactName = "alloy-openapi"
+
+  def crossScalaVersion = scalaVersionsMap(crossVersion)
 
   def moduleDeps = Seq(core)
 
@@ -106,7 +121,7 @@ object openapi extends BaseScalaModule {
 
 object Deps {
   val smithy = new {
-    val version = "1.25.2"
+    val version = "1.26.0"
     val model = ivy"software.amazon.smithy:smithy-model:$version"
     val awsTraits = ivy"software.amazon.smithy:smithy-aws-traits:$version"
     val openapi = ivy"software.amazon.smithy:smithy-openapi:$version"
