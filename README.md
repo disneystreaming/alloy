@@ -28,8 +28,8 @@ A collection of commonly used Smithy shapes.
 Alloy Smithy shapes and validators are published to Maven Central under the following artifact names:
 
 ```
-ivy"com.disneystreaming.alloy:alloy-core:x.x.x"
-ivy"com.disneystreaming.alloy:alloy-openapi:x.x.x"
+"com.disneystreaming.alloy:alloy-core:x.x.x"
+"com.disneystreaming.alloy:alloy-openapi:x.x.x"
 ```
 
 ## Why Alloy?
