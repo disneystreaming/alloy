@@ -59,7 +59,7 @@ This protocol is aware of the following `smithy.api` traits provided out of the 
 * [http traits](https://awslabs.github.io/smithy/1.0/spec/core/http-traits.html), including **http**, **httpError**, **httpLabel**, **httpHeader**, **httpPayload**, **httpQuery**, **httpPrefixHeaders**, **httpQueryParams**.
 * [timestampFormat trait](https://awslabs.github.io/smithy/1.0/spec/core/protocol-traits.html?highlight=timestampformat#timestampformat-trait)
 
-Further, it contains several traits for customizing your APIs.
+Furthermore, it contains several traits for customizing your APIs.
 
 #### Unions
 
