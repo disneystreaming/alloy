@@ -3,6 +3,8 @@ import de.tobiasroeser.mill.vcs.version.VcsVersion
 import $ivy.`io.github.davidgregory084::mill-tpolecat::0.3.0`
 import $ivy.`com.lewisjkl::header-mill-plugin::0.0.1`
 import header._
+import $ivy.`io.chris-kipp::mill-ci-release::0.1.1`
+import io.kipp.mill.ci.release.CiReleaseModule
 import io.github.davidgregory084.TpolecatModule
 
 import mill.scalalib.scalafmt.ScalafmtModule
@@ -39,11 +41,9 @@ trait BaseMunitTests extends TestModule.Munit {
   def ivyDeps = Deps.munit.all
 }
 
-trait BasePublishModule extends BaseModule with PublishModule {
+trait BasePublishModule extends BaseModule with CiReleaseModule {
   def artifactName =
     s"alloy-${millModuleSegments.parts.mkString("-")}"
-
-  def publishVersion = VcsVersion.vcsState().format()
 
   def pomSettings = PomSettings(
     description = "Common Smithy Shapes",
