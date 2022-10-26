@@ -38,6 +38,9 @@ jobs:
 
       - name: Check formatting
         run: mill -k --disable-ticker __.checkFormat
+      
+      - name: Check headers
+        run: mill -k --disable-ticker __.headerCheck
 
       - name: Compile
         run: mill -k --disable-ticker __.compile

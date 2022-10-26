@@ -1,6 +1,8 @@
 import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.2.0`
 import de.tobiasroeser.mill.vcs.version.VcsVersion
 import $ivy.`io.github.davidgregory084::mill-tpolecat::0.3.0`
+import $ivy.`com.lewisjkl::header-mill-plugin::0.0.1`
+import header._
 import io.github.davidgregory084.TpolecatModule
 
 import mill.scalalib.scalafmt.ScalafmtModule
@@ -10,11 +12,27 @@ import mill.scalalib._
 import mill.scalalib.api.Util._
 import mill.scalalib.publish._
 
-trait BaseModule extends Module {
+trait BaseModule extends Module with HeaderModule {
   def millSourcePath: os.Path = {
     val originalRelativePath = super.millSourcePath.relativeTo(os.pwd)
     os.pwd / "modules" / originalRelativePath
   }
+
+  def includeFileExtensions: List[String] = List("scala", "java")
+  def license: HeaderLicense = HeaderLicense.Custom("""|Copyright 2022 Disney Streaming
+                                                       |
+                                                       |Licensed under the Tomorrow Open Source Technology License, Version 1.0 (the "License");
+                                                       |you may not use this file except in compliance with the License.
+                                                       |You may obtain a copy of the License at
+                                                       |
+                                                       |   https://disneystreaming.github.io/TOST-1.0.txt
+                                                       |
+                                                       |Unless required by applicable law or agreed to in writing, software
+                                                       |distributed under the License is distributed on an "AS IS" BASIS,
+                                                       |WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+                                                       |See the License for the specific language governing permissions and
+                                                       |limitations under the License.
+                                                       |""".stripMargin)
 }
 
 trait BaseMunitTests extends TestModule.Munit {
