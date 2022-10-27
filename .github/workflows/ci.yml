@@ -57,7 +57,7 @@ jobs:
             echo $PGP_SECRET | base64 --decode > gpg_key
             gpg --import --no-tty --batch --yes gpg_key
             rm gpg_key
-            ./mill -i mill.scalalib.PublishModule/publishAll \
+            mill -i mill.scalalib.PublishModule/publishAll \
               --publishArtifacts __.publishArtifacts \
               --sonatypeUri "https://s01.oss.sonatype.org/service/local" \
               --sonatypeSnapshotUri "https://s01.oss.sonatype.org/content/repositories/snapshots" \
