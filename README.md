@@ -73,7 +73,7 @@ In requests, the `Version` header should be optionally filled with the version o
 
 The `alloy#simpleRestJson` protocol uses a default Content-Type of `application/json`.
 
-Input or output shapes that apply the httpPayload trait on one of their top-level members MUST use a Content-Type that is appropriate for the payload. The following table defines the expected Content-Type header for requests and responses based on the shape targeted by the member marked with the httpPayload trait:
+Input or output shapes that apply the `@httpPayload` trait on one of their top-level members MUST use a Content-Type that is appropriate for the payload. The following table defines the expected Content-Type header for requests and responses based on the shape targeted by the member marked with the `@httpPayload` trait:
 
 
 | Targeted shape      | Content-Type                                     |
