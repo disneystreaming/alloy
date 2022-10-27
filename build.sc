@@ -45,6 +45,10 @@ trait BasePublishModule extends BaseModule with CiReleaseModule {
   def artifactName =
     s"alloy-${millModuleSegments.parts.mkString("-")}"
 
+  override def sonatypeUri = "https://s01.oss.sonatype.org/service/local"
+  override def sonatypeSnapshotUri =
+    "https://s01.oss.sonatype.org/content/repositories/snapshots"
+
   def pomSettings = PomSettings(
     description = "Common Smithy Shapes",
     organization = "com.disneystreaming.alloy",
