@@ -11,7 +11,6 @@ A collection of commonly used Smithy shapes.
   - [alloy#simpleRestJson](#alloysimplerestjson)
     - [Protocol Behavior and Semantics](#protocol-behavior-and-semantics)
       - [Required Traits](#required-traits)
-      - [Version header](#version-header)
       - [Content-types](#content-types)
       - [JSON Shape Serialization](#json-shape-serialization)
       - [Http Bindings](#http-bindings)
@@ -64,10 +63,6 @@ This is the protocol that was formerly known as `smithy4s.api#simpleRestJson`.
 All operations referenced by a `alloy#simpleRestJson` service must be annotated with the [http](https://awslabs.github.io/smithy/2.0/spec/http-bindings.html#http-trait) trait.
 
 Errors referenced by any operation that's itself referenced by a `@simpleRestJson` service should be uniquely annotated by a status code (within the context of that operation), using the `@httpError` trait. It means that two errors referenced by a same operation cannot have the same `statusCode`. If several error shapes can be raised using a single `statusCode`, a `union` should be used to represent the alternatives.
-
-##### Version header
-
-In requests, the `Version` header should be optionally filled with the version of the service (as exposed in the `service` shapes in the smithy specs) that the client is trying to access. In the absence of the header, the service should assume that the client is intending to access the latest version of the service.
 
 ##### Content-types
 
@@ -137,12 +132,22 @@ structure UnexpectedServerError {
 
 @error("client")
 @httpError(403)
-@structure UnauthorisedError {
+structure UnauthorisedError {
 }
 ```
 
 In the example above, `InvalidInputError` should be accompanied by the `400` status code, `UnexpectedServer` should be accompanied by the `500` status code, and `UnauthorisedError` should be accompanied by the `403` status code.
 
+Because multiple errors can be encoded with the same status code, services implementing this protocol should include an `X-Error-Type` header that can be used to discriminate between them. For example, the following error...
+
+```smithy
+@error("client")
+@httpError(403)
+structure UnauthorisedError {
+}
+```
+
+...should be given the header `X-Error-Type` with a value of `UnauthorisedError`. Clients can use this value to discriminate and provide the correct error to drive needed logic. If this header is not provided, clients will need to make a best-effort assumption about what error is intended using the status code.
 
 #### Supported Traits
 
