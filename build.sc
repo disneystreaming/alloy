@@ -53,10 +53,21 @@ trait BasePublishModule extends BaseModule with CiReleaseModule {
     description = "Common Smithy Shapes",
     organization = "com.disneystreaming.alloy",
     url = "https://github.com/disneystreaming/alloy",
-    licenses = Seq(),
+    licenses = Seq(
+      License(
+        id = "TOST-1.0",
+        name = "TOMORROW OPEN SOURCE TECHNOLOGY LICENSE 1.0",
+        url = "https://disneystreaming.github.io/TOST-1.0.txt",
+        isOsiApproved = false,
+        isFsfLibre = false,
+        distribution = "repo"
+      )
+    ),
     versionControl =
       VersionControl(Some("https://github.com/disneystreaming/alloy")),
-    developers = Seq()
+    developers = Seq(
+      Developer("lewisjkl", "Jeff Lewis", "http://github.com/lewisjkl")
+    )
   )
 
   override def javacOptions = T {
