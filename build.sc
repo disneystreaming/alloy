@@ -3,8 +3,9 @@ import de.tobiasroeser.mill.vcs.version.VcsVersion
 import $ivy.`io.github.davidgregory084::mill-tpolecat::0.3.0`
 import $ivy.`com.lewisjkl::header-mill-plugin::0.0.1`
 import header._
-import $ivy.`io.chris-kipp::mill-ci-release::0.1.1`
+import $ivy.`io.chris-kipp::mill-ci-release::0.1.3`
 import io.kipp.mill.ci.release.CiReleaseModule
+import io.kipp.mill.ci.release.SonatypeHost
 import io.github.davidgregory084.TpolecatModule
 
 import mill.scalalib.scalafmt.ScalafmtModule
@@ -45,9 +46,7 @@ trait BasePublishModule extends BaseModule with CiReleaseModule {
   def artifactName =
     s"alloy-${millModuleSegments.parts.mkString("-")}"
 
-  override def sonatypeUri = "https://s01.oss.sonatype.org/service/local"
-  override def sonatypeSnapshotUri =
-    "https://s01.oss.sonatype.org/content/repositories/snapshots"
+  override def sonatypeHost = Some(SonatypeHost.s01)
 
   def pomSettings = PomSettings(
     description = "Common Smithy Shapes",
