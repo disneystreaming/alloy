@@ -353,7 +353,7 @@ Specifies the type of signing that should be used for integers and longs. Option
 - FIXED
 - FIXED_SIGNED
 
-#### alloy#protoEnabled
+#### alloy.proto#protoEnabled
 
 This trait can be used to enable protobuf conversion on services or structures that are not a part of a
 GRPC service. This is used, for example, by smithy-translate.
