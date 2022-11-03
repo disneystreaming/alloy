@@ -21,11 +21,11 @@ A collection of commonly used Smithy shapes.
     - [Untagged union](#untagged-union)
     - [Discriminated union](#discriminated-union)
     - [Full List of Supported Traits](#full-list-of-supported-traits)
-  - [alloy#grpc](#alloygrpc)
-    - [alloy#protoIndex](#alloyprotoindex)
-    - [alloy#protoNumType](#alloyprotonumtype)
-    - [alloy#protoEnabled](#alloyprotoenabled)
-    - [alloy#protoReservedFields](#alloyprotoreservedfields)
+  - [alloy.proto#grpc](#alloygrpc)
+    - [alloy.proto#protoIndex](#alloyprotoindex)
+    - [alloy.proto#protoNumType](#alloyprotonumtype)
+    - [alloy.proto#protoEnabled](#alloyprotoenabled)
+    - [alloy.proto#protoReservedFields](#alloyprotoreservedfields)
 - [Working on Alloy](#working-on-alloy)
   - [Publish Local](#publish-local)
   - [Run Tests](#run-tests)
@@ -296,20 +296,20 @@ are encoded as such
 
 For full documentation on what each of these traits does, see the smithy specifications [here](modules/core/resources/META-INF/smithy/).
 
-### alloy#grpc
+### alloy.proto#grpc
 
 This protocol represents the GRPC protocol as defined at [grpc.io](https://grpc.io/).
 
 The following shapes are provided as a means of customizing how your Smithy shapes correlate to proto ones.
 
-- alloy#grpc
-- alloy#protoIndex
-- alloy#protoNumType
-- alloy#protoEnabled
-- alloy#protoReservedFields
-- alloy#uncheckedExamples
+- alloy.proto#grpc
+- alloy.proto#protoIndex
+- alloy.proto#protoNumType
+- alloy.proto#protoEnabled
+- alloy.proto#protoReservedFields
+- alloy.proto#uncheckedExamples
 
-#### alloy#protoIndex
+#### alloy.proto#protoIndex
 
 Marks an explicit index to be used for a structure member when it is
 interpreted as protobuf. For example:
@@ -344,7 +344,7 @@ message Test {
 }
 ```
 
-#### alloy#protoNumType
+#### alloy.proto#protoNumType
 
 Specifies the type of signing that should be used for integers and longs. Options are:
 
@@ -358,7 +358,7 @@ Specifies the type of signing that should be used for integers and longs. Option
 This trait can be used to enable protobuf conversion on services or structures that are not a part of a
 GRPC service. This is used, for example, by smithy-translate.
 
-#### alloy#protoReservedFields
+#### alloy.proto#protoReservedFields
 
 Marks certain field indexes as unusable by the smithy specification. For example, if a range is provided of
 1 to 10 then the proto indexes for any fields in that structure must fall outside of that range. Ranges are inclusive.
