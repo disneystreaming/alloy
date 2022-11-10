@@ -27,12 +27,13 @@ public final class SimpleRestJsonTimestampValidator extends AbstractValidator {
         Stream<Shape> closure = entryPoints.stream()
                 .flatMap(restJsonService -> walker.walkShapes(restJsonService).stream());
 
-        return closure.filter(Shape::isTimestampShape)
+        return closure.filter(shape -> shape.isTimestampShape() || shape.asMemberShape().isPresent() && model.getShape(shape.asMemberShape().get()
+                .getTarget()).map(Shape::isTimestampShape).orElse(false))
                 .flatMap(this::validateTimestamp).collect(Collectors.toList());
     }
 
     private Stream<ValidationEvent> validateTimestamp(Shape shape) {
-        if (shape.isTimestampShape() && !shape.getTrait(TimestampFormatTrait.class).isPresent()) {
+        if (!shape.getTrait(TimestampFormatTrait.class).isPresent()) {
             return Stream.of(warn(shape));
         } else {
             return Stream.empty();
