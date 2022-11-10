@@ -1,5 +1,3 @@
-
-
 /* Copyright 2022 Disney Streaming
  *
  * Licensed under the Tomorrow Open Source Technology License, Version 1.0 (the "License");
@@ -27,41 +25,57 @@ import alloy.SimpleRestJsonTrait
 
 final class SimpleRestJsonTimestampFormatValidatorSpec extends munit.FunSuite {
 
-    test("warn when timestamp shape or member targeting timestamp does not have a timestamp format trait and is reachable from a service with a rest json trait") {
-        val validator = new SimpleRestJsonTimestampValidator()
-        val timestamp = TimestampShape
-                .builder()
-                .id("test#time")
-                .build()
-        val member0 = MemberShape
-                .builder()
-                .id("test#struct$ts")
-                .target(timestamp.getId)
-                .build()
-        val member1 = MemberShape
-                .builder()
-                .id("test#struct$ts2")
-                .target("smithy.api#Timestamp")
-                .build()
-        val struct =
-                StructureShape.builder().id("test#struct").addMember(member0).addMember(member1).build()
+  test(
+    "warn when timestamp shape does not have a timestamp format trait and is reachable from a service with a rest json trait"
+  ) {
+    val validator = new SimpleRestJsonTimestampValidator()
+    val timestamp = TimestampShape
+      .builder()
+      .id("test#time")
+      .build()
+    val member0 = MemberShape
+      .builder()
+      .id("test#struct$ts")
+      .target(timestamp.getId)
+      .build()
+    val member1 = MemberShape
+      .builder()
+      .id("test#struct$ts2")
+      .target("smithy.api#Timestamp")
+      .build()
+    val struct =
+      StructureShape
+        .builder()
+        .id("test#struct")
+        .addMember(member0)
+        .addMember(member1)
+        .build()
 
-        val op = OperationShape.builder().id("test#TestOp").input(struct).build()
-        val service = ServiceShape
-                .builder()
-                .id("test#TestService")
-                .version("1")
-                .addOperation(op)
-                .addTrait(new SimpleRestJsonTrait())
-                .build()
+    val op = OperationShape.builder().id("test#TestOp").input(struct).build()
+    val service = ServiceShape
+      .builder()
+      .id("test#TestService")
+      .version("1")
+      .addOperation(op)
+      .addTrait(new SimpleRestJsonTrait())
+      .build()
 
-        val model =
-                Model.builder().addShapes(timestamp,member1,struct, op, service).build()
+    val model =
+      Model.builder().addShapes(timestamp, member1, struct, op, service).build()
 
+    val result = validator.validate(model).asScala.toList
 
-        val result = validator.validate(model).asScala.toList
-
-        assertEquals(result.size, 2)
-    }
+    val expected = List(
+      ValidationEvent
+        .builder()
+        .id("SimpleRestJsonTimestamp")
+        .severity(Severity.WARNING)
+        .message(
+          "test#time: Timestamp shape test#time does not have a timestamp format trait "
+        )
+        .build()
+    )
+    assertEquals(result.size, 2)
+  }
 
 }
