@@ -27,7 +27,7 @@ import alloy.SimpleRestJsonTrait
 
 final class SimpleRestJsonTimestampFormatValidatorSpec extends munit.FunSuite {
 
-    test("warn when timestamp shape does not have a timestamp format trait and is reachable from a service with a rest json trait") {
+    test("warn when timestamp shape or member targeting timestamp does not have a timestamp format trait and is reachable from a service with a rest json trait") {
         val validator = new SimpleRestJsonTimestampValidator()
         val timestamp = TimestampShape
                 .builder()
@@ -61,16 +61,6 @@ final class SimpleRestJsonTimestampFormatValidatorSpec extends munit.FunSuite {
 
         val result = validator.validate(model).asScala.toList
 
-        val expected = List(
-                ValidationEvent
-                        .builder()
-                        .id("SimpleRestJsonTimestamp")
-                        .severity(Severity.WARNING)
-                        .message(
-                                "test#time: Timestamp shape test#time does not have a timestamp format trait "
-                        )
-                        .build()
-        )
         assertEquals(result.size, 2)
     }
 
