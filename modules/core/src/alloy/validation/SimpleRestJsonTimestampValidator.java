@@ -32,22 +32,41 @@ import java.util.stream.Stream;
 
 public final class SimpleRestJsonTimestampValidator extends AbstractValidator {
 
+
+	private static class MemberAndTarget {
+		private final MemberShape member;
+		private final Shape target;
+
+		public MemberAndTarget(MemberShape member, Shape target) {
+			this.member = member;
+			this.target = target;
+		}
+
+		public MemberShape getMember() {
+			return member;
+		}
+
+		public Shape getTarget() {
+			return target;
+		}
+	}
+
 	@Override
 	public List<ValidationEvent> validate(Model model) {
+
 		Walker walker = new Walker(NeighborProvider.of(model));
 		Set<Shape> entryPoints = model.getShapesWithTrait(SimpleRestJsonTrait.class);
-		Stream<Shape> closure = entryPoints.stream()
-				.flatMap(restJsonService -> walker.walkShapes(restJsonService).stream());
+		Stream<MemberAndTarget> closure = entryPoints.stream()
+				.flatMap(restJsonService -> walker.walkShapes(restJsonService).stream().filter(Shape::isMemberShape))
+				.map(shape -> new MemberAndTarget(shape.asMemberShape().get(), model.expectShape(shape.asMemberShape().get().getTarget())));
 
 		return closure
-				.filter(shape -> shape.isTimestampShape() || shape.asMemberShape().isPresent() && model
-						.getShape(shape.asMemberShape().get().getTarget()).map(Shape::isTimestampShape).orElse(false))
 				.flatMap(this::validateTimestamp).collect(Collectors.toList());
 	}
 
-	private Stream<ValidationEvent> validateTimestamp(Shape shape) {
-		if (!shape.getTrait(TimestampFormatTrait.class).isPresent()) {
-			return Stream.of(warn(shape));
+	private Stream<ValidationEvent> validateTimestamp(MemberAndTarget shape) {
+		if (!shape.member.getTrait(TimestampFormatTrait.class).isPresent() && !shape.target.getTrait(TimestampFormatTrait.class).isPresent()) {
+			return Stream.of(warn(shape.member));
 		} else {
 			return Stream.empty();
 		}
