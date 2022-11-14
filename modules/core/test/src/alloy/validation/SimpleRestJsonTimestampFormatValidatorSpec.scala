@@ -90,7 +90,6 @@ final class SimpleRestJsonTimestampFormatValidatorSpec extends munit.FunSuite {
         .build(),
 
     )
-    assertEquals(result.size, 2)
     assertEquals(result, expected)
   }
 
@@ -131,7 +130,6 @@ final class SimpleRestJsonTimestampFormatValidatorSpec extends munit.FunSuite {
 
     val result = validator.validate(model).asScala.toList
 
-    assertEquals(result.size, 0)
     assertEquals(result, List.empty)
   }
 
@@ -166,7 +164,6 @@ final class SimpleRestJsonTimestampFormatValidatorSpec extends munit.FunSuite {
       modelAssembler(timestamp, member0, struct, op, service)
 
     val result = validator.validate(model).asScala.toList
-    assertEquals(result.size, 0)
     assertEquals(result, List.empty)
   }
   test("when a member shape that is targeting a timestamp is annotated with the timestamp format trait, a warning is not issued ") {
@@ -207,8 +204,6 @@ final class SimpleRestJsonTimestampFormatValidatorSpec extends munit.FunSuite {
       modelAssembler(timestamp, member1, member0, struct, op, service)
 
     val result = validator.validate(model).asScala.toList
-
-    assertEquals(result.size, 0)
     assertEquals(result, List.empty)
   }
 }
