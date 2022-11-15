@@ -97,7 +97,9 @@ final public class ProtoIndexTraitValidator extends AbstractValidator {
 							.filter(e -> !memberIsUnion(model, e.getValue()).isPresent()).map(this::asShape);
 					Stream<Map.Entry<String, Shape>> subUnionMembers = u.getAllMembers().values().stream()
 							.flatMap(m -> OptionHelper.toStream(memberIsUnion(model, m)))
-							.flatMap(union -> allMembers(model, union).entrySet().stream().map(this::asShape));
+							.flatMap(union -> allMembers(model, union).entrySet().stream()
+								.map(e -> asShape(mapEntry(union.getId().getName() + "#" + e.getKey(), e.getValue())))
+							);
 					return Stream.concat(rootShapes, subUnionMembers);
 				});
 		return Stream.concat(unionMembers, structureMembers)
