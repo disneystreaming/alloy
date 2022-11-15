@@ -73,7 +73,7 @@ public final class SimpleRestJsonTimestampValidator extends AbstractValidator {
 	}
 
 	private ValidationEvent warn(Shape shape) {
-		return warning(shape, "A Timestamp shape  does not have a timestamp format trait");
+		return warning(shape, "A Timestamp shape does not have a timestamp format trait");
 	}
 
 }
