@@ -85,7 +85,7 @@ final class SimpleRestJsonTimestampFormatValidatorSpec extends munit.FunSuite {
         .shape(member0)
         .severity(Severity.WARNING)
         .message(
-          "A Timestamp shape  does not have a timestamp format trait"
+          "A Timestamp shape does not have a timestamp format trait"
         )
         .build(),
 
