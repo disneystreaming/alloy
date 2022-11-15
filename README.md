@@ -344,6 +344,8 @@ message Test {
 }
 ```
 
+When one field is annotated with a `@protoIndex`, all fields have to be annotated with it. This includes the fields of any structure used within the structure.
+
 #### alloy.proto#protoNumType
 
 Specifies the type of signing that should be used for integers and longs. Options are:
