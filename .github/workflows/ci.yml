@@ -30,29 +30,21 @@ jobs:
             distribution: adopt
             java-version: 11
 
-      - name: Get mill version
-        run: echo "MILL_VERSION=$(cat .mill-version)" >> $GITHUB_ENV
-
-      - name: Setup Mill
-        uses: jodersky/setup-mill@master
-        with:
-          mill-version: ${{ env.MILL_VERSION }}
-
       - name: Check formatting
-        run: mill -k --disable-ticker __.checkFormat
+        run: ./mill -k --disable-ticker __.checkFormat
       
       - name: Check headers
-        run: mill -k --disable-ticker __.headerCheck
+        run: ./mill -k --disable-ticker __.headerCheck
 
       - name: Compile
-        run: mill -k --disable-ticker __.compile
+        run: ./mill -k --disable-ticker __.compile
 
       - name: Run tests
-        run: mill -k --disable-ticker __.test
+        run: ./mill -k --disable-ticker __.test
 
       - name: Publish ${{ github.ref }}
         if: startsWith(github.ref, 'refs/tags/v')
-        run: mill -i io.kipp.mill.ci.release.ReleaseModule/publishAll
+        run: ./mill -i io.kipp.mill.ci.release.ReleaseModule/publishAll
         env:
           PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
           PGP_SECRET: ${{ secrets.PGP_SECRET }}

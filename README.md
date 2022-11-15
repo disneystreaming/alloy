@@ -344,6 +344,8 @@ message Test {
 }
 ```
 
+When one field is annotated with a `@protoIndex`, all fields have to be annotated with it. This includes the fields of any structure used within the structure.
+
 #### alloy.proto#protoNumType
 
 Specifies the type of signing that should be used for integers and longs. Options are:
@@ -370,11 +372,11 @@ For full documentation on what each of these traits does, see the smithy specifi
 ### Publish Local
 
 ```console
-> mill __.publishLocal
+> ./mill __.publishLocal
 ```
 
 ### Run Tests
 
 ```console
-> mill __.test
+> ./mill __.test
 ```

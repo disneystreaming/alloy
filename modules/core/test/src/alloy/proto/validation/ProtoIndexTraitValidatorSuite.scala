@@ -72,11 +72,11 @@ class ProtoIndexTraitValidatorSuite extends FunSuite {
     val events = new ProtoIndexTraitValidator()
       .validate(model)
       .asScala
+      .map(_.getId)
       .toList
-    assertEquals(events.length, 1)
     assertEquals(
-      events(0).getEventId(),
-      ProtoIndexTraitValidator.DUPLICATED_PROTO_INDEX
+      events,
+      List(ProtoIndexTraitValidator.DUPLICATED_PROTO_INDEX)
     )
   }
 
@@ -96,12 +96,196 @@ class ProtoIndexTraitValidatorSuite extends FunSuite {
     val events = new ProtoIndexTraitValidator()
       .validate(model)
       .asScala
+      .map(_.getId)
       .toList
-    assertEquals(events.length, 1)
     assertEquals(
-      events(0).getEventId(),
+      events,
+      List(ProtoIndexTraitValidator.INCONSISTENT_PROTO_INDEXES)
+    )
+  }
+
+  test("consistent numbers in member's union are valid") {
+    val union = UnionShape
+      .builder()
+      .id("com.example#Union")
+      .addMember(
+        MemberShape
+          .builder()
+          .id("com.example#Union$age")
+          .target("smithy.api#Integer")
+          .addTrait(new ProtoIndexTrait(3))
+          .build()
+      )
+      .addMember(
+        MemberShape
+          .builder()
+          .id("com.example#Union$name")
+          .target("smithy.api#String")
+          .addTrait(new ProtoIndexTrait(4))
+          .build()
+      )
+      .build()
+    val foo = StructureShape.builder
+      .id("com.example#Foo")
+      .addMember(
+        "bar",
+        string.getId,
+        _.addTrait(new ProtoIndexTrait(1)): @nowarn
+      )
+      .addMember(
+        "union",
+        union.getId
+      )
+      .build
+    val model = Model.builder
+      .addShapes(string, int, foo, union)
+      .build
+    val events = new ProtoIndexTraitValidator()
+      .validate(model)
+      .asScala
+      .toList
+    assertEquals(events, List.empty)
+  }
+
+  test("duplicated numbers in member's union are invalid") {
+    val union = UnionShape
+      .builder()
+      .id("com.example#Union")
+      .addMember(
+        MemberShape
+          .builder()
+          .id("com.example#Union$age")
+          .target("smithy.api#Integer")
+          .addTrait(new ProtoIndexTrait(1))
+          .build()
+      )
+      .addMember(
+        MemberShape
+          .builder()
+          .id("com.example#Union$name")
+          .target("smithy.api#String")
+          .addTrait(new ProtoIndexTrait(2))
+          .build()
+      )
+      .build()
+    val foo = StructureShape.builder
+      .id("com.example#Foo")
+      .addMember(
+        "bar",
+        string.getId,
+        _.addTrait(new ProtoIndexTrait(1)): @nowarn
+      )
+      .addMember(
+        "union",
+        union.getId
+      )
+      .build
+    val model = Model.builder
+      .addShapes(string, int, foo, union)
+      .build
+    val events = new ProtoIndexTraitValidator()
+      .validate(model)
+      .asScala
+      .toList
+    assertEquals(
+      events.head.getId,
+      ProtoIndexTraitValidator.DUPLICATED_PROTO_INDEX
+    )
+  }
+
+  test("inconsistent numbers in member's union are invalid") {
+    val union = UnionShape
+      .builder()
+      .id("com.example#Union")
+      .addMember(
+        MemberShape
+          .builder()
+          .id("com.example#Union$age")
+          .target("smithy.api#Integer")
+          .build()
+      )
+      .addMember(
+        MemberShape
+          .builder()
+          .id("com.example#Union$name")
+          .target("smithy.api#String")
+          .addTrait(new ProtoIndexTrait(2))
+          .build()
+      )
+      .build()
+    val foo = StructureShape.builder
+      .id("com.example#Foo")
+      .addMember(
+        "bar",
+        string.getId,
+        _.addTrait(new ProtoIndexTrait(1)): @nowarn(
+          "msg=discarded non-Unit value"
+        )
+      )
+      .addMember(
+        "union",
+        union.getId
+      )
+      .build
+    val model = Model.builder
+      .addShapes(string, int, foo, union)
+      .build
+    val events = new ProtoIndexTraitValidator()
+      .validate(model)
+      .asScala
+      .toList
+    assertEquals(
+      events.head.getId,
       ProtoIndexTraitValidator.INCONSISTENT_PROTO_INDEXES
     )
   }
 
+  test(
+    "ensure union member are proto indexed, not just the structure member referencing the union"
+  ) {
+    val union = UnionShape
+      .builder()
+      .id("com.example#Union")
+      .addMember(
+        MemberShape
+          .builder()
+          .id("com.example#Union$bar") // same name to trigger a conflict
+          .target("smithy.api#Integer")
+          .build()
+      )
+      .addMember(
+        MemberShape
+          .builder()
+          .id("com.example#Union$name")
+          .target("smithy.api#String")
+          .build()
+      )
+      .build()
+    val foo = StructureShape.builder
+      .id("com.example#Foo")
+      .addMember(
+        "bar",
+        string.getId,
+        _.addTrait(new ProtoIndexTrait(1)): @nowarn
+      )
+      .addMember(
+        "union",
+        union.getId,
+        _.addTrait(new ProtoIndexTrait(2)): @nowarn(
+          "msg=discarded non-Unit value"
+        )
+      )
+      .build
+    val model = Model.builder
+      .addShapes(string, int, foo, union)
+      .build
+    val events = new ProtoIndexTraitValidator()
+      .validate(model)
+      .asScala
+      .toList
+    assertEquals(
+      events.head.getId,
+      ProtoIndexTraitValidator.INCONSISTENT_PROTO_INDEXES
+    )
+  }
 }

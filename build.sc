@@ -1,4 +1,4 @@
-import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.2.0`
+import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.3.0`
 import de.tobiasroeser.mill.vcs.version.VcsVersion
 import $ivy.`io.github.davidgregory084::mill-tpolecat::0.3.0`
 import $ivy.`com.lewisjkl::header-mill-plugin::0.0.1`
@@ -80,23 +80,20 @@ trait BasePublishModule extends BaseModule with CiReleaseModule {
 trait BaseJavaModule extends JavaModule with BasePublishModule
 
 trait BaseScalaNoPublishModule
-    extends mill.scalalib.bsp.ScalaMetalsSupport
+    extends ScalaModule
     with ScalafmtModule
     with TpolecatModule {
   def scalaVersion = T.input("2.13.8")
-  def semanticDbVersion = T.input("4.4.34")
 }
 
 trait BaseScalaModule extends BaseScalaNoPublishModule with BasePublishModule
 
 trait BaseCrossScalaModule
-    extends mill.scalalib.bsp.ScalaMetalsSupport
+    extends ScalaModule
     with ScalafmtModule
     with TpolecatModule
     with CrossScalaModule
-    with BasePublishModule {
-  def semanticDbVersion = T.input("4.4.34")
-}
+    with BasePublishModule
 
 object core extends BaseJavaModule {
   def ivyDeps = Agg(
