@@ -31,7 +31,12 @@ final class SimpleRestJsonTimestampFormatValidatorSpec extends munit.FunSuite {
     .id("test#time")
     .build()
 
-  def modelAssembler(shapes: Shape*): Model = Model.assembler().disableValidation().addShapes(shapes: _*).assemble().unwrap()
+  def modelAssembler(shapes: Shape*): Model = Model
+    .assembler()
+    .disableValidation()
+    .addShapes(shapes: _*)
+    .assemble()
+    .unwrap()
 
   test(
     "warn when EITHER the member targeting a timestamp or the timestamp shape itself does not have a timestamp format trait and is reachable from a service with a rest json trait"
@@ -76,7 +81,7 @@ final class SimpleRestJsonTimestampFormatValidatorSpec extends munit.FunSuite {
         .severity(Severity.WARNING)
         .shape(member1)
         .message(
-          "A Timestamp shape  does not have a timestamp format trait"
+          "A Timestamp shape does not have a timestamp format trait"
         )
         .build(),
       ValidationEvent
@@ -87,13 +92,14 @@ final class SimpleRestJsonTimestampFormatValidatorSpec extends munit.FunSuite {
         .message(
           "A Timestamp shape does not have a timestamp format trait"
         )
-        .build(),
-
+        .build()
     )
     assertEquals(result, expected)
   }
 
-  test("when a timestamp shape  is not accesible from a service annotated with SimpleRestJson a warning is not issued") {
+  test(
+    "when a timestamp shape is not accesible from a service annotated with SimpleRestJson a warning is not issued"
+  ) {
 
     val timestamp = TimestampShape
       .builder()
@@ -133,7 +139,9 @@ final class SimpleRestJsonTimestampFormatValidatorSpec extends munit.FunSuite {
     assertEquals(result, List.empty)
   }
 
-  test("when a timestamp shape is annotated with the timestamp format trait a warning is not issued ") {
+  test(
+    "when a timestamp shape is annotated with the timestamp format trait a warning is not issued "
+  ) {
     val timestamp = TimestampShape
       .builder()
       .id("test#time")
@@ -166,7 +174,9 @@ final class SimpleRestJsonTimestampFormatValidatorSpec extends munit.FunSuite {
     val result = validator.validate(model).asScala.toList
     assertEquals(result, List.empty)
   }
-  test("when a member shape that is targeting a timestamp is annotated with the timestamp format trait, a warning is not issued ") {
+  test(
+    "when a member shape that is targeting a timestamp is annotated with the timestamp format trait, a warning is not issued "
+  ) {
     val timestamp = TimestampShape
       .builder()
       .id("test#time")
