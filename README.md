@@ -372,11 +372,11 @@ For full documentation on what each of these traits does, see the smithy specifi
 ### Publish Local
 
 ```console
-> mill __.publishLocal
+> ./ __.publishLocal
 ```
 
 ### Run Tests
 
 ```console
-> mill __.test
+> ./mill __.test
 ```
