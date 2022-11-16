@@ -240,7 +240,9 @@ class ProtoIndexTraitValidatorSuite extends FunSuite {
     )
   }
 
-  test("structure - ensure union member are proto indexed, not just the structure member referencing the union") {
+  test(
+    "structure - ensure union member are proto indexed, not just the structure member referencing the union"
+  ) {
     val union = UnionShape
       .builder()
       .id("com.example#Union")
@@ -286,4 +288,65 @@ class ProtoIndexTraitValidatorSuite extends FunSuite {
       ProtoIndexTraitValidator.INCONSISTENT_PROTO_INDEXES
     )
   }
+
+  test("enum - inconsistent field numbers in structure are invalid") {
+    val foo = EnumShape
+      .builder()
+      .id("com.example#Foo")
+      .addMember(
+        "NAME",
+        "NAME",
+        _.addTrait(new ProtoIndexTrait(1)): @nowarn(
+          "msg=discarded non-Unit value"
+        )
+      )
+      .addMember("AGE", "AGE")
+      .build()
+    val model = Model.builder
+      .addShapes(string, int, foo)
+      .build
+    val events = new ProtoIndexTraitValidator()
+      .validate(model)
+      .asScala
+      .map(_.getId)
+      .toList
+    assertEquals(
+      events,
+      List(ProtoIndexTraitValidator.INCONSISTENT_PROTO_INDEXES)
+    )
+  }
+
+  test("enum - duplicated field numbers in structure are invalid") {
+    val foo = EnumShape
+      .builder()
+      .id("com.example#Foo")
+      .addMember(
+        "NAME",
+        "NAME",
+        _.addTrait(new ProtoIndexTrait(1)): @nowarn(
+          "msg=discarded non-Unit value"
+        )
+      )
+      .addMember(
+        "AGE",
+        "AGE",
+        _.addTrait(new ProtoIndexTrait(1)): @nowarn(
+          "msg=discarded non-Unit value"
+        )
+      )
+      .build()
+    val model = Model.builder
+      .addShapes(string, int, foo)
+      .build
+    val events = new ProtoIndexTraitValidator()
+      .validate(model)
+      .asScala
+      .map(_.getId)
+      .toList
+    assertEquals(
+      events,
+      List(ProtoIndexTraitValidator.DUPLICATED_PROTO_INDEX)
+    )
+  }
+
 }
