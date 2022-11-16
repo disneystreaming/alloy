@@ -28,7 +28,7 @@ class ProtoIndexTraitValidatorSuite extends FunSuite {
   val string = StringShape.builder.id("com.example#String").build
   val int = IntegerShape.builder.id("com.example#Integer").build
 
-  test("well-formed field numbers") {
+  test("structure - well-formed field numbers") {
     val foo = StructureShape.builder
       .id("com.example#Foo")
       .addMember(
@@ -52,7 +52,7 @@ class ProtoIndexTraitValidatorSuite extends FunSuite {
     assertEquals(events.length, 0)
   }
 
-  test("duplicate field numbers in structure are invalid") {
+  test("structure - duplicate field numbers in structure are invalid") {
     val foo = StructureShape.builder
       .id("com.example#Foo1")
       .addMember(
@@ -80,7 +80,7 @@ class ProtoIndexTraitValidatorSuite extends FunSuite {
     )
   }
 
-  test("inconsistent field numbers in structure are invalid") {
+  test("structure - inconsistent field numbers in structure are invalid") {
     val foo = StructureShape.builder
       .id("com.example#Foo")
       .addMember(
@@ -104,7 +104,7 @@ class ProtoIndexTraitValidatorSuite extends FunSuite {
     )
   }
 
-  test("consistent numbers in member's union are valid") {
+  test("structure - consistent numbers in member's union are valid") {
     val union = UnionShape
       .builder()
       .id("com.example#Union")
@@ -147,7 +147,7 @@ class ProtoIndexTraitValidatorSuite extends FunSuite {
     assertEquals(events, List.empty)
   }
 
-  test("duplicated numbers in member's union are invalid") {
+  test("structure - duplicated numbers in member's union are invalid") {
     val union = UnionShape
       .builder()
       .id("com.example#Union")
@@ -193,7 +193,7 @@ class ProtoIndexTraitValidatorSuite extends FunSuite {
     )
   }
 
-  test("inconsistent numbers in member's union are invalid") {
+  test("structure - inconsistent numbers in member's union are invalid") {
     val union = UnionShape
       .builder()
       .id("com.example#Union")
@@ -240,9 +240,7 @@ class ProtoIndexTraitValidatorSuite extends FunSuite {
     )
   }
 
-  test(
-    "ensure union member are proto indexed, not just the structure member referencing the union"
-  ) {
+  test("structure - ensure union member are proto indexed, not just the structure member referencing the union") {
     val union = UnionShape
       .builder()
       .id("com.example#Union")
