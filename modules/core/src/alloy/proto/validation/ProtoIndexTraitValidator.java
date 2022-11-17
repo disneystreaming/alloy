@@ -91,18 +91,21 @@ final public class ProtoIndexTraitValidator extends AbstractValidator {
 		final Stream<Map.Entry<String, Shape>> unionMembers = OptionHelper.toStream(shape.asUnionShape())
 				.flatMap(u -> u.getAllMembers().entrySet().stream().map(this::asShape));
 
+		final Stream<Map.Entry<String, Shape>> enumMembers = OptionHelper.toStream(shape.asEnumShape())
+				.flatMap(u -> u.getAllMembers().entrySet().stream().map(this::asShape));
+
 		final Stream<Map.Entry<String, Shape>> structureMembers = OptionHelper.toStream(shape.asStructureShape())
 				.flatMap(u -> {
 					Stream<Map.Entry<String, Shape>> rootShapes = u.getAllMembers().entrySet().stream()
 							.filter(e -> !memberIsUnion(model, e.getValue()).isPresent()).map(this::asShape);
 					Stream<Map.Entry<String, Shape>> subUnionMembers = u.getAllMembers().values().stream()
 							.flatMap(m -> OptionHelper.toStream(memberIsUnion(model, m)))
-							.flatMap(union -> allMembers(model, union).entrySet().stream()
-								.map(e -> asShape(mapEntry(union.getId().getName() + "#" + e.getKey(), e.getValue())))
-							);
+							.flatMap(union -> allMembers(model, union).entrySet().stream().map(
+									e -> asShape(mapEntry(union.getId().getName() + "#" + e.getKey(), e.getValue()))));
 					return Stream.concat(rootShapes, subUnionMembers);
 				});
-		return Stream.concat(unionMembers, structureMembers)
+		return Stream.of(unionMembers, enumMembers, structureMembers)
+				.flatMap(s -> s)
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
