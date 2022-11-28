@@ -161,7 +161,7 @@ object Deps {
   }
 
   val scala = new {
-    val compat = ivy"org.scala-lang.modules::scala-collection-compat:2.8.1"
+    val compat = ivy"org.scala-lang.modules::scala-collection-compat:2.9.0"
   }
 
   val munit = new {
