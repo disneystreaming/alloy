@@ -20,7 +20,11 @@ service PizzaAdminService {
         protocol: simpleRestJson,
         method: "POST"
         uri: "/restaurant/{restaurant}/menu/item"
-        body: "{\"food\":\"pepper steak\",\"price\":20.0}",
+        body: """
+        {
+        "food":"pepper steak","price":20.0
+        }
+        """,
         params: {
           restaurant : "Uncle Mike's"
         }
@@ -36,7 +40,9 @@ service PizzaAdminService {
             itemId: "1",
             added: 1576540098
         }
-        body: "{\"itemId\":\"1\"}"
+        body: """
+        {"itemId":"1"}
+        """
         bodyMediaType: "application/json",
         headers: { "X-ADDED-AT": "1576540098"}
     },
@@ -47,7 +53,9 @@ service PizzaAdminService {
         params: {
             PriceError: {message:"invalid price",code: 400 }
         }
-        body: "{\"priceError\":{\"message\":\"invalid price\"}}"
+        body: """
+        {"priceError" :{"message":"invalid price"}}
+        """
         bodyMediaType: "application/json",
         headers: { "X-CODE": "400"}
     }
@@ -81,12 +89,71 @@ operation AddMenuItem {
         }
     }
 ])
+@httpResponseTests([
+    {
+        id:"headerEndpointResponse"
+        protocol: simpleRestJson
+        code:200
+        headers: {
+            "X-UPPERCASE-HEADER": "UPPERCASE_VALUE",
+            "X-Capitalized-Header": "Capitalized_value",
+            "x-lowercase-header": "lowercase_value"
+            "x-MiXeD-hEaDEr": "aLLMiXedUP"
+        }
+        params: {
+            uppercaseHeader: "UPPERCASE_VALUE",
+            capitalizedHeader: "Capitalized_value",
+            lowercaseHeader: "lowercase_value",
+            mixedHeader: "aLLMiXedUP",
+        }
+    }
+
+])
 @http(method: "POST", uri: "/headers/", code: 200)
 operation HeaderEndpoint {
     input: HeaderEndpointData,
     output: HeaderEndpointData
 }
 
+@httpRequestTests([
+    {
+        id:"RoundTripRequest"
+        protocol: simpleRestJson
+        uri: "/roundTrip/{label}"
+        method: "POST"
+        headers: {
+            "HEADER": "the header"
+        },
+        queryParams:{
+            "query": "the query"
+        }
+        body : "the body"
+        params: {
+              label: "the label",
+             header: "the header",
+              query: "the query",
+              body: "the body"
+    }
+}
+])
+
+@httpresponseTests([
+    {
+        id: "RoundTripDataResponse"
+        protocol: simpleRestJson
+        code: 200
+        body : "the body"
+        headers: {
+            "HEADER": "the header"
+        },
+        params: {
+            label: "the label",
+            header: "the header",
+            query: "the query",
+            body: "the body"
+        }
+    }
+])
 @http(method: "POST", uri: "/roundTrip/{label}", code: 200)
 operation RoundTrip {
     input: RoundTripData,
@@ -124,6 +191,23 @@ structure AddMenuItemResult {
     @required
     added: Timestamp
 }
+
+
+
+@httpResponseTests([
+    {
+        id: "VersionOutput"
+        protocol: simpleRestJson
+        uri : "/version"
+        method: "GET"
+        body: """
+        {"version":"1.0"}
+        """
+        params:{
+            "version": "1.0"
+        }
+    }
+])
 
 @readonly
 @http(method: "GET", uri: "/version", code: 200)
