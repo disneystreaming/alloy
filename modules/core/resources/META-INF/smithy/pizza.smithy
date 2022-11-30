@@ -1,6 +1,6 @@
 $version: "2"
 
-namespace smithy4s.example
+namespace alloy
 
 use alloy#simpleRestJson
 
@@ -15,9 +15,13 @@ service PizzaAdminService {
 }
 @httpRequestTests([{
         id: "AddMenuItem",
+        documentation: "add menu item test"
         protocol: simpleRestJson,
         method: "POST"
-        uri: "/restaurant/UncleMike/menu/item"
+        uri: "/restaurant/bobs/menu/item"
+        headers: {
+            "Content-Type": "application/json",
+        },
         body: """
         {"food":{"pizza": {"name":"margharita","base":"T","toppings":["Mushroom","Tomato"]}},
         "price":9.0}
@@ -33,6 +37,7 @@ service PizzaAdminService {
                 },
                 price: 9.0
             }
+            restaurant: "bobs"
         }
         bodyMediaType: "application/json",
 }
@@ -42,29 +47,36 @@ service PizzaAdminService {
     {
         id: "AddMenuItemResult",
         protocol: simpleRestJson,
+        documentation: "add menu item response test",
         code: 201,
+        headers: {
+            "Content-Type": "application/json",
+            "X-ADDED-AT": "1576540098"
+        },
+        bodyMediaType: "application/json",
+        body: """
+        {"itemId":"1"}
+        """
         params: {
             itemId: "1",
             added: 1576540098
         }
-        body: """
-        {"itemId":"1"}
-        """
-        bodyMediaType: "application/json",
-        headers: { "X-ADDED-AT": "1576540098"}
     },
     {
         id: "PriceError",
         protocol: simpleRestJson,
+        documentation: "price error test",
         code: 400,
-        params: {
-            PriceError: {message:"invalid price",code: 400 }
+        headers: { "X-CODE": "400",
+                   "Content-Type": "application/json",
         }
         body: """
         {"priceError" :{"message":"invalid price"}}
         """
         bodyMediaType: "application/json",
-        headers: { "X-CODE": "400"}
+        params: {
+            PriceError: {message:"invalid price",code: 400 }
+        }
     }
 ])
 @http(method: "POST", uri: "/restaurant/{restaurant}/menu/item", code: 201)
@@ -78,6 +90,7 @@ operation AddMenuItem {
 @httpRequestTests([
     {
         id: "HeaderEndpointInput",
+        documentation: "tests variety of casing scenarios for writing http headers",
         protocol: simpleRestJson,
         method : "POST",
         uri: "/headers/"
@@ -87,6 +100,7 @@ operation AddMenuItem {
             "x-lowercase-header": "lowercase_value"
             "x-MiXeD-hEaDEr": "aLLMiXedUP"
         }
+        body: ""
         params: {
              uppercaseHeader: "UPPERCASE_VALUE",
              capitalizedHeader: "Capitalized_value",
@@ -99,6 +113,7 @@ operation AddMenuItem {
     {
         id:"headerEndpointResponse"
         protocol: simpleRestJson
+        documentation: "tests variety of casing scenarios for reading http headers"
         code:200
         headers: {
             "X-UPPERCASE-HEADER": "UPPERCASE_VALUE",
