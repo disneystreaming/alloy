@@ -20,7 +20,7 @@ apply CustomCode @httpRequestTests([
         }
     }
 ])
-apply CustomCode @httpResonseTests([
+apply CustomCode @httpResponseTests([
     {
         id: "CustomCodeOutput"
         documentation: "respect the httpresponseCode trait",
