@@ -285,33 +285,6 @@ intEnum EnumResult {
     SECOND = 2
 }
 
-@httpRequestTests([
-    {
-        id: "CustomCodeInput"
-        documentation: "test custom code as a label",
-        protocol: simpleRestJson
-        uri : "/custom-code/399"
-        method: "GET"
-        body:""
-        params:{
-            "code": 399
-        }
-    }
-])
-@httpResonsesTests([
-    {
-        id: "CustomCodeOutput"
-        documentation: "respect the httpresponseCode trait",
-        protocol: simpleRestJson
-        code: 399
-        body:""
-        params:{
-            "code": 399
-        }
-    }
-])
-
-
 structure CustomCodeInput {
     @httpLabel
     @required

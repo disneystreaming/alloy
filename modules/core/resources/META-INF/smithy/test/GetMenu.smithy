@@ -7,7 +7,7 @@ use alloy#simpleRestJson
 use smithy.test#httpRequestTests
 use smithy.test#httpResponseTests
 
-apply GetMenu @httprequesttests([
+apply GetMenu @httpRequestTests([
     {
         id: "GetMenuRequest"
         protocol: simpleRestJson
@@ -20,7 +20,7 @@ apply GetMenu @httprequesttests([
 ])
 
 
-apply GetMenu @httpresponseTests([
+apply GetMenu @httpResponseTests([
     {
         id: "GetMenuResponse"
         protocol: simpleRestJson

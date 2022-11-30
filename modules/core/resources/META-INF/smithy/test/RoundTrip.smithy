@@ -30,7 +30,7 @@ apply RoundTrip @httpRequestTests([
     }
 ])
 
-apply RoundTrip @httpresponseTests([
+apply RoundTrip @httpResponseTests([
     {
         id: "RoundTripDataResponse"
         protocol: simpleRestJson

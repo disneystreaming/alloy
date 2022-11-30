@@ -10,7 +10,7 @@ use smithy.test#httpResponseTests
 
 
 
-apply GetIntEnum @httprequesttests([
+apply GetIntEnum @httpRequestTests([
     {
         id: "GetIntEnumInput"
         documentation: ""
@@ -22,7 +22,7 @@ apply GetIntEnum @httprequesttests([
         }
     }
 ])
-apply GetIntEnum @httpresponsetests([
+apply GetIntEnum @httpResponseTests([
     {
         id: "GetIntEnumOutput"
         documentation: ""
