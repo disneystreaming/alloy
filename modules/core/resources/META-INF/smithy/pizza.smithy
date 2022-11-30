@@ -19,14 +19,14 @@ service PizzaAdminService {
         id: "AddMenuItem",
         protocol: simpleRestJson,
         method: "POST"
-        uri: "/restaurant/{restaurant}/menu/item"
+        uri: "/restaurant/UncleMike/menu/item"
         body: """
         {
         "food":"pepper steak","price":20.0
         }
         """,
         params: {
-          restaurant : "Uncle Mike's"
+          restaurant : "UncleMike"
         }
         bodyMediaType: "application/json",
     }
@@ -119,7 +119,7 @@ operation HeaderEndpoint {
     {
         id:"RoundTripRequest"
         protocol: simpleRestJson
-        uri: "/roundTrip/{label}"
+        uri: "/roundTrip/thelabel"
         method: "POST"
         headers: {
             "HEADER": "the header"
@@ -129,7 +129,7 @@ operation HeaderEndpoint {
         }
         body : "the body"
         params: {
-              label: "the label",
+              label: "thelabel",
              header: "the header",
               query: "the query",
               body: "the body"
@@ -147,7 +147,7 @@ operation HeaderEndpoint {
             "HEADER": "the header"
         },
         params: {
-            label: "the label",
+            label: "thelabel",
             header: "the header",
             query: "the query",
             body: "the body"
@@ -208,7 +208,6 @@ structure AddMenuItemResult {
         }
     }
 ])
-
 @readonly
 @http(method: "GET", uri: "/version", code: 200)
 operation Version {
@@ -230,7 +229,35 @@ structure PriceError {
     @httpHeader("X-CODE")
     code: Integer
 }
-
+@httprequesttests([
+    {
+        id: "GetMenuRequest"
+        protocol: simpleRestJson
+        uri: "/restaurant/unclemikes/menu"
+        method: "GET"
+        params: {
+            restaurant: "unclemikes"
+        }
+    }
+])
+@httpResponseTests([
+    {
+        id: "GetMenuResult"
+        protocol: simpleRestJson
+        code: 200
+        body: """
+        {"menu":[{"food":"pepper steak","price":20.0}]}
+        """
+        params: {
+            menu: [
+                {
+                    food: "pepper steak",
+                    price: 20.0
+                }
+            ]
+        }
+    }
+])
 @http(method: "GET", uri: "/restaurant/{restaurant}/menu", code: 200)
 operation GetMenu {
     input: GetMenuRequest,
@@ -375,6 +402,30 @@ string UnknownServerErrorCode
 @trait
 document freeForm
 
+@httpRequestTests([
+    {
+        id: "GetEnumInput"
+        protocol: simpleRestJson
+        uri : "/get-enum/v1"
+        method: "GET"
+        params: {
+            aa: "v1"
+        }
+    }
+])
+@httpResponseTests([
+    {
+        id: "GetEnumOutput"
+        protocol: simpleRestJson
+        code: 200
+        body: """
+        {"result":"v1"}
+        """
+        params: {
+            result: "v1"
+        }
+    }
+])
 @readonly
 @http(method: "GET", uri: "/get-enum/{aa}", code: 200)
 operation GetEnum {
@@ -398,6 +449,34 @@ enum TheEnum {
     V2 = "v2"
 }
 
+
+
+@httprequesttests([
+    {
+        id: "GetIntEnumInput"
+        documentation: ""
+        protocol: simpleRestJson
+        uri : "/get-int-enum/1"
+        method: "GET"
+        params: {
+            aa: "1"
+        }
+    }
+])
+@httpresponsetests([
+    {
+        id: "GetIntEnumOutput"
+        documentation: ""
+        protocol: simpleRestJson
+        code: 200
+        body: """
+        {"result":"1"}
+        """
+        params: {
+            result: "1"
+        }
+    }
+])
 @readonly
 @http(method: "GET", uri: "/get-int-enum/{aa}", code: 200)
 operation GetIntEnum {
@@ -418,6 +497,31 @@ intEnum EnumResult {
     SECOND = 2
 }
 
+@httpRequestTests([
+    {
+        id: "CustomCodeInput"
+        documentation: "test custom code as a label",
+        protocol: simpleRestJson
+        uri : "/custom-code/399"
+        method: "GET"
+        body:""
+        params:{
+            "code": 399
+        }
+    }
+])
+@httpResonsesTests([
+    {
+        id: "CustomCodeOutput"
+        documentation: "respect the httpresponseCode trait",
+        protocol: simpleRestJson
+        code: 399
+        body:""
+        params:{
+            "code": 399
+        }
+    }
+])
 @readonly
 @http(method: "GET", uri: "/custom-code/{code}", code: 200)
 operation CustomCode {
