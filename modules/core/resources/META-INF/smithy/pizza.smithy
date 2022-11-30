@@ -13,24 +13,31 @@ service PizzaAdminService {
     errors: [GenericServerError, GenericClientError],
     operations: [AddMenuItem, GetMenu, Version, Health, HeaderEndpoint, RoundTrip, GetEnum, GetIntEnum, CustomCode]
 }
-
-@httpRequestTests([
-    {
+@httpRequestTests([{
         id: "AddMenuItem",
         protocol: simpleRestJson,
         method: "POST"
         uri: "/restaurant/UncleMike/menu/item"
         body: """
-        {
-        "food":"pepper steak","price":20.0
-        }
-        """,
-        params: {
-          restaurant : "UncleMike"
+        {"food":{"pizza": {"name":"margharita","base":"T","toppings":["Mushroom","Tomato"]}},
+        "price":9.0}
+       """
+    params: {
+            menuItem: {
+                food: {
+                    pizza: {
+                        name: "margharita",
+                        base: "T",
+                        toppings: ["Mushroom", "Tomato"]
+                    }
+                },
+                price: 9.0
+            }
         }
         bodyMediaType: "application/json",
-    }
+}
 ])
+
 @httpResponseTests([
     {
         id: "AddMenuItemResult",
@@ -66,7 +73,6 @@ operation AddMenuItem {
     errors: [PriceError],
     output: AddMenuItemResult
 }
-
 
 
 @httpRequestTests([
@@ -240,24 +246,36 @@ structure PriceError {
         }
     }
 ])
-@httpResponseTests([
+
+
+@httpresponseTests([
     {
-        id: "GetMenuResult"
+        id: "GetMenuResponse"
         protocol: simpleRestJson
         code: 200
         body: """
-        {"menu":[{"food":"pepper steak","price":20.0}]}
+        {"a0b0f3a9-81d3-4bf3-8897-a76423116403" :{"food":{"pizza": {"name":"margharita","base":"T","toppings":["Mushroom","Tomato"]}},
+        "price":9.0}}
         """
         params: {
-            menu: [
-                {
-                    food: "pepper steak",
-                    price: 20.0
+            menu: {
+                "a0b0f3a9-81d3-4bf3-8897-a76423116403" :{
+                    food:{
+                        pizza: {
+                            name:"margharita",
+                            base:"T",
+                            toppings:["Mushroom","Tomato"]
+                        }
+                    },
+                    price:9.0
                 }
-            ]
+            }
         }
     }
 ])
+
+
+
 @http(method: "GET", uri: "/restaurant/{restaurant}/menu", code: 200)
 operation GetMenu {
     input: GetMenuRequest,
