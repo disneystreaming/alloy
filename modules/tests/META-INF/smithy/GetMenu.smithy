@@ -36,7 +36,7 @@ apply GetMenu @httpResponseTests([
                         pizza: {
                             name:"margharita",
                             base:"T",
-                            toppings:["Mushroom","Tomato"]
+                            toppings:["MUSHROOM","TOMATO"]
                         }
                     },
                     price:9.0

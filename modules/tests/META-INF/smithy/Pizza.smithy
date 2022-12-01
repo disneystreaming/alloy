@@ -19,6 +19,7 @@ operation AddMenuItem {
     output: AddMenuItemResult
 }
 
+@readonly
 @http(method: "GET", uri: "/restaurant/{restaurant}/menu", code: 200)
 operation GetMenu {
     input: GetMenuRequest,

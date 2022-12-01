@@ -18,7 +18,7 @@ apply GetIntEnum @httpRequestTests([
         uri : "/get-int-enum/1"
         method: "GET"
         params: {
-            aa: "1"
+            aa: 1
         }
     }
 ])
@@ -32,7 +32,7 @@ apply GetIntEnum @httpResponseTests([
         {"result":"1"}
         """
         params: {
-            result: "1"
+            result: 1
         }
     }
 ])

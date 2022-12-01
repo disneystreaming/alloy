@@ -17,9 +17,9 @@ apply RoundTrip @httpRequestTests([
         headers: {
             "HEADER": "the header"
         },
-        queryParams:{
-            "query": "the query"
-        }
+        queryParams:[
+            "query=the query"
+        ]
         body : "the body"
         params: {
             label: "thelabel",

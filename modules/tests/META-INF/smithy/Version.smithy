@@ -10,8 +10,7 @@ apply Version @httpResponseTests([
     {
         id: "VersionOutput"
         protocol: simpleRestJson
-        uri : "/version"
-        method: "GET"
+        code: 200
         body: """
         {"version":"1.0"}
         """
