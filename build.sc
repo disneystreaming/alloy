@@ -148,6 +148,11 @@ class OpenapiModule(crossVersion: String) extends BaseCrossScalaModule {
   object test extends this.Tests with BaseMunitTests
 }
 
+object test extends BaseScalaModule {
+
+  def moduleDeps = Seq(core)
+}
+
 object Deps {
   val smithy = new {
     val version = "1.26.0"
