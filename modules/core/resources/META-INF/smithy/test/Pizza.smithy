@@ -176,12 +176,24 @@ structure Pizza {
     @required
     toppings: Ingredients
 }
+enum PizzaBase {
+    CREAM = "C"
+    TOMATO = "T"
+}
 
-@enum([{name: "CREAM", value: "C"}, {name: "TOMATO", value: "T"}])
-string PizzaBase
-
-@enum([{value: "Mushroom"}, {value: "Cheese"}, {value: "Salad"}, {value: "Tomato"}])
-string Ingredient
+enum Ingredient {
+    TOMATO = "TOMATO"
+    CHEESE = "CHEESE"
+    PINEAPPLE = "PINEAPPLE"
+    BACON = "BACON"
+    CHICKEN = "CHICKEN"
+    SALAD = "Salad"
+    MUSHROOM = "MUSHROOM"
+    OLIVES = "OLIVES"
+    ONIONS = "ONIONS"
+    PEPPERONI = "PEPPERONI"
+    PEPPERS = "PEPPERS"
+}
 
 list Ingredients {
     member: Ingredient
@@ -235,13 +247,9 @@ structure UnknownServerError {
 }
 
 // Define the singular error code that can be returned for an UnknownServerError
-@enum([
-    {
-        value: "server.error",
-        name: "ERROR_CODE"
-    }
-])
-string UnknownServerErrorCode
+enum UnknownServerErrorCode {
+    ERROR_CODE = "server.error",
+}
 
 
 @trait
