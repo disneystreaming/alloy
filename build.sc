@@ -148,9 +148,11 @@ class OpenapiModule(crossVersion: String) extends BaseCrossScalaModule {
   object test extends this.Tests with BaseMunitTests
 }
 
-object test extends BaseScalaModule {
+object tests extends BaseScalaModule {
+
 
   def moduleDeps = Seq(core)
+
 }
 
 object Deps {

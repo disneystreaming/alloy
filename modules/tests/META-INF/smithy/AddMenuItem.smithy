@@ -11,7 +11,7 @@ use smithy.test#httpResponseTests
 apply AddMenuItem @httpRequestTests([
     {
         id: "AddMenuItem",
-        documentation: "add menu item test"
+        documentation: "add menu item tests"
         protocol: simpleRestJson,
         method: "POST"
         uri: "/restaurant/bobs/menu/item"
@@ -43,7 +43,7 @@ apply AddMenuItem @httpResponseTests([
     {
         id: "AddMenuItemResult",
         protocol: simpleRestJson,
-        documentation: "add menu item response test",
+        documentation: "add menu item response tests",
         code: 201,
         headers: {
             "Content-Type": "application/json",
@@ -61,7 +61,7 @@ apply AddMenuItem @httpResponseTests([
     {
         id: "PriceError",
         protocol: simpleRestJson,
-        documentation: "price error test",
+        documentation: "price error tests",
         code: 400,
         headers: { "X-CODE": "400",
             "Content-Type": "application/json",

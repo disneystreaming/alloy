@@ -10,7 +10,7 @@ use smithy.test#httpResponseTests
 apply CustomCode @httpRequestTests([
     {
         id: "CustomCodeInput"
-        documentation: "test custom code as a label",
+        documentation: "tests custom code as a label",
         protocol: simpleRestJson
         uri : "/custom-code/399"
         method: "GET"
