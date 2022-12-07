@@ -66,20 +66,7 @@ Errors referenced by any operation that's itself referenced by a `@simpleRestJso
 
 ##### Content-types
 
-The `alloy#simpleRestJson` protocol uses a default Content-Type of `application/json`.
-
-Input or output shapes that apply the `@httpPayload` trait on one of their top-level members MUST use a Content-Type that is appropriate for the payload. The following table defines the expected Content-Type header for requests and responses based on the shape targeted by the member marked with the `@httpPayload` trait:
-
-
-| Targeted shape      | Content-Type                                     |
-| ------------------- | ------------------------------------------------ |
-| Has mediaType trait | Use the value of the mediaType trait if present. |
-| string              | text/plain                                       |
-| blob                | application/octet-stream                         |
-| document            | application/json                                 |
-| structure           | application/json                                 |
-| union               | application/json                                 |
-| list/set/map        | application/json                                 |
+The `alloy#simpleRestJson` protocol uses a Content-Type of `application/json`.
 
 ##### JSON Shape Serialization
 
