@@ -2,12 +2,10 @@ $version: "2"
 
 namespace alloy
 
-/// A rest protocol that primarily deals with JSON
+/// A rest protocol that deals with JSON payloads only
 /// in HTTP requests and responses. These are encoded with
-/// the content type `application/json`. The exception is
-/// for requests/responses of type Blob or String. These are
-/// encoded as `application/octet-stream` and `text/plain`
-/// respectively. See Alloy documentation for more information.
+/// the content type `application/json`.
+///  See Alloy documentation for more information.
 @protocolDefinition(traits: [
     smithy.api#error,
     smithy.api#required,
