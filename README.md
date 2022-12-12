@@ -318,7 +318,7 @@ structure Test {
 
 Is equivalent to:
 
-```
+```proto
 message Test {
   string str = 1;
 }
@@ -335,7 +335,7 @@ structure Test {
 
 Is equivalent to:
 
-```
+```proto
 message Test {
   string str = 2;
 }
