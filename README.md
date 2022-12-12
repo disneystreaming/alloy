@@ -172,7 +172,7 @@ However, `alloy#simpleRestJson` supports two additional encodings: `discriminate
 
 This is the default behavior, and happens to visually match how Smithy unions are declared. In this encoding, the union is encoded as a JSON object with a single key-value pair, the key signalling which alternative has been encoded.
 
-```
+```smithy
 union Tagged {
   first: String
   second: IntWrapper
@@ -201,7 +201,7 @@ are encoded as such :
 
 Untagged unions are supported via an annotation: `@untagged`. Despite the smaller payload size this encoding produces, it is arguably the worst way of encoding unions, as it may require backtracking multiple times on the parsing side. Use this carefully, preferably only when you need to retrofit an existing API into Smithy.
 
-```kotlin
+```smithy
 use alloy#untagged
 
 @untagged
@@ -236,7 +236,7 @@ In this encoding, the discriminator is inlined as a JSON field within JSON objec
 
 Despite the JSON payload exhibiting less nesting than in the `tagged union` encoding, this encoding often leads to bigger payloads, and requires backtracking once during parsing.
 
-```kotlin
+```smithy
 use alloy#discriminated
 
 @discriminated("tpe")
@@ -309,7 +309,8 @@ The following shapes are provided as a means of customizing how your Smithy shap
 
 Marks an explicit index to be used for a structure member when it is
 interpreted as protobuf. For example:
-```
+
+```smithy
 structure Test {
   str: String
 }
@@ -317,7 +318,7 @@ structure Test {
 
 Is equivalent to:
 
-```
+```proto
 message Test {
   string str = 1;
 }
@@ -325,7 +326,7 @@ message Test {
 
 Where the following:
 
-```
+```smithy
 structure Test {
   @protoIndex(2)
   str: String
@@ -334,7 +335,7 @@ structure Test {
 
 Is equivalent to:
 
-```
+```proto
 message Test {
   string str = 2;
 }
