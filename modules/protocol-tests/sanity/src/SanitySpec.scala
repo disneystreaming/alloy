@@ -23,33 +23,49 @@ import scala.jdk.StreamConverters._
 
 final class SanitySpec extends munit.FunSuite {
 
-  private val model: ValidatedResult[Model] = Model.assembler().discoverModels().disableValidation().assemble()
+  private val model: ValidatedResult[Model] =
+    Model.assembler().discoverModels().disableValidation().assemble()
 
   test("the manifest file and the Smithy files are in sync") {
-    val root = "modules/tests/resources/META-INF/smithy/"
-    val manifest = Files.readAllLines(Paths.get(s"${root}manifest")).asScala.toList.map(a => a.replace(".smithy", "")).toSet
+    val root = "modules/protocol-tests/resources/META-INF/smithy/"
+    val manifest = Files
+      .readAllLines(Paths.get(s"${root}manifest"))
+      .asScala
+      .toList
+      .map(a => a.replace(".smithy", ""))
+      .toSet
     val path = Paths.get(root)
-    val smithyFiles = Files.walk(path).toScala(Set)
+    val smithyFiles = Files
+      .walk(path)
+      .toScala(Set)
       .collect {
-        case p if p.toString.endsWith(".smithy") => p.toString.replace(root, "").replace(".smithy", "")
+        case p if p.toString.endsWith(".smithy") =>
+          p.toString.replace(root, "").replace(".smithy", "")
       }
     assertEquals(manifest, smithyFiles)
-
   }
 
-  test("local discovered files are all valid smithy files that assemble correctly") {
+  test(
+    "local discovered files are all valid smithy files that assemble correctly"
+  ) {
     assert(model.getValidationEvents.isEmpty)
   }
   test("random shapes from alloy.test namespace exist") {
     val unwrapped = model.unwrap()
     assert(unwrapped.getShape(ShapeId.from("alloy.test#Health")).isPresent)
     assert(unwrapped.getShape(ShapeId.from("alloy.test#CustomCode")).isPresent)
-    assert(unwrapped.getShape(ShapeId.from("alloy.test#PizzaAdminService")).isPresent)
-    assert(unwrapped.getShape(ShapeId.from("alloy.test#HeaderEndpoint")).map(shape => {
-      shape.hasTrait("smithy.test#httpRequestTests")
-    }).orElseGet(() => false))
+    assert(
+      unwrapped.getShape(ShapeId.from("alloy.test#PizzaAdminService")).isPresent
+    )
+    assert(
+      unwrapped
+        .getShape(ShapeId.from("alloy.test#HeaderEndpoint"))
+        .map(shape => {
+          shape.hasTrait("smithy.test#httpRequestTests")
+        })
+        .orElseGet(() => false)
+    )
 
   }
-
 
 }
