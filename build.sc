@@ -148,11 +148,25 @@ class OpenapiModule(crossVersion: String) extends BaseCrossScalaModule {
   object test extends this.Tests with BaseMunitTests
 }
 
+object `protocol-tests` extends BaseScalaModule {
+  def moduleDeps = Seq(core)
+
+  def ivyDeps = Agg(
+    Deps.smithy.awsTests
+  )
+
+  object sanity extends Tests with TestModule.Munit {
+    def ivyDeps = Agg(Deps.munit.munit)
+  }
+}
+
 object Deps {
   val smithy = new {
     val version = "1.26.0"
     val model = ivy"software.amazon.smithy:smithy-model:$version"
     val awsTraits = ivy"software.amazon.smithy:smithy-aws-traits:$version"
+    val awsTests =
+      ivy"software.amazon.smithy:smithy-aws-protocol-tests:$version"
     val openapi = ivy"software.amazon.smithy:smithy-openapi:$version"
   }
 
@@ -165,9 +179,8 @@ object Deps {
   }
 
   val munit = new {
-    val all = Agg(
-      ivy"org.scalameta::munit::1.0.0-M7",
-      ivy"org.scalameta::munit-scalacheck::1.0.0-M7"
-    )
+    val munit = ivy"org.scalameta::munit::1.0.0-M7"
+    val scalaCheck = ivy"org.scalameta::munit-scalacheck::1.0.0-M7"
+    val all = Agg(munit, scalaCheck)
   }
 }
