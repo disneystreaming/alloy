@@ -83,7 +83,7 @@ trait BaseScalaNoPublishModule
     extends ScalaModule
     with ScalafmtModule
     with TpolecatModule {
-  def scalaVersion = T.input("2.13.8")
+  def scalaVersion = T.input("2.13.10")
 }
 
 trait BaseScalaModule extends BaseScalaNoPublishModule with BasePublishModule
