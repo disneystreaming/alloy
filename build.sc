@@ -129,7 +129,7 @@ object core extends BaseJavaModule {
   }
 }
 
-val scalaVersionsMap = Map("2.13" -> "2.13.7", "2.12" -> "2.12.15")
+val scalaVersionsMap = Map("2.13" -> "2.13.7", "2.12" -> "2.12.17")
 object openapi extends Cross[OpenapiModule](scalaVersionsMap.keys.toList: _*)
 class OpenapiModule(crossVersion: String) extends BaseCrossScalaModule {
 
