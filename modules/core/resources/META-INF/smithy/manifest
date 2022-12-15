@@ -1,5 +1,6 @@
 documentation.smithy
+formats.smithy
+proto/proto.smithy
 restjson.smithy
 unions.smithy
 uuid.smithy
-proto/proto.smithy

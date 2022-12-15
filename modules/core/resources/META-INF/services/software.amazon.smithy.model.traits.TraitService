@@ -1,3 +1,4 @@
+alloy.DateOnlyTrait$Provider
 alloy.DiscriminatedUnionTrait$Provider
 alloy.SimpleRestJsonTrait$Provider
 alloy.UncheckedExamplesTrait$Provider
