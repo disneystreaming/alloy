@@ -19,16 +19,16 @@ import software.amazon.smithy.model.node.Node;
 import software.amazon.smithy.model.shapes.ShapeId;
 import software.amazon.smithy.model.traits.AnnotationTrait;
 
-public final class DateOnlyTrait extends AnnotationTrait {
-	public static ShapeId ID = ShapeId.from("alloy#dateOnly");
+public final class DateFormatTrait extends AnnotationTrait {
+	public static ShapeId ID = ShapeId.from("alloy#dateFormat");
 
-	public DateOnlyTrait() {
+	public DateFormatTrait() {
 		super(ID, Node.objectNode());
 	}
 
-	public static final class Provider extends AnnotationTrait.Provider<DateOnlyTrait> {
+	public static final class Provider extends AnnotationTrait.Provider<DateFormatTrait> {
 		public Provider() {
-			super(ID, (node) -> new DateOnlyTrait());
+			super(ID, (node) -> new DateFormatTrait());
 		}
 	}
 }
