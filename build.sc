@@ -162,12 +162,12 @@ object `protocol-tests` extends BaseScalaModule {
 
 object Deps {
   val smithy = new {
-    val version = "1.26.0"
-    val model = ivy"software.amazon.smithy:smithy-model:$version"
-    val awsTraits = ivy"software.amazon.smithy:smithy-aws-traits:$version"
+    val smithyVersion = "1.26.0"
+    val model = ivy"software.amazon.smithy:smithy-model:$smithyVersion"
+    val awsTraits = ivy"software.amazon.smithy:smithy-aws-traits:$smithyVersion"
     val awsTests =
-      ivy"software.amazon.smithy:smithy-aws-protocol-tests:$version"
-    val openapi = ivy"software.amazon.smithy:smithy-openapi:$version"
+      ivy"software.amazon.smithy:smithy-aws-protocol-tests:$smithyVersion"
+    val openapi = ivy"software.amazon.smithy:smithy-openapi:$smithyVersion"
   }
 
   val cats = new {
