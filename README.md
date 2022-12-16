@@ -34,9 +34,18 @@ A collection of commonly used Smithy shapes.
 
 Alloy Smithy shapes and validators are published to Maven Central under the following artifact names:
 
+For sbt:
+
+```scala
+"com.disneystreaming.alloy" % "alloy-core" % "x.x.x"
+"com.disneystreaming.alloy" %% "alloy-openapi" % "x.x.x"
 ```
-"com.disneystreaming.alloy:alloy-core:x.x.x"
-"com.disneystreaming.alloy:alloy-openapi:x.x.x"
+
+For mill:
+
+```scala
+ivy"com.disneystreaming.alloy:alloy-core:x.x.x"
+ivy"com.disneystreaming.alloy::alloy-openapi:x.x.x"
 ```
 
 ## Why Alloy?
@@ -66,20 +75,7 @@ Errors referenced by any operation that's itself referenced by a `@simpleRestJso
 
 ##### Content-types
 
-The `alloy#simpleRestJson` protocol uses a default Content-Type of `application/json`.
-
-Input or output shapes that apply the `@httpPayload` trait on one of their top-level members MUST use a Content-Type that is appropriate for the payload. The following table defines the expected Content-Type header for requests and responses based on the shape targeted by the member marked with the `@httpPayload` trait:
-
-
-| Targeted shape      | Content-Type                                     |
-| ------------------- | ------------------------------------------------ |
-| Has mediaType trait | Use the value of the mediaType trait if present. |
-| string              | text/plain                                       |
-| blob                | application/octet-stream                         |
-| document            | application/json                                 |
-| structure           | application/json                                 |
-| union               | application/json                                 |
-| list/set/map        | application/json                                 |
+The `alloy#simpleRestJson` protocol uses a Content-Type of `application/json`.
 
 ##### JSON Shape Serialization
 
@@ -176,7 +172,7 @@ However, `alloy#simpleRestJson` supports two additional encodings: `discriminate
 
 This is the default behavior, and happens to visually match how Smithy unions are declared. In this encoding, the union is encoded as a JSON object with a single key-value pair, the key signalling which alternative has been encoded.
 
-```
+```smithy
 union Tagged {
   first: String
   second: IntWrapper
@@ -205,7 +201,7 @@ are encoded as such :
 
 Untagged unions are supported via an annotation: `@untagged`. Despite the smaller payload size this encoding produces, it is arguably the worst way of encoding unions, as it may require backtracking multiple times on the parsing side. Use this carefully, preferably only when you need to retrofit an existing API into Smithy.
 
-```kotlin
+```smithy
 use alloy#untagged
 
 @untagged
@@ -240,7 +236,7 @@ In this encoding, the discriminator is inlined as a JSON field within JSON objec
 
 Despite the JSON payload exhibiting less nesting than in the `tagged union` encoding, this encoding often leads to bigger payloads, and requires backtracking once during parsing.
 
-```kotlin
+```smithy
 use alloy#discriminated
 
 @discriminated("tpe")
@@ -313,7 +309,8 @@ The following shapes are provided as a means of customizing how your Smithy shap
 
 Marks an explicit index to be used for a structure member when it is
 interpreted as protobuf. For example:
-```
+
+```smithy
 structure Test {
   str: String
 }
@@ -321,7 +318,7 @@ structure Test {
 
 Is equivalent to:
 
-```
+```proto
 message Test {
   string str = 1;
 }
@@ -329,7 +326,7 @@ message Test {
 
 Where the following:
 
-```
+```smithy
 structure Test {
   @protoIndex(2)
   str: String
@@ -338,7 +335,7 @@ structure Test {
 
 Is equivalent to:
 
-```
+```proto
 message Test {
   string str = 2;
 }

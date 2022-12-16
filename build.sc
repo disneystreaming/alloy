@@ -1,9 +1,9 @@
 import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.3.0`
 import de.tobiasroeser.mill.vcs.version.VcsVersion
 import $ivy.`io.github.davidgregory084::mill-tpolecat::0.3.1`
-import $ivy.`com.lewisjkl::header-mill-plugin::0.0.1`
+import $ivy.`com.lewisjkl::header-mill-plugin::0.0.2`
 import header._
-import $ivy.`io.chris-kipp::mill-ci-release::0.1.3`
+import $ivy.`io.chris-kipp::mill-ci-release::0.1.4`
 import io.kipp.mill.ci.release.CiReleaseModule
 import io.kipp.mill.ci.release.SonatypeHost
 import io.github.davidgregory084.TpolecatModule
@@ -83,7 +83,7 @@ trait BaseScalaNoPublishModule
     extends ScalaModule
     with ScalafmtModule
     with TpolecatModule {
-  def scalaVersion = T.input("2.13.8")
+  def scalaVersion = T.input("2.13.10")
 }
 
 trait BaseScalaModule extends BaseScalaNoPublishModule with BasePublishModule
@@ -129,7 +129,7 @@ object core extends BaseJavaModule {
   }
 }
 
-val scalaVersionsMap = Map("2.13" -> "2.13.7", "2.12" -> "2.12.15")
+val scalaVersionsMap = Map("2.13" -> "2.13.7", "2.12" -> "2.12.17")
 object openapi extends Cross[OpenapiModule](scalaVersionsMap.keys.toList: _*)
 class OpenapiModule(crossVersion: String) extends BaseCrossScalaModule {
 
@@ -148,27 +148,26 @@ class OpenapiModule(crossVersion: String) extends BaseCrossScalaModule {
   object test extends this.Tests with BaseMunitTests
 }
 
-object tests extends BaseJavaModule {
+object `protocol-tests` extends BaseJavaModule {
   def moduleDeps = Seq(core)
 
   def ivyDeps = Agg(
     Deps.smithy.awsTests
   )
 
-  object sanity extends Tests with TestModule.Munit with BaseScalaNoPublishModule {
-
-    def moduleDeps = Seq(tests)
+  object sanity extends BaseScalaNoPublishModule with Tests with TestModule.Munit {
     def ivyDeps = Agg(Deps.munit.munit)
   }
 }
 
 object Deps {
   val smithy = new {
-    val version = "1.26.0"
-    val model = ivy"software.amazon.smithy:smithy-model:$version"
-    val awsTraits = ivy"software.amazon.smithy:smithy-aws-traits:$version"
-    val awsTests = ivy"software.amazon.smithy:smithy-aws-protocol-tests:$version"
-    val openapi = ivy"software.amazon.smithy:smithy-openapi:$version"
+    val smithyVersion = "1.26.4"
+    val model = ivy"software.amazon.smithy:smithy-model:$smithyVersion"
+    val awsTraits = ivy"software.amazon.smithy:smithy-aws-traits:$smithyVersion"
+    val awsTests =
+      ivy"software.amazon.smithy:smithy-aws-protocol-tests:$smithyVersion"
+    val openapi = ivy"software.amazon.smithy:smithy-openapi:$smithyVersion"
   }
 
   val cats = new {
@@ -176,7 +175,7 @@ object Deps {
   }
 
   val scala = new {
-    val compat = ivy"org.scala-lang.modules::scala-collection-compat:2.8.1"
+    val compat = ivy"org.scala-lang.modules::scala-collection-compat:2.9.0"
   }
 
   val munit = new {

@@ -27,7 +27,7 @@ final class SanitySpec extends munit.FunSuite {
     Model.assembler().discoverModels().disableValidation().assemble()
 
   test("the manifest file and the Smithy files are in sync") {
-    val root = "modules/tests/resources/META-INF/smithy/"
+    val root = "modules/protocol-tests/resources/META-INF/smithy/"
     val manifest = Files
       .readAllLines(Paths.get(s"${root}manifest"))
       .asScala
@@ -43,7 +43,6 @@ final class SanitySpec extends munit.FunSuite {
           p.toString.replace(root, "").replace(".smithy", "")
       }
     assertEquals(manifest, smithyFiles)
-
   }
 
   test(

@@ -23,7 +23,7 @@ apply CustomCode @httpRequestTests([
 apply CustomCode @httpResponseTests([
     {
         id: "CustomCodeOutput"
-        documentation: "respect the httpresponseCode trait",
+        documentation: "respect the httpResponseCode trait",
         protocol: simpleRestJson
         code: 399
         body: ""
