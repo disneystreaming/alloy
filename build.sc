@@ -148,14 +148,14 @@ class OpenapiModule(crossVersion: String) extends BaseCrossScalaModule {
   object test extends this.Tests with BaseMunitTests
 }
 
-object tests extends BaseScalaModule {
+object tests extends BaseJavaModule {
   def moduleDeps = Seq(core)
 
   def ivyDeps = Agg(
     Deps.smithy.awsTests
   )
 
-  object sanity extends Tests with TestModule.Munit {
+  object sanity extends Tests with TestModule.Munit with BaseScalaNoPublishModule {
 
     def moduleDeps = Seq(tests)
     def ivyDeps = Agg(Deps.munit.munit)
