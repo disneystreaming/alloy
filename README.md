@@ -381,7 +381,7 @@ structure Test {
 
 ### alloy.openapi
 
-This namespaces contains shapes related to the OpenAPI format. These shapes can be used to express OpenAPI specifications details that do not translate naturally in Smithy.
+This namespace contains shapes related to the OpenAPI format. These shapes can be used to express OpenAPI specification details that do not translate naturally in Smithy.
 
 #### alloy.openapi#openapiExtensions
 
