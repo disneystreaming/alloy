@@ -370,7 +370,7 @@ For full documentation on what each of these traits does, see the smithy specifi
 
 ### alloy#dateFormat
 
-This trait is used to express that a `String` in your model is formatted as a date.
+This trait is used to express that a `String` in your model is formatted as a date. The format is defined in the [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339#section-5.6). Example: `2022-12-28`.
 
 ```smithy
 structure Test {
