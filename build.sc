@@ -148,21 +148,21 @@ class OpenapiModule(crossVersion: String) extends BaseCrossScalaModule {
   object test extends this.Tests with BaseMunitTests
 }
 
-object `protocol-tests` extends BaseScalaModule {
+object `protocol-tests` extends BaseJavaModule {
   def moduleDeps = Seq(core)
 
   def ivyDeps = Agg(
     Deps.smithy.awsTests
   )
 
-  object sanity extends Tests with TestModule.Munit {
+  object sanity extends BaseScalaNoPublishModule with Tests with TestModule.Munit {
     def ivyDeps = Agg(Deps.munit.munit)
   }
 }
 
 object Deps {
   val smithy = new {
-    val smithyVersion = "1.26.0"
+    val smithyVersion = "1.26.4"
     val model = ivy"software.amazon.smithy:smithy-model:$smithyVersion"
     val awsTraits = ivy"software.amazon.smithy:smithy-aws-traits:$smithyVersion"
     val awsTests =
