@@ -26,6 +26,9 @@ A collection of commonly used Smithy shapes.
     - [alloy.proto#protoNumType](#alloyprotoprotonumtype)
     - [alloy.proto#protoEnabled](#alloyprotoprotoenabled)
     - [alloy.proto#protoReservedFields](#alloyprotoprotoreservedfields)
+  - [alloy#dateFormat](#alloydateformat)
+  - [alloy.openapi](#alloyopenapi)
+    - [alloy.openapi#openapiExtensions](#alloyopenapiopenapiextensions)
 - [Working on Alloy](#working-on-alloy)
   - [Publish Local](#publish-local)
   - [Run Tests](#run-tests)
@@ -363,6 +366,35 @@ Marks certain field indexes as unusable by the smithy specification. For example
 1 to 10 then the proto indexes for any fields in that structure must fall outside of that range. Ranges are inclusive.
 
 For full documentation on what each of these traits does, see the smithy specification [here](modules/core/resources/META-INF/smithy/proto/proto.smithy).
+
+
+### alloy#dateFormat
+
+This trait is used to express that a `String` in your model is formatted as a date. The format is defined in the [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339#section-5.6). Example: `2022-12-28`.
+
+```smithy
+structure Test {
+  @dateFormat
+  myDate: String
+}
+```
+
+### alloy.openapi
+
+This namespace contains shapes related to the OpenAPI format. These shapes can be used to express OpenAPI specification details that do not translate naturally in Smithy.
+
+#### alloy.openapi#openapiExtensions
+
+OpenAPI has support for [extensions](https://swagger.io/docs/specification/openapi-extensions). You can use this trait to reflect that in your Smithy specification:
+
+```smithy
+@openapiExtensions(
+  "x-foo": "bar"
+)
+list StringList {
+  member: String
+}
+```
 
 ## Working on Alloy
 
