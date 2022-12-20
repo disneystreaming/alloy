@@ -27,6 +27,8 @@ A collection of commonly used Smithy shapes.
     - [alloy.proto#protoEnabled](#alloyprotoprotoenabled)
     - [alloy.proto#protoReservedFields](#alloyprotoprotoreservedfields)
   - [alloy#dateFormat](#alloydateformat)
+  - [alloy#nullable](#alloynullable)
+  - [alloy#defaultValue](#alloydefaultvalue)
   - [alloy.openapi](#alloyopenapi)
     - [alloy.openapi#openapiExtensions](#alloyopenapiopenapiextensions)
 - [Working on Alloy](#working-on-alloy)
@@ -377,6 +379,25 @@ structure Test {
   @dateFormat
   myDate: String
 }
+```
+
+### alloy#nullable
+
+Smithy does not make a difference between a missing value and a null but some Interface Definition Language (IDL) can. This trait can be used to express this distinction.
+
+```smithy
+structure Foo {
+ @required
+ @nullable
+ bar: String
+}
+```
+
+### alloy#defaultValue
+
+Smithy 2.0 introduces the [`@default` trait](https://smithy.io/2.0/spec/type-refinement-traits.html#default-trait)
+
+```smithy
 ```
 
 ### alloy.openapi

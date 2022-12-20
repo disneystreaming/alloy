@@ -1,6 +1,7 @@
-alloy.validation.DiscriminatedUnionValidator
-alloy.validation.SimpleRestJsonValidator
-alloy.validation.SimpleRestJsonHttpHeaderValidator
 alloy.proto.validation.GrpcTraitValidator
 alloy.proto.validation.ProtoIndexTraitValidator
 alloy.proto.validation.ProtoReservedFieldsTraitValidator
+alloy.validation.DefaultValueTraitValidator
+alloy.validation.DiscriminatedUnionValidator
+alloy.validation.SimpleRestJsonHttpHeaderValidator
+alloy.validation.SimpleRestJsonValidator

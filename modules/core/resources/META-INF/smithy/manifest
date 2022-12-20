@@ -1,6 +1,7 @@
 documentation.smithy
 formats.smithy
 openapi/openapi.smithy
+presence.smithy
 proto/proto.smithy
 restjson.smithy
 unions.smithy
