@@ -7,7 +7,9 @@ namespace alloy
 /// the content type `application/json`.
 ///  See Alloy documentation for more information.
 @protocolDefinition(traits: [
+    smithy.api#default,
     smithy.api#error,
+    smithy.api#internal,
     smithy.api#required,
     smithy.api#pattern,
     smithy.api#range,
