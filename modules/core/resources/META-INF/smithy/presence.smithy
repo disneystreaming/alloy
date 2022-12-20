@@ -2,11 +2,8 @@ $version: "2"
 
 namespace alloy
 
-@trait(
-  selector: "structure > member :test(> :is(simpleType, list, map))",
-  conflicts: [required]
-)
-document defaultValue
-
+/// Use this trait to mark some field as nullable. This is to make
+/// a distinction between an optional feel that's missing and one
+/// that's explicitly set to null.
 @trait()
 structure nullable {}

@@ -1,5 +1,4 @@
 alloy.DateFormatTrait$Provider
-alloy.DefaultValueTrait$Provider
 alloy.DiscriminatedUnionTrait$Provider
 alloy.NullableTrait$Provider
 alloy.openapi.OpenApiExtensionsTrait$Provider
