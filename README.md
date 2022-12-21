@@ -28,6 +28,7 @@ A collection of commonly used Smithy shapes.
     - [alloy.proto#protoReservedFields](#alloyprotoprotoreservedfields)
   - [alloy#dateFormat](#alloydateformat)
   - [alloy#nullable](#alloynullable)
+  - [alloy#defaultValue](#alloydefaultvalue)
   - [alloy.openapi](#alloyopenapi)
     - [alloy.openapi#openapiExtensions](#alloyopenapiopenapiextensions)
 - [Working on Alloy](#working-on-alloy)
@@ -390,6 +391,13 @@ structure Foo {
  @nullable
  bar: String
 }
+```
+
+### alloy#defaultValue
+
+Smithy 2.0 introduces the [`@default` trait](https://smithy.io/2.0/spec/type-refinement-traits.html#default-trait)
+
+```smithy
 ```
 
 ### alloy.openapi
