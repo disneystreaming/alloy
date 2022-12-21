@@ -27,5 +27,5 @@ document defaultValue
 /// Use this trait to mark some field as nullable. This is to make
 /// a distinction between an optional field that is missing and one
 /// that's explicitly set to null.
-@trait()
+@trait(selector: ":not([trait|trait])")
 structure nullable {}
