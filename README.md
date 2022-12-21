@@ -395,9 +395,17 @@ structure Foo {
 
 ### alloy#defaultValue
 
-Smithy 2.0 introduces the [`@default` trait](https://smithy.io/2.0/spec/type-refinement-traits.html#default-trait)
+Smithy 2.0 introduces the [`@default` trait](https://smithy.io/2.0/spec/type-refinement-traits.html#default-trait) but this trait is restrictive and can't be used in some use case. For example, you can use `@defaultValue` to set a default of `"N/A"` on a `String` that's constrained with the `length` trait to a minimum of 5 characters. Smithy's `@default` trait won't allow that.
 
 ```smithy
+@length(min: 5)
+string MyString
+
+structure Foo {
+ @required
+ @nullable
+ bar: String
+}
 ```
 
 ### alloy.openapi
