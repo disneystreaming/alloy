@@ -20,11 +20,12 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import scala.jdk.CollectionConverters._
 import scala.jdk.StreamConverters._
+import software.amazon.smithy.model.validation.Severity
 
 final class SanitySpec extends munit.FunSuite {
 
   private val model: ValidatedResult[Model] =
-    Model.assembler().discoverModels().disableValidation().assemble()
+    Model.assembler().discoverModels().assemble()
 
   test("the manifest file and the Smithy files are in sync") {
     val root = "modules/protocol-tests/resources/META-INF/smithy/"
@@ -48,7 +49,10 @@ final class SanitySpec extends munit.FunSuite {
   test(
     "local discovered files are all valid smithy files that assemble correctly"
   ) {
-    assert(model.getValidationEvents.isEmpty)
+    val relevantErrors = model.getValidationEvents.asScala.toSeq.filter(e =>
+      e.getSeverity() == Severity.ERROR && e.getSeverity() == Severity.DANGER
+    )
+    assert(relevantErrors.isEmpty)
   }
   test("random shapes from alloy.test namespace exist") {
     val unwrapped = model.unwrap()

@@ -155,7 +155,10 @@ object `protocol-tests` extends BaseJavaModule {
     Deps.smithy.awsTests
   )
 
-  object sanity extends BaseScalaNoPublishModule with Tests with TestModule.Munit {
+  object sanity
+      extends BaseScalaNoPublishModule
+      with Tests
+      with TestModule.Munit {
     def ivyDeps = Agg(Deps.munit.munit)
   }
 }
