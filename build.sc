@@ -3,7 +3,7 @@ import de.tobiasroeser.mill.vcs.version.VcsVersion
 import $ivy.`io.github.davidgregory084::mill-tpolecat::0.3.1`
 import $ivy.`com.lewisjkl::header-mill-plugin::0.0.2`
 import header._
-import $ivy.`io.chris-kipp::mill-ci-release::0.1.4`
+import $ivy.`io.chris-kipp::mill-ci-release::0.1.5`
 import io.kipp.mill.ci.release.CiReleaseModule
 import io.kipp.mill.ci.release.SonatypeHost
 import io.github.davidgregory084.TpolecatModule
@@ -155,7 +155,10 @@ object `protocol-tests` extends BaseJavaModule {
     Deps.smithy.awsTests
   )
 
-  object sanity extends BaseScalaNoPublishModule with Tests with TestModule.Munit {
+  object sanity
+      extends BaseScalaNoPublishModule
+      with Tests
+      with TestModule.Munit {
     def ivyDeps = Agg(Deps.munit.munit)
   }
 }
