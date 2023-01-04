@@ -27,6 +27,8 @@ A collection of commonly used Smithy shapes.
     - [alloy.proto#protoEnabled](#alloyprotoprotoenabled)
     - [alloy.proto#protoReservedFields](#alloyprotoprotoreservedfields)
   - [alloy#dateFormat](#alloydateformat)
+  - [alloy#nullable](#alloynullable)
+  - [alloy#defaultValue](#alloydefaultvalue)
   - [alloy.openapi](#alloyopenapi)
     - [alloy.openapi#openapiExtensions](#alloyopenapiopenapiextensions)
 - [Working on Alloy](#working-on-alloy)
@@ -376,6 +378,33 @@ This trait is used to express that a `String` in your model is formatted as a da
 structure Test {
   @dateFormat
   myDate: String
+}
+```
+
+### alloy#nullable
+
+Smithy does not make a distinction between a missing value and `null` but some Interface Definition Languages (IDL) can. This trait can be used to express this distinction.
+
+```smithy
+structure Foo {
+ @required
+ @nullable
+ bar: String
+}
+```
+
+### alloy#defaultValue
+
+Smithy 2.0 introduces the [`@default` trait](https://smithy.io/2.0/spec/type-refinement-traits.html#default-trait) but this trait is restrictive and can't be used in some use case. For example, you can use `@defaultValue` to set a default of `"N/A"` on a `String` that's constrained with the `length` trait to a minimum of 5 characters. Smithy's `@default` trait won't allow that.
+
+```smithy
+@length(min: 5)
+string MyString
+
+structure Foo {
+ @required
+ @nullable
+ bar: String
 }
 ```
 
