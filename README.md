@@ -383,7 +383,7 @@ structure Test {
 
 ### alloy#nullable
 
-Smithy does not make a difference between a missing value and a null but some Interface Definition Language (IDL) can. This trait can be used to express this distinction.
+Smithy does not make a distinction between a missing value and `null` but some Interface Definition Languages (IDL) can. This trait can be used to express this distinction.
 
 ```smithy
 structure Foo {
