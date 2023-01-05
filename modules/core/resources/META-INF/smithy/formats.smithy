@@ -13,6 +13,6 @@ namespace alloy
 ///
 /// See: https://www.rfc-editor.org/rfc/rfc3339#section-5.6
 /// e.g.: "2022-03-30"
-/// If a time compenent is required, you can use smithy.api#Timestamp
+/// If a time component is required, you can use smithy.api#Timestamp
 @trait(selector: ":test(string, member > string)")
 structure dateFormat { }
