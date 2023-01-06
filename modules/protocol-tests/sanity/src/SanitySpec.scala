@@ -13,14 +13,19 @@
  * limitations under the License.
  */
 
-import software.amazon.smithy.model.Model
-import software.amazon.smithy.model.shapes.ShapeId
-import software.amazon.smithy.model.validation.ValidatedResult
 import java.nio.file.Files
 import java.nio.file.Paths
+
+import munit.Location
+import software.amazon.smithy.model.Model
+import software.amazon.smithy.model.shapes.ShapeId
+import software.amazon.smithy.model.traits.Trait
+import software.amazon.smithy.model.validation.Severity
+import software.amazon.smithy.model.validation.ValidatedResult
+
+import scala.io.Source
 import scala.jdk.CollectionConverters._
 import scala.jdk.StreamConverters._
-import software.amazon.smithy.model.validation.Severity
 
 final class SanitySpec extends munit.FunSuite {
 
@@ -54,6 +59,7 @@ final class SanitySpec extends munit.FunSuite {
     )
     assert(relevantErrors.isEmpty)
   }
+
   test("random shapes from alloy.test namespace exist") {
     val unwrapped = model.unwrap()
     assert(unwrapped.getShape(ShapeId.from("alloy.test#Health")).isPresent)
@@ -69,7 +75,37 @@ final class SanitySpec extends munit.FunSuite {
         })
         .orElseGet(() => false)
     )
-
   }
 
+  test("traits provider are defined and work") {
+    val unwrapped = model.unwrap()
+    def traitLookup[T <: Trait](c: Class[T])(implicit loc: Location): Unit = {
+      val shapeSet = unwrapped.getShapesWithTrait(c)
+      assert(
+        !shapeSet.isEmpty(),
+        s"Found ${shapeSet.size()} shapes with ${c.getSimpleName()} trait."
+      )
+    }
+
+    val lines = scala.util
+      .Using(
+        Source.fromResource(
+          "META-INF/services/software.amazon.smithy.model.traits.TraitService"
+        )
+      ) {
+        _.getLines().toList
+      }
+      .fold(
+        ex => fail("Failed to load TraitService resource", ex),
+        identity
+      )
+    val classesFQN = lines.map(_.split("\\$").head)
+    val classes =
+      classesFQN.map(name => this.getClass().getClassLoader().loadClass(name))
+    assert(
+      classes.size > 10,
+      s"Loading Trait classes probably failed, only found ${classes.size} classes."
+    )
+    classes.map(c => traitLookup(c.asInstanceOf[Class[Trait]]))
+  }
 }
