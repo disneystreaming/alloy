@@ -1,3 +1,8 @@
+alloy.common.CountryCodeFormatTrait$Provider
+alloy.common.EmailFormatTrait$Provider
+alloy.common.HexColorCodeFormatTrait$Provider
+alloy.common.LanguageCodeFormatTrait$Provider
+alloy.common.LanguageTagFormatTrait$Provider
 alloy.DateFormatTrait$Provider
 alloy.DefaultValueTrait$Provider
 alloy.DiscriminatedUnionTrait$Provider
