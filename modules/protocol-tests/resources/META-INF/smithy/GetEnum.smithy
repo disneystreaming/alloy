@@ -12,7 +12,7 @@ apply GetEnum @httpRequestTests([
     {
         id: "GetEnumInput"
         protocol: simpleRestJson
-        uri: "/get-enum/v1"
+        uri : "/get-enum/v1"
         method: "GET"
         params: {
             aa: "v1"
@@ -25,11 +25,11 @@ apply GetEnum @httpResponseTests([
         protocol: simpleRestJson
         code: 200
         body: """
-        {"result":"v1"}
-        """
+        {"result":"v1"}"""
         params: {
             result: "v1"
         }
     }
 ])
+
 
