@@ -25,9 +25,9 @@ apply GetMenu @httpResponseTests([
         id: "GetMenuResponse"
         protocol: simpleRestJson
         code: 200
+        bodyMediaType: "application/json"
         body: """
-        {"a0b0f3a9-81d3-4bf3-8897-a76423116403" :{"food":{"pizza": {"name":"margharita","base":"T","toppings":["Mushroom","Tomato"]}},
-        "price":9.0}}
+        {"a0b0f3a9-81d3-4bf3-8897-a76423116403" :{"food":{"pizza": {"name":"margharita","base":"T","toppings":["MUSHROOM", "TOMATO"]}},"price":9.0}}
         """
         params: {
             menu: {
