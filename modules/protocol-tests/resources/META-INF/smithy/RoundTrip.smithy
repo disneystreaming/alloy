@@ -7,20 +7,20 @@ use alloy.test#RoundTrip
 use smithy.test#httpRequestTests
 use smithy.test#httpResponseTests
 
-
 apply RoundTrip @httpRequestTests([
     {
-        id: "RoundTripRequest"
+        id:"RoundTripRequest"
         protocol: simpleRestJson
         uri: "/roundTrip/thelabel"
         method: "POST"
         headers: {
             "HEADER": "the header"
         },
-        queryParams: [
+        queryParams:[
             "query=the query"
         ]
-        body: "the body"
+        body : """
+        {"body":"the body"}"""
         params: {
             label: "thelabel",
             header: "the header",
@@ -35,7 +35,8 @@ apply RoundTrip @httpResponseTests([
         id: "RoundTripDataResponse"
         protocol: simpleRestJson
         code: 200
-        body: "the body"
+        body : """
+        {"label":"thelabel","query":"the query","body":"the body"}"""
         headers: {
             "HEADER": "the header"
         },

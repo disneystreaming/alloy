@@ -14,7 +14,7 @@ apply HeaderEndpoint @httpRequestTests([
         documentation: "tests variety of casing scenarios for writing http headers",
         protocol: simpleRestJson,
         method: "POST",
-        uri: "/headers/"
+        uri: "/headers"
         headers: {
             "X-UPPERCASE-HEADER": "UPPERCASE_VALUE",
             "X-Capitalized-Header": "Capitalized_value",
