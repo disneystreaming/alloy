@@ -17,7 +17,6 @@ namespace alloy
     smithy.api#httpPrefixHeaders,
     smithy.api#httpQuery,
     smithy.api#httpQueryParams,
-    smithy.api#internal,
     smithy.api#jsonName,
     smithy.api#length,
     smithy.api#pattern,
