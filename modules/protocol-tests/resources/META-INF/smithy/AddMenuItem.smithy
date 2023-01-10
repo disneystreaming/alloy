@@ -19,9 +19,7 @@ apply AddMenuItem @httpRequestTests([
             "Content-Type": "application/json",
         },
         body: """
-                {"food":{"pizza": {"name":"margharita","base":"T","toppings":["Mushroom","Tomato"]}},
-                "price":9.0}
-            """
+                {"food":{"pizza":{"name":"margharita","base":"T","toppings":["MUSHROOM","TOMATO"]}},"price":9.0}"""
         params: {
             menuItem: {
                 food: {
@@ -51,8 +49,7 @@ apply AddMenuItem @httpResponseTests([
         },
         bodyMediaType: "application/json",
         body: """
-            {"itemId":"1"}
-            """
+           "1" """
         params: {
             itemId: "1",
             added: 1576540098
@@ -62,21 +59,21 @@ apply AddMenuItem @httpResponseTests([
 
 apply PriceError @httpResponseTests([
     {
-        id: "PriceError",
+        id: "PriceErrorTest",
         protocol: simpleRestJson,
-        documentation: "add menu item response tests",
+        documentation: "the payload produced on price error",
         code: 400,
         headers: {
             "Content-Type": "application/json",
-            "X-ADDED-AT": "1576540098"
+            "X-CODE": "400"
         },
         bodyMediaType: "application/json",
         body: """
-            {"message":"Price must be greater than 0"}
-            """
+            {"message":"Price must be greater than 0"}"""
         params: {
             message: "Price must be greater than 0"
             code: 400
+
         }
     }
 ])

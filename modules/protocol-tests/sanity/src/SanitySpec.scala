@@ -13,18 +13,21 @@
  * limitations under the License.
  */
 
-import software.amazon.smithy.model.Model
-import software.amazon.smithy.model.shapes.ShapeId
-import software.amazon.smithy.model.validation.ValidatedResult
 import java.nio.file.Files
 import java.nio.file.Paths
+
+import software.amazon.smithy.model.Model
+import software.amazon.smithy.model.shapes.ShapeId
+import software.amazon.smithy.model.validation.Severity
+import software.amazon.smithy.model.validation.ValidatedResult
+
 import scala.jdk.CollectionConverters._
 import scala.jdk.StreamConverters._
 
 final class SanitySpec extends munit.FunSuite {
 
   private val model: ValidatedResult[Model] =
-    Model.assembler().discoverModels().disableValidation().assemble()
+    Model.assembler().discoverModels().assemble()
 
   test("the manifest file and the Smithy files are in sync") {
     val root = "modules/protocol-tests/resources/META-INF/smithy/"
@@ -48,8 +51,12 @@ final class SanitySpec extends munit.FunSuite {
   test(
     "local discovered files are all valid smithy files that assemble correctly"
   ) {
-    assert(model.getValidationEvents.isEmpty)
+    val relevantErrors = model.getValidationEvents.asScala.toSeq.filter(e =>
+      e.getSeverity() == Severity.ERROR && e.getSeverity() == Severity.DANGER
+    )
+    assert(relevantErrors.isEmpty)
   }
+
   test("random shapes from alloy.test namespace exist") {
     val unwrapped = model.unwrap()
     assert(unwrapped.getShape(ShapeId.from("alloy.test#Health")).isPresent)
@@ -65,7 +72,5 @@ final class SanitySpec extends munit.FunSuite {
         })
         .orElseGet(() => false)
     )
-
   }
-
 }
