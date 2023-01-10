@@ -31,6 +31,7 @@ A collection of commonly used Smithy shapes.
   - [alloy#defaultValue](#alloydefaultvalue)
   - [alloy.openapi](#alloyopenapi)
     - [alloy.openapi#openapiExtensions](#alloyopenapiopenapiextensions)
+- [Protocol Compliance Tests](#protocol-compliance-tests)
 - [Working on Alloy](#working-on-alloy)
   - [Publish Local](#publish-local)
   - [Run Tests](#run-tests)
@@ -423,6 +424,21 @@ OpenAPI has support for [extensions](https://swagger.io/docs/specification/opena
 list StringList {
   member: String
 }
+```
+## Protocol Compliance Module
+ - Alloy contains a suite of protocol tests utilizing the [AWS HTTP Protocol Compliance Test Module]("https://smithy.io/2.0/additional-specs/http-protocol-compliance-tests.html)
+ - These can be used to test an implementation of the simpleRestJson protocol to confirm compliance with the protocol .
+   For sbt:
+
+### Using the Protocol Compliance Tests
+```scala
+"com.disneystreaming.alloy" %% "alloy-protocol-tests" % "x.x.x"
+```
+
+For mill:
+
+```scala
+ivy"com.disneystreaming.alloy:alloy-protocol-tests:x.x.x"
 ```
 
 ## Working on Alloy
