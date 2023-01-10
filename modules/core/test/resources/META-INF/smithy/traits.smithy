@@ -21,6 +21,7 @@ use alloy#nullable
 use alloy#uncheckedExamples
 use alloy#untagged
 use alloy#uuidFormat
+use alloy#simpleRestJson
 
 @dateFormat
 string MyDate
@@ -70,9 +71,11 @@ service MyGrpcService {
 }
 
 @uncheckedExamples([{title: "dummy", input: { name: "john" }}])
+@http(method: "GET", uri: "/age")
 operation GetAge {
     input := {
         @required
+        @httpHeader("X-NAME")
         name: String
     }
     output := {
@@ -92,4 +95,10 @@ structure ProtoStruct {
 union UntaggedUnion {
     a: Integer,
     b: String
+}
+
+@simpleRestJson
+service RestJsonService {
+    version: "1"
+    operations: [GetAge]
 }
