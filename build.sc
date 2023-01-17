@@ -152,7 +152,8 @@ object `protocol-tests` extends BaseJavaModule {
   def moduleDeps = Seq(core)
 
   def ivyDeps = Agg(
-    Deps.smithy.awsTests
+    Deps.smithy.awsProtocolTestTraits,
+    Deps.smithy.awsTests,
   )
 
   object sanity
@@ -168,8 +169,9 @@ object Deps {
     val smithyVersion = "1.27.1"
     val model = ivy"software.amazon.smithy:smithy-model:$smithyVersion"
     val awsTraits = ivy"software.amazon.smithy:smithy-aws-traits:$smithyVersion"
-    val awsTests =
-      ivy"software.amazon.smithy:smithy-aws-protocol-tests:$smithyVersion"
+    val awsProtocolTestTraits =
+      ivy"software.amazon.smithy:smithy-protocol-test-traits:$smithyVersion"
+    val awsTests = ivy"software.amazon.smithy:smithy-aws-protocol-tests:$smithyVersion"
     val openapi = ivy"software.amazon.smithy:smithy-openapi:$smithyVersion"
   }
 
