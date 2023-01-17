@@ -45,3 +45,22 @@ apply GetMenu @httpResponseTests([
         }
     }
 ])
+
+apply NotFoundError @httpResponseTests([
+    {
+        id: "NotFoundError"
+        protocol: simpleRestJson
+        code: 404
+        headers: {
+            "Content-Type": "application/json",
+            "X-Error-Type": "NotFoundError"
+        },
+        bodyMediaType: "application/json"
+        body: """
+        {"name":"unknown"}
+        """ ,
+        params: {
+            name: "unknown"
+        }
+    }
+])
