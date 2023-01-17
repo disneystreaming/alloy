@@ -432,7 +432,7 @@ list StringList {
 
 ### Using the Protocol Compliance Tests
 ```scala
-"com.disneystreaming.alloy" %% "alloy-protocol-tests" % "x.x.x"
+"com.disneystreaming.alloy" % "alloy-protocol-tests" % "x.x.x"
 ```
 
 For mill:
