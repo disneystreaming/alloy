@@ -74,3 +74,22 @@ structure Range {
 /// GRPC service.
 @trait(selector: ":test(structure, service)")
 structure protoEnabled {}
+
+
+/// This trait can be used to customize the rendering of an
+/// Union shape during the conversion to Protobuf models.
+/// Union in Protobuf are typically encoded using `oneOf`.
+///
+/// `oneOf` can only be used within `message` and each of their
+/// member has an index. This makes them tricky to render.
+/// One possible solution is to create a synthetic `message` to
+/// host the `oneOf`, and then use that `message` FQN at use site
+/// when refering to the Union.
+/// There is an alternate encoding where you render the `oneOf`
+/// inside the `message` where it's used. You can only use this encoding
+/// if the Union is used only inside of one `structure`.
+///
+/// You can use this trait, along with the validator provided, to
+/// implement this encoding.
+@trait(selector: "union")
+structure protoInlinedOneOf {}
