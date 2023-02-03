@@ -12,6 +12,7 @@ use alloy.openapi#openapiExtensions
 use alloy.proto#grpc
 use alloy.proto#protoEnabled
 use alloy.proto#protoIndex
+use alloy.proto#protoInlinedOneOf
 use alloy.proto#protoNumType
 use alloy.proto#protoReservedFields
 use alloy#dateFormat
@@ -101,4 +102,15 @@ union UntaggedUnion {
 service RestJsonService {
     version: "1"
     operations: [GetAge]
+}
+
+@protoEnabled
+structure UnionHost {
+    value: OtherUnion
+}
+
+@protoInlinedOneOf
+union OtherUnion {
+    a: String,
+    b: Integer
 }

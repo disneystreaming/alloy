@@ -23,6 +23,7 @@ A collection of commonly used Smithy shapes.
     - [Full List of Supported Traits](#full-list-of-supported-traits)
   - [alloy.proto#grpc](#alloyprotogrpc)
     - [alloy.proto#protoIndex](#alloyprotoprotoindex)
+    - [alloy.proto#protoInlinedOneOf](#alloyprotoprotoinlinedoneof)
     - [alloy.proto#protoNumType](#alloyprotoprotonumtype)
     - [alloy.proto#protoEnabled](#alloyprotoprotoenabled)
     - [alloy.proto#protoReservedFields](#alloyprotoprotoreservedfields)
@@ -349,6 +350,51 @@ message Test {
 ```
 
 When one field is annotated with a `@protoIndex`, all fields have to be annotated with it. This includes the fields of any structure used within the structure.
+
+#### alloy.proto#protoInlinedOneOf
+
+This annotation can be used to customize the rendering on Unions in protobuf. When you add this annotation to a Union, you must make sure that this Union is used exactly once as part of a structure. A validator bundled in this library will ensure this is the case.
+
+For example, this is valid:
+
+```smithy
+structure Test {
+  myUnion: MyUnion
+}
+
+@protoInlinedOneOf
+union MyUnion {
+  a: String,
+  b: Integer
+}
+```
+
+But this is not because the `MyUnion` is used in multiple shapes.
+
+```smithy
+structure Test {
+  myUnion: MyUnion
+}
+structure OtherStruct {
+  aUnion: MyUnion
+}
+
+@protoInlinedOneOf
+union MyUnion {
+  a: String,
+  b: Integer
+}
+```
+
+This is also invalid because `MyUnion` is never used.
+
+```smithy
+@protoInlinedOneOf
+union MyUnion {
+  a: String,
+  b: Integer
+}
+```
 
 #### alloy.proto#protoNumType
 
