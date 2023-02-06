@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 
 import alloy.validation.OptionHelper;
 import alloy.proto.ProtoIndexTrait;
+import alloy.proto.ProtoInlinedOneOfTrait;
 import software.amazon.smithy.model.Model;
 import software.amazon.smithy.model.shapes.*;
 import software.amazon.smithy.model.validation.AbstractValidator;
@@ -39,9 +40,36 @@ final public class ProtoIndexTraitValidator extends AbstractValidator {
 	@Override
 	public List<ValidationEvent> validate(Model model) {
 		final Set<ShapeId> uniqueShapes = model.getMemberShapesWithTrait(ProtoIndexTrait.class).stream()
-				.map(MemberShape::getContainer).collect(Collectors.toSet());
+				.flatMap(ms -> findRelevantContainer(model, ms.getContainer())).collect(Collectors.toSet());
 		return uniqueShapes.stream().flatMap(shapeId -> OptionHelper.toStream(model.getShape(shapeId)))
 				.flatMap(c -> validateShape(model, c).stream()).collect(Collectors.toList());
+	}
+
+	/**
+	 * Before validating the Shape with the @id received, we check if it's a union.
+	 * If it's a union and it is annotated with @protoInlinedOneOf, we retrieve the
+	 * structures (their shape ids) that references this, and add those to be
+	 * validated instead.
+	 */
+	private Stream<ShapeId> findRelevantContainer(Model model, ShapeId id) {
+		return OptionHelper.toStream(model.getShape(id)).flatMap(s -> {
+			return asProtoInlinedOneOf(s).map(u -> shapeUsingUnionMembers(model, u).map(Shape::getId))
+					.orElse(Stream.of(id));
+		});
+	}
+
+	private Optional<UnionShape> asProtoInlinedOneOf(Shape shape) {
+		return shape.asUnionShape().filter(u -> u.hasTrait(ProtoInlinedOneOfTrait.class));
+	}
+
+	private Stream<StructureShape> shapeUsingUnionMembers(Model model, UnionShape union) {
+		return model.getMemberShapes().stream().flatMap(m -> {
+			if (m.getTarget() == union.getId()) {
+				return OptionHelper.toStream(model.getShape(m.getContainer()).flatMap(Shape::asStructureShape));
+			} else {
+				return Stream.empty();
+			}
+		});
 	}
 
 	private List<ValidationEvent> validateShape(Model model, Shape shape) {
@@ -83,8 +111,8 @@ final public class ProtoIndexTraitValidator extends AbstractValidator {
 		return mapEntry(subShape.getKey(), subShape.getValue());
 	}
 
-	private Optional<UnionShape> memberIsUnion(Model model, MemberShape shape) {
-		return model.getShape(shape.getTarget()).flatMap(Shape::asUnionShape);
+	private Optional<UnionShape> memberAsProtoInlinedOneOf(Model model, MemberShape shape) {
+		return model.getShape(shape.getTarget()).flatMap(this::asProtoInlinedOneOf);
 	}
 
 	private Map<String, Shape> allMembers(Model model, Shape shape) {
@@ -97,15 +125,15 @@ final public class ProtoIndexTraitValidator extends AbstractValidator {
 		final Stream<Map.Entry<String, Shape>> structureMembers = OptionHelper.toStream(shape.asStructureShape())
 				.flatMap(u -> {
 					Stream<Map.Entry<String, Shape>> rootShapes = u.getAllMembers().entrySet().stream()
-							.filter(e -> !memberIsUnion(model, e.getValue()).isPresent()).map(this::asShape);
+							.filter(e -> !memberAsProtoInlinedOneOf(model, e.getValue()).isPresent())
+							.map(this::asShape);
 					Stream<Map.Entry<String, Shape>> subUnionMembers = u.getAllMembers().values().stream()
-							.flatMap(m -> OptionHelper.toStream(memberIsUnion(model, m)))
+							.flatMap(m -> OptionHelper.toStream(memberAsProtoInlinedOneOf(model, m)))
 							.flatMap(union -> allMembers(model, union).entrySet().stream().map(
 									e -> asShape(mapEntry(union.getId().getName() + "#" + e.getKey(), e.getValue()))));
 					return Stream.concat(rootShapes, subUnionMembers);
 				});
-		return Stream.of(unionMembers, enumMembers, structureMembers)
-				.flatMap(s -> s)
+		return Stream.of(unionMembers, enumMembers, structureMembers).flatMap(s -> s)
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
