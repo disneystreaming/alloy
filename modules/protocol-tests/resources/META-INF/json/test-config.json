@@ -241,6 +241,6 @@
   {"id":"RestJsonHttpPrefixHeadersAreNotPresent","appliesTo": "server", "description": "request"},
   {"id":"RestJsonHttpChecksumRequired","appliesTo": "server", "description": "request"},
   {"id":"RestJsonSerializeRenamedStructureUnionValue","appliesTo": "server", "description": "request"},
-  {"id":"RestJsonStreamingTraitsWithNoBlobBody","appliesTo": "server", "description": "request"},
+  {"id":"RestJsonStreamingTraitsWithNoBlobBody","appliesTo": "server", "description": "response"},
   {"id":"RestJsonStreamingTraitsWithNoBlobBody","appliesTo": "server", "description": "request"}
 ]
