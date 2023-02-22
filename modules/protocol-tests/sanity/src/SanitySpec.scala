@@ -35,7 +35,7 @@ final class SanitySpec extends munit.FunSuite {
       .readAllLines(Paths.get(s"${root}manifest"))
       .asScala
       .toList
-      .map(a => a.replace(".smithy", ""))
+      .map(a => a.replace(".smithy", "").replace(".json", ""))
       .toSet
     val path = Paths.get(root)
     val smithyFiles = Files
@@ -44,6 +44,8 @@ final class SanitySpec extends munit.FunSuite {
       .collect {
         case p if p.toString.endsWith(".smithy") =>
           p.toString.replace(root, "").replace(".smithy", "")
+        case p if p.toString.endsWith(".json") =>
+          p.toString.replace(root, "").replace(".json", "")
       }
     assertEquals(manifest, smithyFiles)
   }
