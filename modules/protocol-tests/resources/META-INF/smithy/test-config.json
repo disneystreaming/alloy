@@ -8,6 +8,16 @@
         "description": "response"
       },
       {
+        "id": "RestJsonAllQueryStringTypes",
+        "appliesTo": "server",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonQueryPrecedence",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
         "id": "RestJsonNoInputAndOutputWithJson",
         "appliesTo": "client",
         "description": "response"
