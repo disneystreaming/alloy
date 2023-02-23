@@ -12,6 +12,14 @@
         "appliesTo": "server",
         "description": "request"
       },
+      {"id": "RestJsonServersQueryParamsStringListMap",
+      "appliesTo": "server",
+      "description": "request"
+      },
+      {"id": "RestJsonServersPutAllQueryParamsInMap",
+      "appliesTo": "server",
+      "description": "request"
+      },
       {
         "id": "RestJsonQueryPrecedence",
         "appliesTo": "client",
