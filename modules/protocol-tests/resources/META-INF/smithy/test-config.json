@@ -8,6 +8,24 @@
         "description": "response"
       },
       {
+        "id": "RestJsonAllQueryStringTypes",
+        "appliesTo": "server",
+        "description": "request"
+      },
+      {"id": "RestJsonServersQueryParamsStringListMap",
+      "appliesTo": "server",
+      "description": "request"
+      },
+      {"id": "RestJsonServersPutAllQueryParamsInMap",
+      "appliesTo": "server",
+      "description": "request"
+      },
+      {
+        "id": "RestJsonQueryPrecedence",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
         "id": "RestJsonNoInputAndOutputWithJson",
         "appliesTo": "client",
         "description": "response"
