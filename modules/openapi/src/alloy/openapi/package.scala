@@ -38,6 +38,17 @@ package object openapi {
       allowedNS: Option[Set[String]],
       classLoader: ClassLoader
   ): List[OpenApiConversionResult] = {
+    val filterService: ServiceShape => Boolean = 
+      service => allowedNS.forall(_.contains(service.getId().getNamespace()))
+    
+    convert(model, filterService, classLoader)
+  }
+
+  def convert(
+    model: Model,
+    selectService: ServiceShape => Boolean,
+    classLoader: ClassLoader
+  ) = {
     val services = model
       .shapes()
       .iterator()
@@ -46,12 +57,7 @@ package object openapi {
         case s if s.isServiceShape() => s.asServiceShape().get()
       }
       .toList
-
-    val filteredServices: List[ServiceShape] = allowedNS match {
-      case Some(allowed) =>
-        services.filter(s => allowed(s.getId().getNamespace()))
-      case None => services
-    }
+      .filter(selectService)
 
     import scala.jdk.CollectionConverters._
 
@@ -74,7 +80,7 @@ package object openapi {
       .flatMap(_.getProtocols().asScala.map(p => TraitKey(p.getProtocolType())))
       .toSet
 
-    filteredServices.flatMap { service =>
+    services.flatMap { service =>
       val protocols: Set[ShapeId] =
         openapiAwareTraits.flatMap(_.getIdIfApplied(service))
       protocols.map { protocol =>
