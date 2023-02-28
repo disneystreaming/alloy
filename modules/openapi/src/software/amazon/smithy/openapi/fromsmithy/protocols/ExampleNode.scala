@@ -59,14 +59,19 @@ object ExampleNode {
       example: Example,
       memberName: String
   ): ExampleNode =
-    ExampleNode(example, example.getOutput.getMember(memberName).asScala)
+    ExampleNode(
+      example,
+      example.getOutput.asScala.flatMap(_.getMember(memberName).asScala)
+    )
 
   private[protocols] def forOutputMembers(
       example: Example,
       memberNames: List[String]
   ): ExampleNode = {
     val members: List[(String, Node)] = memberNames.flatMap(name =>
-      example.getOutput.getMember(name).asScala.map(name -> _)
+      example.getOutput.asScala.flatMap(
+        _.getMember(name).asScala.map(name -> _)
+      )
     )
     ExampleNode(example, members)
   }
