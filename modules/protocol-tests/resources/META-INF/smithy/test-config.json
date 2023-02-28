@@ -326,19 +326,9 @@
         "description": "request"
       },
       {
-        "id": "RestJsonJsonBlobs",
-        "appliesTo": "client",
-        "description": "request"
-      },
-      {
         "id": "DocumentInputWithString",
         "appliesTo": "client",
         "description": "request"
-      },
-      {
-        "id": "RestJsonJsonBlobs",
-        "appliesTo": "client",
-        "description": "response"
       },
       {
         "id": "DocumentInputWithNumber",
@@ -516,11 +506,6 @@
         "description": "request"
       },
       {
-        "id": "RestJsonHttpWithHeadersButNoPayload",
-        "appliesTo": "client",
-        "description": "request"
-      },
-      {
         "id": "RestJsonTestBodyStructure",
         "appliesTo": "client",
         "description": "request"
@@ -532,11 +517,6 @@
       },
       {
         "id": "RestJsonEndpointTraitWithHostLabel",
-        "appliesTo": "client",
-        "description": "request"
-      },
-      {
-        "id": "RestJsonHttpWithEmptyStructurePayload",
         "appliesTo": "client",
         "description": "request"
       },
@@ -736,11 +716,6 @@
         "description": "response"
       },
       {
-        "id": "RestJsonHttpPrefixHeadersAreNotPresent",
-        "appliesTo": "server",
-        "description": "request"
-      },
-      {
         "id": "RestJsonHttpPrefixHeadersArePresent",
         "appliesTo": "server",
         "description": "request"
@@ -901,11 +876,6 @@
         "description": "request"
       },
       {
-        "id": "RestJsonJsonBlobs",
-        "appliesTo": "server",
-        "description": "response"
-      },
-      {
         "id": "RestJsonJsonMaps",
         "appliesTo": "server",
         "description": "response"
@@ -962,11 +932,6 @@
       },
       {
         "id": "DocumentInputWithNumber",
-        "appliesTo": "server",
-        "description": "request"
-      },
-      {
-        "id": "RestJsonJsonBlobs",
         "appliesTo": "server",
         "description": "request"
       },
@@ -1131,17 +1096,7 @@
         "description": "request"
       },
       {
-        "id": "RestJsonHttpWithHeadersButNoPayload",
-        "appliesTo": "server",
-        "description": "request"
-      },
-      {
         "id": "RestJsonTestPayloadStructure",
-        "appliesTo": "server",
-        "description": "request"
-      },
-      {
-        "id": "RestJsonHttpWithEmptyStructurePayload",
         "appliesTo": "server",
         "description": "request"
       },
@@ -1216,11 +1171,6 @@
         "description": "request"
       },
       {
-        "id": "RestJsonHttpPrefixHeadersAreNotPresent",
-        "appliesTo": "server",
-        "description": "request"
-      },
-      {
         "id": "RestJsonHttpChecksumRequired",
         "appliesTo": "server",
         "description": "request"
@@ -1236,10 +1186,96 @@
         "description": "response"
       },
       {
-        "id": "RestJsonStreamingTraitsWithNoBlobBody",
+        "id": "RestJsonSerializeBlobUnionValue",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "JsonUnions",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "JsonUnions",
+        "appliesTo": "client",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonGreetingWithErrors",
+        "appliesTo": "server",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonSerializeTimestampUnionValue",
         "appliesTo": "server",
         "description": "request"
+      },
+      {
+        "id": "RestJsonDeserializeBlobUnionValue",
+        "appliesTo": "server",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonDeserializeTimestampUnionValue",
+        "appliesTo": "server",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonJsonTimestamps",
+        "appliesTo": "server",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonJsonTimestamps",
+        "appliesTo": "server",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonDeserializeTimestampUnionValue",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonDeserializeTimestampUnionValue",
+        "appliesTo": "client",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonJsonTimestamps",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonJsonTimestamps",
+        "appliesTo": "client",
+        "description": "response"
+      },
+      {
+        "id": "StringPayloadRequest",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "EnumPayloadRequest",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonSerializeTimestampUnionValue",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonDateTimeWithFractionalSeconds",
+        "appliesTo": "client",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonHttpDateWithFractionalSeconds",
+        "appliesTo": "client",
+        "description": "response"
       }
     ]
   }
 }
+
