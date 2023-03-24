@@ -1,4 +1,3 @@
-
 $version: "2"
 
 namespace alloy.test
@@ -23,6 +22,7 @@ use alloy#uncheckedExamples
 use alloy#untagged
 use alloy#uuidFormat
 use alloy#simpleRestJson
+use alloy#dataExamples
 
 @dateFormat
 string MyDate
@@ -114,3 +114,6 @@ union OtherUnion {
     a: String,
     b: Integer
 }
+
+@dataExamples(["one", "two"])
+string TestString

@@ -1,5 +1,6 @@
-documentation.smithy
 common/common.smithy
+documentation.smithy
+examples.smithy
 formats.smithy
 openapi/openapi.smithy
 presence.smithy
