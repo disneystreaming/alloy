@@ -115,5 +115,17 @@ union OtherUnion {
     b: Integer
 }
 
-@dataExamples(["one", "two"])
-string TestString
+@dataExamples([
+    {
+        one: "numberOne",
+        two: 2
+    },
+    {
+        one: "numberOneAgain",
+        two: 22
+    }
+])
+structure TestExamples {
+    one: String
+    two: Integer
+}
