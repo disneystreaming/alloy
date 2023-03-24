@@ -30,6 +30,7 @@ A collection of commonly used Smithy shapes.
   - [alloy#dateFormat](#alloydateformat)
   - [alloy#nullable](#alloynullable)
   - [alloy#defaultValue](#alloydefaultvalue)
+  - [alloy#dataExamples](#alloydataexamples)
   - [alloy.openapi](#alloyopenapi)
     - [alloy.openapi#openapiExtensions](#alloyopenapiopenapiextensions)
 - [Protocol Compliance Module](#protocol-compliance-module)
@@ -453,6 +454,27 @@ structure Foo {
  @required
  @nullable
  bar: String
+}
+```
+
+### alloy#dataExamples
+
+This trait allows you to provide concrete examples of what instances of a given shape will look like. The examples provided must match the structure of the shape they are provided for. A validator will check that such is the case.
+
+```smithy
+@dataExamples([
+  {
+    name: "Emily",
+    age: 64
+  },
+  {
+    name: "Allison",
+    age: 22
+  }
+])
+structure User {
+    name: String
+    age: Integer
 }
 ```
 
