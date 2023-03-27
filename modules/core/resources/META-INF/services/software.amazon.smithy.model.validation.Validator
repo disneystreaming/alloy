@@ -2,6 +2,7 @@ alloy.proto.validation.GrpcTraitValidator
 alloy.proto.validation.ProtoIndexTraitValidator
 alloy.proto.validation.ProtoInlinedOneOfValidator
 alloy.proto.validation.ProtoReservedFieldsTraitValidator
+alloy.validation.DataExamplesTraitValidator
 alloy.validation.DefaultValueTraitValidator
 alloy.validation.DiscriminatedUnionValidator
 alloy.validation.SimpleRestJsonHttpHeaderValidator
