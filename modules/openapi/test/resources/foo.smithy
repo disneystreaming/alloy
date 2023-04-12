@@ -3,6 +3,7 @@ namespace foo
 use alloy#simpleRestJson
 use alloy#discriminated
 use alloy#untagged
+use alloy#dataExamples
 
 @simpleRestJson
 service HelloWorldService {
@@ -77,6 +78,11 @@ union DoubleOrFloat {
   double: Double
 }
 
+@dataExamples([
+  {
+    name: "Meow"
+  }
+])
 structure Cat {
   name: String
 }

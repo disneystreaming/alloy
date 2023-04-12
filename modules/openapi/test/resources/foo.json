@@ -137,6 +137,9 @@
           "name": {
             "type": "string"
           }
+        },
+        "example": {
+          "name": "Meow"
         }
       },
       "CatOrDog": {
