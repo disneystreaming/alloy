@@ -22,6 +22,8 @@ import _root_.software.amazon.smithy.model.shapes.Shape
 
 import scala.jdk.CollectionConverters._
 import alloy.DataExamplesTrait
+import software.amazon.smithy.model.node.ObjectNode
+import software.amazon.smithy.model.node.Node
 
 class DataExamplesMapper() extends JsonSchemaMapper {
 
@@ -36,9 +38,19 @@ class DataExamplesMapper() extends JsonSchemaMapper {
       .getExamples()
       .asScala
       .headOption match {
-      case Some(example) =>
-        schemaBuilder.putExtension("example", example)
-      case None => schemaBuilder
+      case Some(example)
+          if example.getExampleType != DataExamplesTrait.DataExampleType.STRING =>
+        schemaBuilder.putExtension("example", example.getContent())
+      case Some(example)
+          if example.getExampleType == DataExamplesTrait.DataExampleType.STRING =>
+        val maybeStrNode = example.getContent().asStringNode()
+        val res = if (maybeStrNode.isPresent) {
+          Node.parse(maybeStrNode.get.getValue)
+        } else {
+          ObjectNode.builder().build()
+        }
+        schemaBuilder.putExtension("example", res)
+      case _ => schemaBuilder
     }
   } else schemaBuilder
 }

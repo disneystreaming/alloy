@@ -4,5 +4,11 @@ namespace alloy
 
 @trait(selector: ":not(:test(service, operation, resource))")
 list dataExamples {
-  member: Document
+  member: DataExample
+}
+
+union DataExample {
+  smithy: Document
+  json: Document
+  string: String
 }

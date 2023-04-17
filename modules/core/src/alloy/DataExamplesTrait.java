@@ -17,6 +17,7 @@ package alloy;
 
 import software.amazon.smithy.model.node.ArrayNode;
 import software.amazon.smithy.model.node.Node;
+import software.amazon.smithy.model.node.ObjectNode;
 import software.amazon.smithy.model.shapes.ShapeId;
 import software.amazon.smithy.model.traits.AbstractTrait;
 import software.amazon.smithy.model.traits.AbstractTraitBuilder;
@@ -26,24 +27,49 @@ import software.amazon.smithy.utils.ToSmithyBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public final class DataExamplesTrait extends AbstractTrait implements ToSmithyBuilder<DataExamplesTrait> {
 	public static final ShapeId ID = ShapeId.from("alloy#dataExamples");
 
-	private final List<Node> examples;
+	public enum DataExampleType {
+		STRING, JSON, SMITHY
+	}
+
+	public static final class DataExample {
+		private final DataExampleType exampleType;
+		private final Node content;
+
+		public DataExample(DataExampleType type, Node content) {
+			this.exampleType = type;
+			this.content = content;
+		}
+
+		public DataExampleType getExampleType() {
+			return exampleType;
+		}
+
+		public Node getContent() {
+			return content;
+		}
+	}
+
+	private final List<DataExample> examples;
 
 	private DataExamplesTrait(Builder builder) {
 		super(ID, builder.getSourceLocation());
 		this.examples = new ArrayList<>(builder.examples);
 	}
 
-	public List<Node> getExamples() {
+	public List<DataExample> getExamples() {
 		return examples;
 	}
 
 	@Override
 	protected Node createNode() {
-		return examples.stream().collect(ArrayNode.collect(getSourceLocation()));
+		return examples.stream()
+			.map(ex -> ObjectNode.builder().withMember(ex.exampleType.name().toLowerCase(), ex.content).build())
+			.collect(ArrayNode.collect(getSourceLocation()));
 	}
 
 	@Override
@@ -61,9 +87,9 @@ public final class DataExamplesTrait extends AbstractTrait implements ToSmithyBu
 	}
 
 	public static final class Builder extends AbstractTraitBuilder<DataExamplesTrait, Builder> {
-		private final List<Node> examples = new ArrayList<>();
+		private final List<DataExample> examples = new ArrayList<>();
 
-		public Builder addExample(Node example) {
+		public Builder addExample(DataExample example) {
 			examples.add(Objects.requireNonNull(example));
 			return this;
 		}
@@ -81,13 +107,27 @@ public final class DataExamplesTrait extends AbstractTrait implements ToSmithyBu
 
 	public static final class Provider implements TraitService {
 		@Override
-        public ShapeId getShapeId() {
+		public ShapeId getShapeId() {
 			return ID;
 		}
 
-	public DataExamplesTrait createTrait(ShapeId target, Node value) {
+		public DataExamplesTrait createTrait(ShapeId target, Node value) {
 			Builder builder = builder().sourceLocation(value);
-			value.expectArrayNode().forEach(builder::addExample);
+			value.expectArrayNode().forEach(node -> {
+				Optional<ObjectNode> maybeNode = node.asObjectNode();
+				if (maybeNode.isPresent()) {
+					DataExampleType type;
+					if (maybeNode.get().containsMember("smithy")) {
+						type = DataExampleType.SMITHY;
+					} else if (maybeNode.get().containsMember("json")) {
+						type = DataExampleType.JSON;
+					} else {
+						type = DataExampleType.STRING;
+					}
+					Node n = maybeNode.get().expectMember(type.name().toLowerCase());
+					builder.addExample(new DataExample(type, n));
+				}
+			});
 			DataExamplesTrait result = builder.build();
 			result.setNodeCache(value);
 			return result;

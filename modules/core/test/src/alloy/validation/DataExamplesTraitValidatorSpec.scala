@@ -25,6 +25,8 @@ import scala.jdk.CollectionConverters._
 import software.amazon.smithy.model.validation.Severity
 import software.amazon.smithy.model.node.StringNode
 import software.amazon.smithy.model.SourceLocation
+import software.amazon.smithy.model.node.NumberNode
+import software.amazon.smithy.model.shapes.IntegerShape
 
 final class DataExamplesTraitValidatorSpec extends munit.FunSuite {
 
@@ -33,7 +35,12 @@ final class DataExamplesTraitValidatorSpec extends munit.FunSuite {
   test("find when node does not match shape") {
     val example = DataExamplesTrait
       .builder()
-      .addExample(ObjectNode.builder().withMember("something", false).build())
+      .addExample(
+        new DataExamplesTrait.DataExample(
+          DataExamplesTrait.DataExampleType.SMITHY,
+          ObjectNode.builder().withMember("something", false).build()
+        )
+      )
       .build()
     val shape = StringShape
       .builder()
@@ -59,9 +66,56 @@ final class DataExamplesTraitValidatorSpec extends munit.FunSuite {
   test("no errors when node matches shape") {
     val example = DataExamplesTrait
       .builder()
-      .addExample(new StringNode("something", SourceLocation.NONE))
+      .addExample(
+        new DataExamplesTrait.DataExample(
+          DataExamplesTrait.DataExampleType.SMITHY,
+          new StringNode("something", SourceLocation.NONE)
+        )
+      )
       .build()
     val shape = StringShape
+      .builder()
+      .id(ShapeId.fromParts("test", "TestString"))
+      .addTrait(example)
+      .build()
+    val model = Model.builder().addShape(shape).build()
+    val result = validator.validate(model).asScala.toList
+    val expected = List.empty
+    assertEquals(result, expected)
+  }
+
+  test("no errors when JSON type") {
+    val example = DataExamplesTrait
+      .builder()
+      .addExample(
+        new DataExamplesTrait.DataExample(
+          DataExamplesTrait.DataExampleType.JSON,
+          new NumberNode(1, SourceLocation.NONE)
+        )
+      )
+      .build()
+    val shape = StringShape
+      .builder()
+      .id(ShapeId.fromParts("test", "TestString"))
+      .addTrait(example)
+      .build()
+    val model = Model.builder().addShape(shape).build()
+    val result = validator.validate(model).asScala.toList
+    val expected = List.empty
+    assertEquals(result, expected)
+  }
+
+  test("no errors when STRING type") {
+    val example = DataExamplesTrait
+      .builder()
+      .addExample(
+        new DataExamplesTrait.DataExample(
+          DataExamplesTrait.DataExampleType.STRING,
+          new StringNode("something", SourceLocation.NONE)
+        )
+      )
+      .build()
+    val shape = IntegerShape
       .builder()
       .id(ShapeId.fromParts("test", "TestString"))
       .addTrait(example)

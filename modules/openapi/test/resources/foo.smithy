@@ -78,20 +78,28 @@ union DoubleOrFloat {
   double: Double
 }
 
-@dataExamples([
-  {
+@dataExamples([{
+  smithy: {
     name: "Meow"
   }
-])
+}])
 structure Cat {
   name: String
 }
 
+@dataExamples([{
+  json: {
+    name: "Woof"
+  }
+}])
 structure Dog {
   name: String,
   breed: String
 }
 
+@dataExamples([{
+  string: "{\"values\": []}"
+}])
 structure ValuesResponse {
   values: Values
 }

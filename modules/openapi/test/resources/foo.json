@@ -200,6 +200,9 @@
           "breed": {
             "type": "string"
           }
+        },
+        "example": {
+          "name": "Woof"
         }
       },
       "DoubleOrFloat": {
@@ -263,6 +266,9 @@
               "$ref": "#/components/schemas/SomeValue"
             }
           }
+        },
+        "example": {
+          "values": []
         }
       },
       "GreetOutputPayload": {
