@@ -117,15 +117,37 @@ union OtherUnion {
 
 @dataExamples([
     {
-        one: "numberOne",
-        two: 2
+        smithy: {
+            one: "numberOne",
+            two: 2
+        }
     },
     {
-        one: "numberOneAgain",
-        two: 22
+        smithy: {
+            one: "numberOneAgain",
+            two: 22
+        }
     }
 ])
 structure TestExamples {
+    one: String
+    two: Integer
+}
+
+@dataExamples([{
+    json: {
+        test: "numberOne"
+    }
+}])
+structure TestJsonExamples {
+    one: String
+    two: Integer
+}
+
+@dataExamples([{
+    string: "test"
+}])
+structure TestStringExamples {
     one: String
     two: Integer
 }
