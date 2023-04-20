@@ -163,7 +163,7 @@ This protocol is aware of the following `smithy.api` traits provided out of the 
 * [operations and services](https://awslabs.github.io/smithy/1.0/spec/core/model.html#service)
 * [enumerations](https://awslabs.github.io/smithy/1.0/spec/core/constraint-traits.html#enum-trait)
 * [error trait](https://awslabs.github.io/smithy/1.0/spec/core/type-refinement-traits.html#error-trait)
-* [http traits](https://awslabs.github.io/smithy/1.0/spec/core/http-traits.html), including **http**, **httpError**, **httpLabel**, **httpHeader**, **httpPayload**, **httpQuery**, **httpPrefixHeaders**, **httpQueryParams**.
+* [http traits](https://awslabs.github.io/smithy/1.0/spec/core/http-traits.html), including **http**, **httpError**, **httpLabel**, **httpHeader**, **httpPayload**, **httpQuery**, **httpPrefixHeaders**, **httpQueryParams**, **httpResponseCode**.
 * [timestampFormat trait](https://awslabs.github.io/smithy/1.0/spec/core/protocol-traits.html?highlight=timestampformat#timestampformat-trait)
 
 Furthermore, it contains several traits for customizing your APIs.
@@ -292,6 +292,7 @@ are encoded as such
 - smithy.api#httpPrefixHeaders
 - smithy.api#httpQuery
 - smithy.api#httpQueryParams
+- smithy.api#httpResponseCode
 - smithy.api#jsonName
 - smithy.api#timestampFormat
 - alloy#uncheckedExamples
