@@ -1094,6 +1094,11 @@
       },
       {
         "id": "RestJsonHttpWithNoModeledBody",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonHttpWithNoModeledBody",
         "appliesTo": "server",
         "description": "request"
       },
@@ -1108,8 +1113,18 @@
         "description": "request"
       },
       {
+        "id": "RestJsonSupportsNaNFloatQueryValues",
+        "appliesTo": "server",
+        "description": "request"
+      },
+      {
         "id": "RestJsonHttpWithHeaderMemberNoModeledBody",
         "appliesTo": "server",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonHttpWithHeaderMemberNoModeledBody",
+        "appliesTo": "client",
         "description": "request"
       },
       {
@@ -1283,6 +1298,26 @@
         "description": "request"
       },
       {
+        "id": "RestJsonHostWithPath",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonDateTimeWithNegativeOffset",
+        "appliesTo": "client",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonDateTimeWithPositiveOffset",
+        "appliesTo": "client",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonSupportsNaNFloatHeaderInputs",
+        "appliesTo": "server",
+        "description": "request"
+      },
+      {
         "id": "RestJsonSupportsInfinityFloatHeaderInputs",
         "appliesTo": "client",
         "description": "request"
@@ -1305,6 +1340,11 @@
       {
         "id": "RestJsonSupportsNaNFloatLabels",
         "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonSupportsNaNFloatLabels",
+        "appliesTo": "server",
         "description": "request"
       },
       {
@@ -1344,6 +1384,11 @@
       {
         "id": "RestJsonSupportsNaNFloatHeaderOutputs",
         "appliesTo": "server",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonSupportsNaNFloatHeaderOutputs",
+        "appliesTo": "client",
         "description": "response"
       },
       {
