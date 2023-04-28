@@ -31,6 +31,7 @@ A collection of commonly used Smithy shapes.
   - [alloy#nullable](#alloynullable)
   - [alloy#defaultValue](#alloydefaultvalue)
   - [alloy#dataExamples](#alloydataexamples)
+  - [alloy#structurePattern](#alloystructurepattern)
   - [alloy.openapi](#alloyopenapi)
     - [alloy.openapi#openapiExtensions](#alloyopenapiopenapiextensions)
 - [Protocol Compliance Module](#protocol-compliance-module)
@@ -490,6 +491,28 @@ structure User {
     age: Integer
 }
 ```
+
+### alloy#structurePattern
+
+The `alloy#structurePattern` trait provides a way to specify that a given `String` will conform to a provided format and that it should be parsed into a `Structure` rather than a `String`. For example:
+
+```smithy
+@structurePattern(pattern: "{foo}_{bar}", target: FooBar)
+string FooBarString
+
+structure FooBar {
+  @required
+  foo: String
+  @required
+  bar: Integer
+}
+```
+
+Now wherever `FooBarString` is used, it will really be parsing the string into the structure `FooBar`. There are a few requirements for using the `structurePattern` trait that are checked by a validator:
+
+- The target structure must have all required members and all members must target simple shapes.
+- The provided pattern must have all parameters separated by at least one character. The reason for this is that if there is no separation (e.g. "{foo}{bar}") then a parser would not be able to tell when one starts and the other begins.
+- There must be a provided pattern parameter for each member of the structure.
 
 ### alloy.openapi
 
