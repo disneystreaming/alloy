@@ -233,4 +233,59 @@ final class StructurePatternTraitValidatorSpec extends munit.FunSuite {
     )
     assertEquals(result, expected)
   }
+
+  test("no separator between params") {
+    val targetId = ShapeId.fromParts("test", "MyStruct")
+    val patternTrait = StructurePatternTrait
+      .builder()
+      .setPattern("{one}{two}")
+      .setTarget(targetId)
+      .build()
+    val stringShape = StringShape
+      .builder()
+      .id(ShapeId.fromParts("test", "MyString"))
+      .addTrait(patternTrait)
+      .build()
+    val structShape = StructureShape
+      .builder()
+      .id(targetId)
+      .addMember(
+        MemberShape
+          .builder()
+          .id(targetId.withMember("one"))
+          .target(ShapeId.fromParts("smithy.api", "String"))
+          .addTrait(new RequiredTrait)
+          .build()
+      )
+      .addMember(
+        MemberShape
+          .builder()
+          .id(targetId.withMember("two"))
+          .target(ShapeId.fromParts("smithy.api", "Integer"))
+          .addTrait(new RequiredTrait)
+          .build()
+      )
+      .build()
+
+    val model =
+      Model.assembler.disableValidation
+        .addShapes(structShape, stringShape)
+        .assemble()
+        .unwrap()
+
+    val result = validator.validate(model).asScala.toList
+
+    val expected = List(
+      ValidationEvent
+        .builder()
+        .id("StructurePatternTrait")
+        .shape(stringShape)
+        .severity(Severity.ERROR)
+        .message(
+          "Params must be separated by at least one character"
+        )
+        .build()
+    )
+    assertEquals(result, expected)
+  }
 }

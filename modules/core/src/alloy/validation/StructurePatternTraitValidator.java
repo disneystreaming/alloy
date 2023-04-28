@@ -57,6 +57,10 @@ public final class StructurePatternTraitValidator extends AbstractValidator {
                     events.add(error(patternShape, String.format("Pattern params must not target optional structure members, but '%s' is optional", key)));
                 }
 			});
+
+            if (trt.getPattern().contains("}{")) {
+                events.add(error(patternShape, "Params must be separated by at least one character"));
+            }
 		});
 
 		return events;
