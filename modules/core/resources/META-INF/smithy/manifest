@@ -6,5 +6,6 @@ openapi/openapi.smithy
 presence.smithy
 proto/proto.smithy
 restjson.smithy
+string.smithy
 unions.smithy
 uuid.smithy

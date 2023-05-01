@@ -23,6 +23,7 @@ use alloy#untagged
 use alloy#uuidFormat
 use alloy#simpleRestJson
 use alloy#dataExamples
+use alloy#structurePattern
 
 @dateFormat
 string MyDate
@@ -150,4 +151,17 @@ structure TestJsonExamples {
 structure TestStringExamples {
     one: String
     two: Integer
+}
+
+@structurePattern(
+    pattern: "{test}__{test2}"
+    target: TestStructureTarget
+)
+string TestStructurePattern
+
+structure TestStructureTarget {
+    @required
+    test: String
+    @required
+    test2: String
 }
