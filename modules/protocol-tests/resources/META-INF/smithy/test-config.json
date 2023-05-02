@@ -12,13 +12,15 @@
         "appliesTo": "server",
         "description": "request"
       },
-      {"id": "RestJsonServersQueryParamsStringListMap",
-      "appliesTo": "server",
-      "description": "request"
+      {
+        "id": "RestJsonServersQueryParamsStringListMap",
+        "appliesTo": "server",
+        "description": "request"
       },
-      {"id": "RestJsonServersPutAllQueryParamsInMap",
-      "appliesTo": "server",
-      "description": "request"
+      {
+        "id": "RestJsonServersPutAllQueryParamsInMap",
+        "appliesTo": "server",
+        "description": "request"
       },
       {
         "id": "RestJsonQueryPrecedence",
@@ -1092,6 +1094,11 @@
       },
       {
         "id": "RestJsonHttpWithNoModeledBody",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonHttpWithNoModeledBody",
         "appliesTo": "server",
         "description": "request"
       },
@@ -1106,8 +1113,18 @@
         "description": "request"
       },
       {
+        "id": "RestJsonSupportsNaNFloatQueryValues",
+        "appliesTo": "server",
+        "description": "request"
+      },
+      {
         "id": "RestJsonHttpWithHeaderMemberNoModeledBody",
         "appliesTo": "server",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonHttpWithHeaderMemberNoModeledBody",
+        "appliesTo": "client",
         "description": "request"
       },
       {
@@ -1274,8 +1291,151 @@
         "id": "RestJsonHttpDateWithFractionalSeconds",
         "appliesTo": "client",
         "description": "response"
+      },
+      {
+        "id": "RestJsonSupportsNaNFloatHeaderInputs",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonHostWithPath",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonDateTimeWithNegativeOffset",
+        "appliesTo": "client",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonDateTimeWithPositiveOffset",
+        "appliesTo": "client",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonSupportsNaNFloatHeaderInputs",
+        "appliesTo": "server",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonSupportsInfinityFloatHeaderInputs",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonSupportsNegativeInfinityFloatHeaderInputs",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonSupportsInfinityFloatHeaderOutputs",
+        "appliesTo": "client",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonSupportsNegativeInfinityFloatHeaderOutputs",
+        "appliesTo": "client",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonSupportsNaNFloatLabels",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonSupportsNaNFloatLabels",
+        "appliesTo": "server",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonSupportsInfinityFloatLabels",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonSupportsNegativeInfinityFloatLabels",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonJsonBlobs",
+        "appliesTo": "client",
+        "description": "response"
+      },      {
+        "id": "RestJsonJsonBlobs",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonDeserializeBlobUnionValue",
+        "appliesTo": "client",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonSupportsInfinityFloatHeaderInputs",
+        "appliesTo": "server",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonSupportsNegativeInfinityFloatHeaderInputs",
+        "appliesTo": "server",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonSupportsNaNFloatHeaderOutputs",
+        "appliesTo": "server",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonSupportsNaNFloatHeaderOutputs",
+        "appliesTo": "client",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonSupportsInfinityFloatHeaderOutputs",
+        "appliesTo": "server",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonSupportsNegativeInfinityFloatHeaderOutputs",
+        "appliesTo": "server",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonSupportsInfinityFloatLabels",
+        "appliesTo": "server",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonSupportsNegativeInfinityFloatLabels",
+        "appliesTo": "server",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonSupportsInfinityFloatQueryValues",
+        "appliesTo": "server",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonSupportsNegativeInfinityFloatQueryValues",
+        "appliesTo": "server",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonJsonBlobs",
+        "appliesTo": "server",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonJsonBlobs",
+        "appliesTo": "server",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonSerializeBlobUnionValue",
+        "appliesTo": "server",
+        "description": "request"
       }
     ]
   }
 }
-
