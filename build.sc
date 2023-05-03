@@ -129,13 +129,20 @@ object core extends BaseJavaModule {
   }
 }
 
-val scalaVersionsMap = Map("2.13" -> "2.13.7", "2.12" -> "2.12.17")
+val scalaVersionsMap =
+  Map("2.13" -> "2.13.7", "2.12" -> "2.12.17", "3" -> "3.2.2")
 object openapi extends Cross[OpenapiModule](scalaVersionsMap.keys.toList: _*)
 class OpenapiModule(crossVersion: String) extends BaseCrossScalaModule {
 
   def artifactName = "alloy-openapi"
 
   def crossScalaVersion = scalaVersionsMap(crossVersion)
+  def scalacOptions = T {
+    val base = super.scalacOptions()
+    if (crossVersion == "3")
+      base.filterNot(Set("-Werror", "-Ykind-projector"))
+    else base
+  }
 
   def moduleDeps = Seq(core)
 
