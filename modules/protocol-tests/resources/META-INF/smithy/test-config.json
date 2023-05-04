@@ -1392,6 +1392,11 @@
         "description": "response"
       },
       {
+        "id": "RestJsonComplexErrorWithNoMessage",
+        "appliesTo": "client",
+        "description": "response"
+      },
+      {
         "id": "RestJsonSupportsInfinityFloatHeaderOutputs",
         "appliesTo": "server",
         "description": "response"
