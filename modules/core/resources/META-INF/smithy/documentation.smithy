@@ -2,8 +2,8 @@ $version: "2"
 
 namespace alloy
 
-@trait(selector: "operation")
 /// A version of @examples that is not tied to a validator
+@trait(selector: "operation")
 list uncheckedExamples {
     member: UncheckedExample
 }
