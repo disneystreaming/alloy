@@ -53,6 +53,11 @@
         "description": "request"
       },
       {
+        "id": "HttpPrefixHeadersResponse",
+        "appliesTo": "client",
+        "description": "response"
+      },
+      {
         "id": "RestJsonServersQueryParamsStringListMap",
         "appliesTo": "server",
         "description": "request"
