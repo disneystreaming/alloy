@@ -9,8 +9,53 @@
       },
       {
         "id": "RestJsonAllQueryStringTypes",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonAllQueryStringTypes",
         "appliesTo": "server",
         "description": "request"
+      },
+      {
+        "id": "RestJsonSupportsNaNFloatQueryValues",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonSupportsInfinityFloatQueryValues",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonSupportsNegativeInfinityFloatQueryValues",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonOmitsEmptyListQueryValues",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonOmitsEmptyListQueryValues",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonQueryIdempotencyTokenAutoFill",
+        "appliesTo": "server",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonQueryIdempotencyTokenAutoFill",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "HttpPrefixHeadersResponse",
+        "appliesTo": "client",
+        "description": "response"
       },
       {
         "id": "RestJsonServersQueryParamsStringListMap",
@@ -1361,7 +1406,8 @@
         "id": "RestJsonJsonBlobs",
         "appliesTo": "client",
         "description": "response"
-      },      {
+      },
+      {
         "id": "RestJsonJsonBlobs",
         "appliesTo": "client",
         "description": "request"
