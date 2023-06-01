@@ -1486,6 +1486,106 @@
         "id": "RestJsonSerializeBlobUnionValue",
         "appliesTo": "server",
         "description": "request"
+      },
+      {
+        "id": "RestJsonListsSerializeNull",
+        "appliesTo": "server",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonListsSerializeNull",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonListsSerializeNull",
+        "appliesTo": "server",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonListsSerializeNull",
+        "appliesTo": "client",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonSerializesNullMapValues",
+        "appliesTo": "server",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonSerializesNullMapValues",
+        "appliesTo": "server",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonSerializesNullMapValues",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonSerializesNullMapValues",
+        "appliesTo": "client",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonSerializesSparseSetMapAndRetainsNull",
+        "appliesTo": "server",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonSerializesSparseSetMapAndRetainsNull",
+        "appliesTo": "server",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonSerializesSparseSetMapAndRetainsNull",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonSerializesSparseSetMapAndRetainsNull",
+        "appliesTo": "client",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonDeserializesSparseSetMapAndRetainsNull",
+        "appliesTo": "server",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonDeserializesSparseSetMapAndRetainsNull",
+        "appliesTo": "server",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonDeserializesSparseSetMapAndRetainsNull",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonDeserializesSparseSetMapAndRetainsNull",
+        "appliesTo": "client",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonDeserializesNullMapValues",
+        "appliesTo": "server",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonDeserializesNullMapValues",
+        "appliesTo": "server",
+        "description": "response"
+      },
+      {
+        "id": "RestJsonDeserializesNullMapValues",
+        "appliesTo": "client",
+        "description": "request"
+      },
+      {
+        "id": "RestJsonDeserializesNullMapValues",
+        "appliesTo": "client",
+        "description": "response"
       }
     ]
   }
