@@ -455,20 +455,19 @@
         ],
         "disallowList": [
           {
-            "id": "RestJsonStreamingTraitsWithNoBlobBody",
-            "appliesTo": "client",
-            "description": "request"
+            "id": "RestJsonStreamingTraits**"
           },
           {
-            "id": "RestJsonStreamingTraitsRequireLengthWithNoBlobBody",
-            "appliesTo": "client",
-            "description": "request"
+            "id": "StringPayload**"
           },
           {
-            "id": "RestJsonHttpPayloadTraitsWithNoBlobBody"
+            "id": "EnumPayload**"
           },
           {
-            "id": "StringPayloadRequest"
+            "id": "RestJsonHttpWithEmptyBlobPayload"
+          },
+          {
+            "id": "RestJsonSupportsInfinity**"
           }
         ]
       }
