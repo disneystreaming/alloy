@@ -63,6 +63,11 @@
         "description": "request"
       },
       {
+        "id": "RestJsonIgnoreQueryParamsInResponseNoPayload",
+        "appliesTo": "client",
+        "description": "response"
+      },
+      {
         "id": "RestJsonServersPutAllQueryParamsInMap",
         "appliesTo": "server",
         "description": "request"
