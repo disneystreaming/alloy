@@ -11,12 +11,6 @@
             "id": "RestJsonAllQueryStringTypes"
           },
           {
-            "id": "RestJsonSupportsNaNFloatQueryValues"
-          },
-          {
-            "id": "RestJsonSupportsInfinityFloatQueryValues"
-          },
-          {
             "id": "RestJsonSupportsNegativeInfinityFloatQueryValues"
           },
           {
@@ -305,28 +299,6 @@
             "id": "RestJsonHttpRequestLabelEscaping"
           },
           {
-            "id": "RestJsonInputAndOutputWithStringHeaders",
-            "appliesTo": "client",
-            "testType": "response"
-          },
-          {
-            "id": "RestJsonInputAndOutputWithStringHeaders",
-            "appliesTo": "server",
-            "testType": "request"
-          },
-          {
-            "id": "RestJsonInputAndOutputWithIntEnumHeaders"
-          },
-          {
-            "id": "RestJsonInputAndOutputWithNumericHeaders"
-          },
-          {
-            "id": "RestJsonInputAndOutputWithEnumHeaders"
-          },
-          {
-            "id": "RestJsonInputAndOutputWithBooleanHeaders"
-          },
-          {
             "id": "RestJsonInputWithHeadersAndAllParams"
           },
           {
@@ -396,9 +368,6 @@
             "id": "RestJsonHttpDateWithFractionalSeconds"
           },
           {
-            "id": "RestJsonSupportsNaNFloatHeaderInputs"
-          },
-          {
             "id": "RestJsonHostWithPath"
           },
           {
@@ -408,31 +377,16 @@
             "id": "RestJsonDateTimeWithPositiveOffset"
           },
           {
-            "id": "RestJsonSupportsInfinityFloatHeaderInputs"
-          },
-          {
             "id": "RestJsonSupportsNegativeInfinityFloatHeaderInputs"
           },
           {
-            "id": "RestJsonSupportsInfinityFloatHeaderOutputs"
-          },
-          {
             "id": "RestJsonSupportsNegativeInfinityFloatHeaderOutputs"
-          },
-          {
-            "id": "RestJsonSupportsNaNFloatLabels"
-          },
-          {
-            "id": "RestJsonSupportsInfinityFloatLabels"
           },
           {
             "id": "RestJsonSupportsNegativeInfinityFloatLabels"
           },
           {
             "id": "RestJsonJsonBlobs"
-          },
-          {
-            "id": "RestJsonSupportsNaNFloatHeaderOutputs"
           },
           {
             "id": "RestJsonComplexErrorWithNoMessage"
@@ -451,23 +405,84 @@
           },
           {
             "id": "RestJsonDeserializesNullMapValues"
+          },
+          {
+            "id": "RestJsonInputAndOutputWith*Headers"
+          },
+          {
+            "id": "RestJsonHttpResponseCodeDefaultsToModeledCode"
           }
         ],
         "disallowList": [
           {
-            "id": "RestJsonStreamingTraits**"
+            "id": "RestJsonHttpPayloadTraitsWithNoBlobBody",
+            "why": "Blobs are expected to be serialised as Base64 json strings in SimpleRestJson"
           },
           {
-            "id": "StringPayload**"
+            "id": "RestJsonHttpPayloadTraitsWithBlob",
+            "why": "SimpleRestJson forces the presence of a payload when there should be one"
           },
           {
-            "id": "EnumPayload**"
+            "id": "RestJsonStreamingTraits**",
+            "why": "Streaming is not supported in simpleRestJson"
           },
           {
-            "id": "RestJsonHttpWithEmptyBlobPayload"
+            "id": "StringPayload**",
+            "why": "Only json payloads are supported in simpleRestJson"
           },
           {
-            "id": "RestJsonSupportsInfinity**"
+            "id": "EnumPayload**",
+            "why": "Only json payloads are supported in simpleRestJson"
+          },
+          {
+            "id": "RestJsonHttpWithEmptyBlobPayload",
+            "why": "Only json payloads are supported in simpleRestJson"
+          },
+          {
+            "id": "RestJsonSupports*Infinity**",
+            "why": "Infinity parsing not supported for performance reason"
+          },
+          {
+            "id": "RestJsonSupportsNaN**",
+            "why": "Not-a-number parsing not supported for performance reason"
+          },
+          {
+            "id": "RestJsonInputAndOutputWith*Headers",
+            "why": "Impossible comparison between result and expectations: https://github.com/awslabs/smithy/pull/1798",
+            "appliesTo": "server",
+            "testType": "response"
+          },
+          {
+            "id": "RestJsonInputAndOutputWith*Headers",
+            "why": "Impossible comparison between result and expectations: https://github.com/awslabs/smithy/pull/1798",
+            "appliesTo": "client",
+            "testType": "request"
+          },
+          {
+            "id": "RestJsonInputAndOutputWithTimestampHeaders",
+            "why": "http-date headers aren't quoted: https://github.com/awslabs/smithy/pull/1798"
+          },
+          {
+            "id": "TimestampFormatHeaders",
+            "why": "http-date headers aren't quoted: https://github.com/awslabs/smithy/pull/1798"
+          },
+          {
+            "id": "RestJsonTimestampFormatHeaders",
+            "why": "http-date headers aren't quoted: https://github.com/awslabs/smithy/pull/1798",
+            "appliesTo": "server",
+            "testType": "request"
+          },
+          {
+            "id": "RestJsonTimestampFormatHeaders",
+            "why": "http-date headers aren't quoted: https://github.com/awslabs/smithy/pull/1798",
+            "appliesTo": "client",
+            "testType": "response"
+          },
+          {
+            "id": "RestJsonOmitsEmptyListQueryValues",
+            "why": "Absence of value and empty array are not the same things",
+            "appliesTo": "server",
+            "testType": "request"
           }
         ]
       }
