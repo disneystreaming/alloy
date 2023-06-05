@@ -483,6 +483,22 @@
             "why": "Absence of value and empty array are not the same things",
             "appliesTo": "server",
             "testType": "request"
+          },
+          {
+            "id": "RestJsonTestPayloadBlob",
+            "why": "Custom media types aren't supported in simpleRestJson"
+          },
+          {
+            "id": "RestJsonHttpPayloadTraitsWithBlobAcceptsAllContentTypes",
+            "why": "Custom media types aren't supported in simpleRestJson"
+          },
+          {
+            "id": "RestJsonHttpPayloadTraitsWithBlobAcceptsAllAccepts",
+            "why": "Custom media types aren't supported in simpleRestJson"
+          },
+          {
+            "id": "RestJsonHttpPayloadTraitsWithMediaTypeWithBlob",
+            "why": "Custom media types aren't supported in simpleRestJson"
           }
         ]
       }
