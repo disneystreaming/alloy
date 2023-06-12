@@ -2,7 +2,7 @@
   "imports": ["modules/core/resources", "modules/protocol-tests/resources"],
   "maven": {
     "dependencies": [
-      "software.amazon.smithy:smithy-protocol-test-traits:1.31.0"
+      "software.amazon.smithy:smithy-protocol-test-traits:1.32.0"
     ]
   }
 }
