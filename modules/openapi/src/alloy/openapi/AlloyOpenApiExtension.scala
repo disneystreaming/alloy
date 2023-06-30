@@ -39,14 +39,16 @@ final class AlloyOpenApiExtension() extends Smithy2OpenApiExtension {
     new RemoveUnusedComponents(),
     new UnsupportedTraits(),
     new RemoveEmptyComponents(),
-    new AddTags()
+    new AddTags(),
+    new ExternalDocumentationMapperOpenApi()
   ).asJava
 
   override def getJsonSchemaMappers(): ju.List[JsonSchemaMapper] = List(
     new OpenApiJsonSchemaMapper(): JsonSchemaMapper,
     new DiscriminatedUnions(),
     new UntaggedUnions(),
-    new DataExamplesMapper()
+    new DataExamplesMapper(),
+    new ExternalDocumentationMapperJsonSchema()
   ).asJava
 
 }
