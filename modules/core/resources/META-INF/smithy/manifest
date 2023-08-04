@@ -1,5 +1,6 @@
 common/common.smithy
 documentation.smithy
+enums.smithy
 examples.smithy
 formats.smithy
 openapi/openapi.smithy
