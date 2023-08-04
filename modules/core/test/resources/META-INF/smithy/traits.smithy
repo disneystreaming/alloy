@@ -18,6 +18,7 @@ use alloy#dateFormat
 use alloy#defaultValue
 use alloy#discriminated
 use alloy#nullable
+use alloy#openEnum
 use alloy#uncheckedExamples
 use alloy#untagged
 use alloy#uuidFormat
@@ -164,4 +165,14 @@ structure TestStructureTarget {
     test: String
     @required
     test2: String
+}
+
+@openEnum
+enum TestOpenEnum {
+    ONE
+}
+
+@openEnum
+intEnum TestOpenIntEnum {
+    ONE = 1
 }

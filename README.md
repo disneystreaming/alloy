@@ -31,6 +31,7 @@ A collection of commonly used Smithy shapes.
   - [alloy#nullable](#alloynullable)
   - [alloy#defaultValue](#alloydefaultvalue)
   - [alloy#dataExamples](#alloydataexamples)
+  - [alloy#openEnum](#alloyopenenum)
   - [alloy#structurePattern](#alloystructurepattern)
   - [alloy.openapi](#alloyopenapi)
     - [alloy.openapi#openapiExtensions](#alloyopenapiopenapiextensions)
@@ -489,6 +490,27 @@ structure User {
     @jsonName("fullName")
     name: String
     age: Integer
+}
+```
+
+### alloy#openEnum
+
+Specifies that an enumeration is open meaning that it can accept "unknown" values that are not explicitly specified inside of the smithy enum shape definition.
+This trait should be mainly be used for interop with external libraries that require it. Often a string or integer type may be more applicable if there are many different
+possible values that the API can return.
+
+This trait can be applied to `enum` or `intEnum` shapes.
+
+```smithy
+@openEnum
+enum Shape {
+  SQUARE, CIRCLE
+}
+
+@openEnum
+intEnum IntShape {
+  SQUARE = 1
+  CIRCLE = 2
 }
 ```
 
