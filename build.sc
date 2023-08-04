@@ -1,7 +1,7 @@
 import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.4.0`
 import de.tobiasroeser.mill.vcs.version.VcsVersion
-import $ivy.`io.github.davidgregory084::mill-tpolecat::0.3.2`
-import $ivy.`com.lewisjkl::header-mill-plugin::0.0.2`
+import $ivy.`io.github.davidgregory084::mill-tpolecat::0.3.5`
+import $ivy.`com.lewisjkl::header-mill-plugin::0.0.3`
 import header._
 import $ivy.`io.chris-kipp::mill-ci-release::0.1.9`
 import io.kipp.mill.ci.release.CiReleaseModule
@@ -12,7 +12,6 @@ import mill.scalalib.scalafmt.ScalafmtModule
 import mill._
 import mill.modules.Jvm
 import mill.scalalib._
-import mill.scalalib.api.Util._
 import mill.scalalib.publish._
 
 trait BaseModule extends Module with HeaderModule {
@@ -115,7 +114,7 @@ object core extends BaseJavaModule {
     def underMetaInfSmithy(p: os.RelPath): Boolean =
       Seq("META-INF", "smithy").forall(p.segments.contains)
 
-    Jvm.createJar(
+    mill.util.Jvm.createJar(
       (allSources() ++ resources())
         .map(_.path)
         .filter(os.exists),
@@ -125,7 +124,7 @@ object core extends BaseJavaModule {
   }
 
   object test
-      extends this.Tests
+      extends JavaModuleTests
       with BaseScalaNoPublishModule
       with BaseMunitTests {
     def ivyDeps = {
@@ -138,9 +137,9 @@ object core extends BaseJavaModule {
 
 val scalaVersionsMap =
   Map("2.13" -> "2.13.7", "2.12" -> "2.12.17", "3" -> "3.2.2")
-object openapi extends Cross[OpenapiModule](scalaVersionsMap.keys.toList: _*)
-class OpenapiModule(crossVersion: String) extends BaseCrossScalaModule {
-
+object openapi extends Cross[OpenapiModule](scalaVersionsMap.keys.toList)
+trait OpenapiModule extends BaseCrossScalaModule {
+  val crossVersion = crossValue
   def artifactName = "alloy-openapi"
 
   def crossScalaVersion = scalaVersionsMap(crossVersion)
@@ -159,7 +158,7 @@ class OpenapiModule(crossVersion: String) extends BaseCrossScalaModule {
     Deps.cats.core
   )
 
-  object test extends this.Tests with BaseMunitTests
+  object test extends ScalaTests with BaseMunitTests
 }
 
 object `protocol-tests` extends BaseJavaModule {
@@ -172,7 +171,7 @@ object `protocol-tests` extends BaseJavaModule {
 
   object sanity
       extends BaseScalaNoPublishModule
-      with Tests
+      with JavaModuleTests
       with TestModule.Munit {
     def ivyDeps = Agg(Deps.munit.munit)
   }
