@@ -12,8 +12,8 @@ namespace alloy
 )
 structure urlFormFlattened {}
 
-/// Changes the serialized element or attribute name of a structure, union,
-/// or member.
+/// Changes the serialized url-form key of a structure, union, or
+/// member.
 @trait(
     selector: ":is(structure, union, member)"
     breakingChanges: [
