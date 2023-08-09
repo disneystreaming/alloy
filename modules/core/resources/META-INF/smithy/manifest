@@ -9,4 +9,5 @@ proto/proto.smithy
 restjson.smithy
 string.smithy
 unions.smithy
+urlform.smithy
 uuid.smithy
