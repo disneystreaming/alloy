@@ -17,6 +17,7 @@ package alloy;
 
 import software.amazon.smithy.model.node.Node;
 import software.amazon.smithy.model.node.ObjectNode;
+import software.amazon.smithy.model.node.StringNode;
 import software.amazon.smithy.model.shapes.ShapeId;
 import software.amazon.smithy.model.traits.AbstractTrait;
 import software.amazon.smithy.model.traits.AbstractTraitBuilder;
@@ -81,9 +82,8 @@ public final class UrlFormNameTrait extends AbstractTrait implements ToSmithyBui
 
         public UrlFormNameTrait createTrait(ShapeId target, Node value) {
             Builder builder = builder().sourceLocation(value);
-            ObjectNode on = value.expectObjectNode();
-            String name = on.expectStringMember("name").getValue();
-            builder.setName(name);
+            StringNode name = value.expectStringNode();
+            builder.setName(name.getValue());
             UrlFormNameTrait result = builder.build();
             result.setNodeCache(value);
             return result;
