@@ -19,16 +19,16 @@ import software.amazon.smithy.model.node.Node;
 import software.amazon.smithy.model.shapes.ShapeId;
 import software.amazon.smithy.model.traits.AnnotationTrait;
 
-public final class UrlFormName extends AnnotationTrait {
-	public static ShapeId ID = ShapeId.from("alloy#urlFormName");
+public final class UrlFormFlattenedTrait extends AnnotationTrait {
+	public static ShapeId ID = ShapeId.from("alloy#urlFormFlattened");
 
-	public UrlFormName() {
+	public UrlFormFlattenedTrait() {
 		super(ID, Node.objectNode());
 	}
 
-	public static final class Provider extends AnnotationTrait.Provider<UrlFormName> {
+	public static final class Provider extends AnnotationTrait.Provider<UrlFormFlattenedTrait> {
 		public Provider() {
-			super(ID, (node) -> new UrlFormName());
+			super(ID, (node) -> new UrlFormFlattenedTrait());
 		}
 	}
 }
