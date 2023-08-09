@@ -176,3 +176,7 @@ enum TestOpenEnum {
 intEnum TestOpenIntEnum {
     ONE = 1
 }
+
+@openEnum
+@enum([{value: "A", name: "A"}])
+string TestOpenEnumTraitEnum
