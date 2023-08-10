@@ -56,9 +56,9 @@ final class UrlFormFlattenedTraitProviderSpec extends munit.FunSuite {
         .assemble()
         .unwrap()
 
-    val result = model.getShape(targetId).map(shape =>
-      shape.hasTrait(classOf[UrlFormFlattenedTrait])
-    )
+    val result = model
+      .getShape(targetId)
+      .map(shape => shape.hasTrait(classOf[UrlFormFlattenedTrait]))
 
     assertEquals(result, Optional.of(true))
   }

@@ -50,9 +50,9 @@ final class UrlFormNameTraitProviderSpec extends munit.FunSuite {
         .assemble()
         .unwrap()
 
-    val result = model.getShape(targetId).map(shape =>
-      shape.hasTrait(classOf[UrlFormNameTrait])
-    )
+    val result = model
+      .getShape(targetId)
+      .map(shape => shape.hasTrait(classOf[UrlFormNameTrait]))
 
     assertEquals(result, Optional.of(true))
   }
@@ -83,11 +83,10 @@ final class UrlFormNameTraitProviderSpec extends munit.FunSuite {
         .assemble()
         .unwrap()
 
-    val result = model.getShape(targetId).flatMap(shape =>
-      shape.getTrait(classOf[UrlFormNameTrait])
-    ).map(urlFormNameTrait =>
-      urlFormNameTrait.getName()
-    )
+    val result = model
+      .getShape(targetId)
+      .flatMap(shape => shape.getTrait(classOf[UrlFormNameTrait]))
+      .map(urlFormNameTrait => urlFormNameTrait.getName())
 
     assertEquals(result, Optional.of("my_string"))
   }
