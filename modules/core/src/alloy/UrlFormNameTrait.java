@@ -50,7 +50,7 @@ public final class UrlFormNameTrait extends AbstractTrait implements ToSmithyBui
     }
 
     /**
-     * @return Returns a builder used to create an examples trait.
+     * @return Returns a builder used to create a urlFormName trait.
      */
     public static Builder builder() {
         return new Builder();
