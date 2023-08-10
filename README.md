@@ -501,7 +501,7 @@ Specifies that an enumeration is open meaning that it can accept "unknown" value
 This trait should be mainly be used for interop with external libraries that require it. Often a string or integer type may be more applicable if there are many different
 possible values that the API can return.
 
-This trait can be applied to `enum` or `intEnum` shapes.
+This trait can be applied to `enum` or `intEnum` shapes. Additionally it can be used on String shapes with the `smithy.api#enum` trait. This is supported for backward compatibility since the `enum` constraint trait is deprecated.
 
 ```smithy
 @openEnum
