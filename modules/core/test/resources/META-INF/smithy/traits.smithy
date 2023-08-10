@@ -25,6 +25,8 @@ use alloy#uuidFormat
 use alloy#simpleRestJson
 use alloy#dataExamples
 use alloy#structurePattern
+use alloy#urlFormFlattened
+use alloy#urlFormName
 
 @dateFormat
 string MyDate
@@ -51,7 +53,7 @@ structure SomeStruct {
   "x-foo": "bar"
 )
 list StringList {
-  member: String
+    member: String
 }
 
 @discriminated("kind")
@@ -180,3 +182,13 @@ intEnum TestOpenIntEnum {
 @openEnum
 @enum([{value: "A", name: "A"}])
 string TestOpenEnumTraitEnum
+
+structure TestUrlFormFlattened {
+    @urlFormFlattened
+    test: StringList
+}
+
+structure TestUrlFormName {
+    @urlFormName("Test")
+    test: String
+}

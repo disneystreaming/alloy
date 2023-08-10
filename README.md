@@ -35,6 +35,8 @@ A collection of commonly used Smithy shapes.
   - [alloy#structurePattern](#alloystructurepattern)
   - [alloy.openapi](#alloyopenapi)
     - [alloy.openapi#openapiExtensions](#alloyopenapiopenapiextensions)
+  - [alloy#urlFormFlattened](#alloyurlformflattened)
+  - [alloy#urlFormName](#alloyurlformname)
 - [Protocol Compliance Module](#protocol-compliance-module)
   - [Using the Protocol Compliance Tests](#using-the-protocol-compliance-tests)
 - [Working on Alloy](#working-on-alloy)
@@ -552,6 +554,35 @@ list StringList {
   member: String
 }
 ```
+
+#### alloy#urlFormFlattened
+
+url-form data equivalent of `xmlFlattened`. Unwraps the values of a list, set, or map into the containing structure/union when serialized as url-form data.
+
+```smithy
+structure User {
+    name: String
+    @urlFormFlattened
+    aliases: StringList
+}
+
+list StringList {
+  member: String
+}
+```
+
+#### alloy#urlFormName
+
+url-form data equivalent of `xmlName`. Changes the serialized url-form data key of a structure, union, or member.
+
+```smithy
+structure User {
+    @urlFormName("fullName")
+    name: String
+    age: Integer
+}
+```
+
 ## Protocol Compliance Module
  - Alloy contains a suite of protocol tests utilizing the [AWS HTTP Protocol Compliance Test Module]("https://smithy.io/2.0/additional-specs/http-protocol-compliance-tests.html)
  - These can be used to test an implementation of the simpleRestJson protocol to confirm compliance with the protocol .

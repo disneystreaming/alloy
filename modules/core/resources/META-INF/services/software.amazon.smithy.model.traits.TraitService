@@ -18,6 +18,8 @@ alloy.proto.ProtoNumTypeTrait$Provider
 alloy.proto.ProtoReservedFieldsTrait$Provider
 alloy.SimpleRestJsonTrait$Provider
 alloy.StructurePatternTrait$Provider
+alloy.UrlFormFlattenedTrait$Provider
+alloy.UrlFormNameTrait$Provider
 alloy.UncheckedExamplesTrait$Provider
 alloy.UntaggedUnionTrait$Provider
 alloy.UuidFormatTrait$Provider
