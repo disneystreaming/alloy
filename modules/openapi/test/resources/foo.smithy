@@ -6,12 +6,20 @@ use alloy#untagged
 use alloy#dataExamples
 
 @simpleRestJson
+@externalDocumentation(
+  "API Homepage": "https://www.example.com/",
+  "API Ref": "https://www.example.com/api-ref",
+)
 service HelloWorldService {
   version: "0.0.1",
   errors: [GeneralServerError],
   operations: [Greet, GetUnion, GetValues]
 }
 
+@externalDocumentation(
+  "API Homepage 2": "https://www.example2.com/",
+  "API Ref 2": "https://www.example2.com/api-ref",
+)
 @readonly
 @http(method: "GET", uri: "/hello/{name}/{ts}")
 operation Greet {
@@ -115,6 +123,10 @@ union SomeValue {
 }
 
 @discriminated("type")
+@externalDocumentation(
+  "Homepage": "https://www.example.com/",
+  "API Reference": "https://www.example.com/api-ref",
+)
 union CatOrDog {
   cat: Cat,
   dog: Dog
