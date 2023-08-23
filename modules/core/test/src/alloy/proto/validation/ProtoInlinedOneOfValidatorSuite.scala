@@ -59,7 +59,7 @@ class ProtoInlinedOneOfValidatorSuite extends FunSuite {
       .toList
     assertEquals(events.length, 1)
     assertEquals(
-      events(0).getEventId(),
+      events(0).getId(),
       ProtoInlinedOneOfValidator.UNUSED_UNION
     )
   }
@@ -85,7 +85,7 @@ class ProtoInlinedOneOfValidatorSuite extends FunSuite {
       .toList
     assertEquals(events.length, 1)
     assertEquals(
-      events(0).getEventId(),
+      events(0).getId(),
       ProtoInlinedOneOfValidator.USAGE_COUNT_EXCEEDED
     )
   }

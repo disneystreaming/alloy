@@ -80,7 +80,7 @@ class ProtoReservedFieldsTraitValidatorSuite extends FunSuite {
       .toList
     assertEquals(events.length, 1)
     assertEquals(
-      events(0).getEventId(),
+      events(0).getId(),
       ProtoReservedFieldsTraitValidator.RESERVED_NUMBER_IN_STRUCTURE
     )
   }
@@ -109,7 +109,7 @@ class ProtoReservedFieldsTraitValidatorSuite extends FunSuite {
       .toList
     assertEquals(events.length, 1)
     assertEquals(
-      events(0).getEventId(),
+      events(0).getId(),
       ProtoReservedFieldsTraitValidator.RESERVED_NAME_IN_STRUCTURE
     )
   }
@@ -143,7 +143,7 @@ class ProtoReservedFieldsTraitValidatorSuite extends FunSuite {
       .toList
     assertEquals(events.length, 1)
     assertEquals(
-      events(0).getEventId(),
+      events(0).getId(),
       ProtoReservedFieldsTraitValidator.RESERVED_NUMBER_IN_STRUCTURE
     )
   }
