@@ -143,6 +143,7 @@ final class SimpleRestJsonValidationSpec extends munit.FunSuite {
       .assemble()
       .getValidationEvents()
       .asScala
+      .filter(_.getId() == "SimpleRestJson")
       .filter(_.getSeverity() == Severity.ERROR)
       .toList
 
