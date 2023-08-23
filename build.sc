@@ -89,7 +89,7 @@ trait BaseScalaNoPublishModule
     extends ScalaModule
     with ScalafmtModule
     with TpolecatModule {
-  def scalaVersion = T.input("2.13.10")
+  def scalaVersion = T.input("2.13.11")
 }
 
 trait BaseScalaModule extends BaseScalaNoPublishModule with BasePublishModule
@@ -136,7 +136,7 @@ object core extends BaseJavaModule {
 }
 
 val scalaVersionsMap =
-  Map("2.13" -> "2.13.7", "2.12" -> "2.12.17", "3" -> "3.2.2")
+  Map("2.13" -> "2.13.7", "2.12" -> "2.12.17", "3" -> "3.3.0")
 object openapi extends Cross[OpenapiModule](scalaVersionsMap.keys.toList)
 trait OpenapiModule extends BaseCrossScalaModule {
   val crossVersion = crossValue
@@ -179,7 +179,7 @@ object `protocol-tests` extends BaseJavaModule {
 
 object Deps {
   val smithy = new {
-    val smithyVersion = "1.33.0"
+    val smithyVersion = "1.37.0"
     val model = ivy"software.amazon.smithy:smithy-model:$smithyVersion"
     val awsTraits = ivy"software.amazon.smithy:smithy-aws-traits:$smithyVersion"
     val awsProtocolTestTraits =

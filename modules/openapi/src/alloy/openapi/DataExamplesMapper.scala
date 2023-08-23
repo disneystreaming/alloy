@@ -27,7 +27,7 @@ import software.amazon.smithy.model.node.Node
 
 class DataExamplesMapper() extends JsonSchemaMapper {
 
-  def updateSchema(
+  override def updateSchema(
       shape: Shape,
       schemaBuilder: Builder,
       config: JsonSchemaConfig

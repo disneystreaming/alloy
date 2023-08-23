@@ -59,7 +59,7 @@ class GrpcTraitValidatorSuite extends FunSuite {
       .toList
     assertEquals(events.length, 1)
     assertEquals(
-      events(0).getEventId(),
+      events(0).getId(),
       GrpcTraitValidator.NO_OPERATION_SPECIFIED
     )
   }
@@ -81,7 +81,7 @@ class GrpcTraitValidatorSuite extends FunSuite {
       .toList
     assertEquals(events.length, 1)
     assertEquals(
-      events(0).getEventId(),
+      events(0).getId(),
       GrpcTraitValidator.NO_INPUT_SHAPE_SPECIFIED
     )
   }
@@ -103,7 +103,7 @@ class GrpcTraitValidatorSuite extends FunSuite {
       .toList
     assertEquals(events.length, 1)
     assertEquals(
-      events(0).getEventId(),
+      events(0).getId(),
       GrpcTraitValidator.NO_OUTPUT_SHAPE_SPECIFIED
     )
   }

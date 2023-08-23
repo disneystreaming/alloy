@@ -89,7 +89,7 @@ class ExternalDocumentationMapperOpenApi() extends OpenApiMapper {
 
 class ExternalDocumentationMapperJsonSchema() extends JsonSchemaMapper {
 
-  def updateSchema(
+  override def updateSchema(
       shape: Shape,
       schemaBuilder: Builder,
       config: JsonSchemaConfig

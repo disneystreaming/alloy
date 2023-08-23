@@ -28,7 +28,7 @@ import scala.jdk.CollectionConverters._
 class DiscriminatedUnions() extends JsonSchemaMapper {
   private final val COMPONENTS = "components"
 
-  def updateSchema(
+  override def updateSchema(
       shape: Shape,
       schemaBuilder: Builder,
       config: JsonSchemaConfig
