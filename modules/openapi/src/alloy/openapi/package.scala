@@ -27,6 +27,7 @@ import software.amazon.smithy.openapi.fromsmithy.Smithy2OpenApiExtension
 
 import java.util.ServiceLoader
 import scala.jdk.CollectionConverters._
+import software.amazon.smithy.openapi.OpenApiVersion
 
 package object openapi {
 
@@ -36,7 +37,8 @@ package object openapi {
   def convert(
       model: Model,
       allowedNS: Option[Set[String]],
-      classLoader: ClassLoader
+      classLoader: ClassLoader,
+      openApiVersion: OpenApiVersion
   ): List[OpenApiConversionResult] = {
     val services = model
       .shapes()
@@ -82,6 +84,7 @@ package object openapi {
         val config = new OpenApiConfig()
         config.setService(serviceId)
         config.setProtocol(protocol)
+        config.setVersion(openApiVersion)
         config.setIgnoreUnsupportedTraits(true)
         val openapi = OpenApiConverter.create().config(config).convert(model)
         val jsonString = Node.prettyPrintJson(openapi.toNode())
@@ -92,9 +95,10 @@ package object openapi {
 
   def convert(
       model: Model,
-      allowedNS: Option[Set[String]]
+      allowedNS: Option[Set[String]],
+      openApiVersion: OpenApiVersion
   ): List[OpenApiConversionResult] =
-    convert(model, allowedNS, this.getClass().getClassLoader())
+    convert(model, allowedNS, this.getClass().getClassLoader(), openApiVersion)
 
   implicit class OptionalExt[A](opt: java.util.Optional[A]) {
     def asScala: Option[A] = if (opt.isPresent()) Some(opt.get()) else None

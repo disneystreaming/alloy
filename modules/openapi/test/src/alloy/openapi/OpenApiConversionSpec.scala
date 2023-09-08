@@ -19,6 +19,7 @@ import _root_.software.amazon.smithy.model.Model
 
 import scala.io.Source
 import scala.util.Using
+import software.amazon.smithy.openapi.OpenApiVersion
 
 final class OpenApiConversionSpec extends munit.FunSuite {
 
@@ -30,7 +31,7 @@ final class OpenApiConversionSpec extends munit.FunSuite {
       .assemble()
       .unwrap()
 
-    val result = convert(model, None)
+    val result = convert(model, None, OpenApiVersion.VERSION_3_0_2)
       .map(_.contents)
       .mkString
       .filterNot(_.isWhitespace)
@@ -51,7 +52,7 @@ final class OpenApiConversionSpec extends munit.FunSuite {
       .assemble()
       .unwrap()
 
-    val result = convert(model, None)
+    val result = convert(model, None, OpenApiVersion.VERSION_3_0_2)
       .map(_.contents)
       .mkString
       .filterNot(_.isWhitespace)
