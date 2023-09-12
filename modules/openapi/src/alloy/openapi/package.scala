@@ -28,17 +28,12 @@ import software.amazon.smithy.openapi.fromsmithy.Smithy2OpenApiExtension
 import java.util.ServiceLoader
 import scala.jdk.CollectionConverters._
 
-case class OpenApiConfigParameters(
-    serviceId: ShapeId,
-    protocol: ShapeId
-)
-
 package object openapi {
 
   def convertWithConfig(
       model: Model,
       allowedNS: Option[Set[String]],
-      buildConfig: OpenApiConfigParameters => OpenApiConfig,
+      buildConfig: Unit => OpenApiConfig,
       classLoader: ClassLoader
   ): List[OpenApiConversionResult] = {
     val services = model
@@ -82,9 +77,9 @@ package object openapi {
         openapiAwareTraits.flatMap(_.getIdIfApplied(service))
       protocols.map { protocol =>
         val serviceId = service.getId()
-        val config = buildConfig(
-          OpenApiConfigParameters(serviceId = serviceId, protocol = protocol)
-        )
+        val config = buildConfig(())
+        config.setService(serviceId)
+        config.setProtocol(protocol)
         config.setIgnoreUnsupportedTraits(true)
         val openapi = OpenApiConverter.create().config(config).convert(model)
         val jsonString = Node.prettyPrintJson(openapi.toNode())
@@ -96,7 +91,7 @@ package object openapi {
   def convertWithConfig(
       model: Model,
       allowedNS: Option[Set[String]],
-      buildConfig: OpenApiConfigParameters => OpenApiConfig
+      buildConfig: Unit => OpenApiConfig
   ): List[OpenApiConversionResult] =
     convertWithConfig(
       model,
@@ -113,11 +108,8 @@ package object openapi {
       allowedNS: Option[Set[String]],
       classLoader: ClassLoader
   ): List[OpenApiConversionResult] = {
-    val configBuilder: OpenApiConfigParameters => OpenApiConfig = { params =>
-      val config = new OpenApiConfig()
-      config.setService(params.serviceId)
-      config.setProtocol(params.protocol)
-      config
+    val configBuilder: Unit => OpenApiConfig = { _ =>
+      new OpenApiConfig()
     }
     convertWithConfig(model, allowedNS, configBuilder, classLoader)
   }

@@ -19,6 +19,7 @@ import _root_.software.amazon.smithy.model.Model
 
 import scala.io.Source
 import scala.util.Using
+import software.amazon.smithy.openapi.OpenApiConfig
 import software.amazon.smithy.openapi.OpenApiVersion
 
 final class OpenApiConversionSpec extends munit.FunSuite {
@@ -31,7 +32,7 @@ final class OpenApiConversionSpec extends munit.FunSuite {
       .assemble()
       .unwrap()
 
-    val result = convert(model, None, OpenApiVersion.VERSION_3_0_2)
+    val result = convert(model, None)
       .map(_.contents)
       .mkString
       .filterNot(_.isWhitespace)
@@ -52,7 +53,7 @@ final class OpenApiConversionSpec extends munit.FunSuite {
       .assemble()
       .unwrap()
 
-    val result = convert(model, None, OpenApiVersion.VERSION_3_0_2)
+    val result = convert(model, None)
       .map(_.contents)
       .mkString
       .filterNot(_.isWhitespace)
@@ -61,6 +62,31 @@ final class OpenApiConversionSpec extends munit.FunSuite {
       .resource(Source.fromResource("baz.json"))(
         _.getLines().mkString.filterNot(_.isWhitespace)
       )
+    assertEquals(result, expected)
+  }
+
+  test("OpenAPI conversion configuring the version") {
+    val model = Model
+      .assembler()
+      .addImport(getClass().getClassLoader().getResource("foo.smithy"))
+      .discoverModels()
+      .assemble()
+      .unwrap()
+
+    val result = convertWithConfig(model, None, _ => {
+      val config = new OpenApiConfig()
+      config.setVersion(OpenApiVersion.VERSION_3_1_0)
+      config
+    })
+      .map(_.contents)
+      .mkString
+      .filterNot(_.isWhitespace)
+
+    val expected = Using
+      .resource(Source.fromResource("foo-310.json"))(
+        _.getLines().mkString.filterNot(_.isWhitespace)
+      )
+
     assertEquals(result, expected)
   }
 
