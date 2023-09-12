@@ -7,6 +7,8 @@ import $ivy.`io.chris-kipp::mill-ci-release::0.1.9`
 import io.kipp.mill.ci.release.CiReleaseModule
 import io.kipp.mill.ci.release.SonatypeHost
 import io.github.davidgregory084.TpolecatModule
+import $ivy.`com.github.lolgab::mill-mima::0.0.24`
+import com.github.lolgab.mill.mima._
 
 import mill.scalalib.scalafmt.ScalafmtModule
 import mill._
@@ -92,14 +94,18 @@ trait BaseScalaNoPublishModule
   def scalaVersion = T.input("2.13.11")
 }
 
-trait BaseScalaModule extends BaseScalaNoPublishModule with BasePublishModule
+trait BaseMimaModule extends BasePublishModule with Mima {
+  def mimaPreviousVersions = Seq("0.2.0")
+}
+
+trait BaseScalaModule extends BaseScalaNoPublishModule with BaseMimaModule
 
 trait BaseCrossScalaModule
     extends ScalaModule
     with ScalafmtModule
     with TpolecatModule
     with CrossScalaModule
-    with BasePublishModule
+    with BaseMimaModule
 
 object core extends BaseJavaModule {
   def ivyDeps = Agg(
