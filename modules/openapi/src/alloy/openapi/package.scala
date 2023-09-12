@@ -30,12 +30,10 @@ import scala.jdk.CollectionConverters._
 
 package object openapi {
 
-  /** Creates open-api representations for all services in a model that are
-    * annotated with the `alloy#simpleRestJson` trait.
-    */
-  def convert(
+  def convertWithConfig(
       model: Model,
       allowedNS: Option[Set[String]],
+      buildConfig: Unit => OpenApiConfig,
       classLoader: ClassLoader
   ): List[OpenApiConversionResult] = {
     val services = model
@@ -79,7 +77,7 @@ package object openapi {
         openapiAwareTraits.flatMap(_.getIdIfApplied(service))
       protocols.map { protocol =>
         val serviceId = service.getId()
-        val config = new OpenApiConfig()
+        val config = buildConfig(())
         config.setService(serviceId)
         config.setProtocol(protocol)
         config.setIgnoreUnsupportedTraits(true)
@@ -88,6 +86,32 @@ package object openapi {
         OpenApiConversionResult(protocol, serviceId, jsonString)
       }
     }
+  }
+
+  def convertWithConfig(
+      model: Model,
+      allowedNS: Option[Set[String]],
+      buildConfig: Unit => OpenApiConfig
+  ): List[OpenApiConversionResult] =
+    convertWithConfig(
+      model,
+      allowedNS,
+      buildConfig,
+      this.getClass().getClassLoader()
+    )
+
+  /** Creates open-api representations for all services in a model that are
+    * annotated with the `alloy#simpleRestJson` trait.
+    */
+  def convert(
+      model: Model,
+      allowedNS: Option[Set[String]],
+      classLoader: ClassLoader
+  ): List[OpenApiConversionResult] = {
+    val configBuilder: Unit => OpenApiConfig = { _ =>
+      new OpenApiConfig()
+    }
+    convertWithConfig(model, allowedNS, configBuilder, classLoader)
   }
 
   def convert(

@@ -19,6 +19,8 @@ import _root_.software.amazon.smithy.model.Model
 
 import scala.io.Source
 import scala.util.Using
+import software.amazon.smithy.openapi.OpenApiConfig
+import software.amazon.smithy.openapi.OpenApiVersion
 
 final class OpenApiConversionSpec extends munit.FunSuite {
 
@@ -61,6 +63,26 @@ final class OpenApiConversionSpec extends munit.FunSuite {
         _.getLines().mkString.filterNot(_.isWhitespace)
       )
     assertEquals(result, expected)
+  }
+
+  test("OpenAPI conversion configuring the version") {
+    val model = Model
+      .assembler()
+      .addImport(getClass().getClassLoader().getResource("foo.smithy"))
+      .discoverModels()
+      .assemble()
+      .unwrap()
+
+    val result = convertWithConfig(model, None, _ => {
+      val config = new OpenApiConfig()
+      config.setVersion(OpenApiVersion.VERSION_3_1_0)
+      config
+    })
+      .map(_.contents)
+      .mkString
+      .filterNot(_.isWhitespace)
+
+    assert(result.contains("\"openapi\":\"3.1.0"))
   }
 
 }
