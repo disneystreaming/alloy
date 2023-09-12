@@ -27,18 +27,19 @@ import software.amazon.smithy.openapi.fromsmithy.Smithy2OpenApiExtension
 
 import java.util.ServiceLoader
 import scala.jdk.CollectionConverters._
-import software.amazon.smithy.openapi.OpenApiVersion
+
+case class OpenApiConfigParameters(
+    serviceId: ShapeId,
+    protocol: ShapeId
+)
 
 package object openapi {
 
-  /** Creates open-api representations for all services in a model that are
-    * annotated with the `alloy#simpleRestJson` trait.
-    */
-  def convert(
+  def convertWithConfig(
       model: Model,
       allowedNS: Option[Set[String]],
-      classLoader: ClassLoader,
-      openApiVersion: OpenApiVersion
+      buildConfig: OpenApiConfigParameters => OpenApiConfig,
+      classLoader: ClassLoader
   ): List[OpenApiConversionResult] = {
     val services = model
       .shapes()
@@ -81,10 +82,9 @@ package object openapi {
         openapiAwareTraits.flatMap(_.getIdIfApplied(service))
       protocols.map { protocol =>
         val serviceId = service.getId()
-        val config = new OpenApiConfig()
-        config.setService(serviceId)
-        config.setProtocol(protocol)
-        config.setVersion(openApiVersion)
+        val config = buildConfig(
+          OpenApiConfigParameters(serviceId = serviceId, protocol = protocol)
+        )
         config.setIgnoreUnsupportedTraits(true)
         val openapi = OpenApiConverter.create().config(config).convert(model)
         val jsonString = Node.prettyPrintJson(openapi.toNode())
@@ -93,12 +93,40 @@ package object openapi {
     }
   }
 
+  def convertWithConfig(
+      model: Model,
+      allowedNS: Option[Set[String]],
+      buildConfig: OpenApiConfigParameters => OpenApiConfig
+  ): List[OpenApiConversionResult] =
+    convertWithConfig(
+      model,
+      allowedNS,
+      buildConfig,
+      this.getClass().getClassLoader()
+    )
+
+  /** Creates open-api representations for all services in a model that are
+    * annotated with the `alloy#simpleRestJson` trait.
+    */
   def convert(
       model: Model,
       allowedNS: Option[Set[String]],
-      openApiVersion: OpenApiVersion
+      classLoader: ClassLoader
+  ): List[OpenApiConversionResult] = {
+    val configBuilder: OpenApiConfigParameters => OpenApiConfig = { params =>
+      val config = new OpenApiConfig()
+      config.setService(params.serviceId)
+      config.setProtocol(params.protocol)
+      config
+    }
+    convertWithConfig(model, allowedNS, configBuilder, classLoader)
+  }
+
+  def convert(
+      model: Model,
+      allowedNS: Option[Set[String]]
   ): List[OpenApiConversionResult] =
-    convert(model, allowedNS, this.getClass().getClassLoader(), openApiVersion)
+    convert(model, allowedNS, this.getClass().getClassLoader())
 
   implicit class OptionalExt[A](opt: java.util.Optional[A]) {
     def asScala: Option[A] = if (opt.isPresent()) Some(opt.get()) else None
