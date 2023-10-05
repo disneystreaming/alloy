@@ -186,18 +186,26 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
     else context.createRef(binding.getMember)
   }
 
-  private def needsInlineTimestampSchema(
+  private def getHeaderTimestampFormat(
       context: Context[_ <: Trait],
       member: MemberShape
-  ): Boolean = {
-    member
-      .getMemberTrait(context.getModel, classOf[TimestampFormatTrait])
-      .asScala
-      .isEmpty && context.getModel
-      .getShape(member.getTarget)
-      .filter(s => s.isTimestampShape)
-      .isPresent()
-
+  ): Option[String] = {
+    if (
+      context.getModel
+        .getShape(member.getTarget)
+        .filter(s => s.isTimestampShape)
+        .isPresent()
+    ) {
+      Some(
+        member
+          .getMemberTrait(context.getModel, classOf[TimestampFormatTrait])
+          .asScala
+          .map(_.getValue())
+          .getOrElse("http-date")
+      )
+    } else {
+      None
+    }
   }
 
   // Creates parameters that appear in the query string. Each input member
@@ -277,13 +285,13 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
       val startingSchema = context.inlineOrReferenceSchema(member)
       val visitor = new HeaderSchemaVisitor[T](context, startingSchema, member)
       val visitedSchema = target.accept(visitor)
-      val schemaVerified = if (needsInlineTimestampSchema(context, member)) {
-        val copiedBuilder = ModelUtils.convertSchemaToStringBuilder(
-          visitedSchema
-        )
-        copiedBuilder.format("http-date").build
-      } else {
-        visitedSchema
+      val schemaVerified = getHeaderTimestampFormat(context, member) match {
+        case None => visitedSchema
+        case Some(format) =>
+          val copiedBuilder = ModelUtils.convertSchemaToStringBuilder(
+            visitedSchema
+          )
+          copiedBuilder.format(format).build
       }
       param.schema(schemaVerified)
       binding.getLocationName -> param.build

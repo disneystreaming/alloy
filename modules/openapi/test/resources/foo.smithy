@@ -50,7 +50,19 @@ structure Person {
   @httpHeader("when")
   when: Timestamp,
 
-@httpQuery("from")
+  @httpHeader("whenAlso")
+  @timestampFormat("http-date")
+  whenTwo: Timestamp,
+
+  @httpHeader("whenThree")
+  @timestampFormat("date-time")
+  whenThree: Timestamp,
+
+  @httpHeader("whenFour")
+  @timestampFormat("epoch-seconds")
+  whenFour: Timestamp,
+
+  @httpQuery("from")
   from: Timestamp,
 
   @httpLabel
