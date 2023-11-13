@@ -319,7 +319,7 @@ The following shapes are provided as a means of customizing how your Smithy shap
 - alloy.proto#protoReservedFields
 - alloy.proto#uncheckedExamples
 
-#### ⚠️ We do not provide out-of-the-box support neither for `protobuf` or `gRPC`.
+#### ⚠️ We do not provide out-of-the-box support neither for `protobuf` or `gRPC` in smithy4s.
 
 In order to make them work you will need to:
 1. Translate `*.smithy` files to `*.proto`, see [the example](https://github.com/disneystreaming/smithy-translate/blob/1701223018c4a7372633ede81bd64f1edb0390a4/modules/proto/examples/src/smithyproto/scalapb/demo/HelloServer.scala#L23-L26).
