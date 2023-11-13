@@ -348,7 +348,7 @@ lazy val root = (project in file("."))
     Compile / run / connectInput := true
   )
 
-// Generate the hints from alloy.proto in a separate project. Their are not pre-packaged in smithy4s,
+// Generate the hints from alloy.proto in a separate project. They are not pre-packaged in smithy4s,
 // and you need to explicitly allow for the generation of `alloy.proto` hints as we protect against the
 // generation of any namespace prefixed with `alloy` by default
 lazy val `proto-hints` = (project in file("proto-hints"))
