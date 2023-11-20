@@ -75,9 +75,17 @@ object AlloyAbstractRestProtocol {
 abstract class AlloyAbstractRestProtocol[T <: Trait]
     extends OpenApiProtocol[T] {
 
-  /** Gets the media type of a document sent in a request or response.
+  /** Gets the media type of a document sent in a request, response, or
+   * error of an operation.
+    *
+    * @param messageType
+    *   The message type (request, response, or error).
+    * @return
+    *   Returns the document media type.
     */
-  def getDocumentMediaType(): String
+  def getDocumentMediaType(
+    messageType: AlloyAbstractRestProtocol.MessageType
+  ): String
 
   /** Creates a schema to send a document payload in the request, response, or
     * error of an operation.
@@ -301,7 +309,8 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
     // Get the default media type if one cannot be resolved.
     val mediaType =
       determineContentType(
-        bindingIndex.getRequestBindings(operation).values().asScala
+        bindingIndex.getRequestBindings(operation).values().asScala,
+        AlloyAbstractRestProtocol.MessageType.REQUEST
       )
     if (payloadBindings.isEmpty)
       createRequestDocument(context, bindingIndex, operation)
@@ -332,7 +341,9 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
         shapeName + "InputPayload"
       }
     )
-    val mtr = mediaTypeRange.getOrElse(getDocumentMediaType())
+    val mtr = mediaTypeRange.getOrElse(
+      getDocumentMediaType(AlloyAbstractRestProtocol.MessageType.REQUEST)
+    )
 
     val updatedMtObject = createInputExamples(operation, binding.getMemberName)
       .map(mediaTypeObject.toBuilder.examples(_).build)
@@ -376,7 +387,10 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
       val required = bindings.asScala.exists(_.getMember.isRequired)
       Some(
         RequestBodyObject.builder
-          .putContent(getDocumentMediaType(), mediaTypeObject)
+          .putContent(
+            getDocumentMediaType(AlloyAbstractRestProtocol.MessageType.REQUEST),
+            mediaTypeObject
+          )
           .required(required)
           .build
       )
@@ -494,7 +508,8 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
       HttpBinding.Location.PAYLOAD
     )
     val mediaType = determineContentType(
-      bindingIndex.getResponseBindings(operationOrError).values().asScala
+      bindingIndex.getResponseBindings(operationOrError).values().asScala,
+      AlloyAbstractRestProtocol.MessageType.RESPONSE
     )
     if (!payloadBindings.isEmpty)
       createResponsePayload(
@@ -506,7 +521,9 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
       )
     else
       createResponseDocumentIfNeeded(
-        getDocumentMediaType(),
+        getDocumentMediaType(
+          AlloyAbstractRestProtocol.MessageType.RESPONSE
+        ),
         context,
         bindingIndex,
         responseBuilder,
@@ -622,11 +639,14 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
     }
   }
 
-  def determineContentType(bindings: Iterable[HttpBinding]) = {
+  def determineContentType(
+    bindings: Iterable[HttpBinding],
+    messageType: AlloyAbstractRestProtocol.MessageType
+  ) = {
     val locations = Set(Location.DOCUMENT, Location.PAYLOAD)
     bindings.collectFirst {
       case binding if locations(binding.getLocation()) =>
-        getDocumentMediaType()
+        getDocumentMediaType(messageType)
     }
   }
 

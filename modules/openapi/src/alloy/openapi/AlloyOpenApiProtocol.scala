@@ -36,7 +36,9 @@ class AlloyOpenApiProtocol
   override def getProtocolType(): Class[SimpleRestJsonTrait] =
     classOf[SimpleRestJsonTrait]
 
-  def getDocumentMediaType(): String = "application/json"
+  def getDocumentMediaType(
+    messageType: AlloyAbstractRestProtocol.MessageType
+  ): String = "application/json"
 
   override def updateDefaultSettings(
       model: Model,

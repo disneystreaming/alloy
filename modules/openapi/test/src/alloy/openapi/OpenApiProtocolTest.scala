@@ -34,7 +34,9 @@ class OpenApiProtocolTest extends AlloyAbstractRestProtocol[TestJsonTrait] {
   override def getProtocolType(): Class[TestJsonTrait] =
     classOf[TestJsonTrait]
 
-  def getDocumentMediaType(): String = "application/json"
+  def getDocumentMediaType(
+    messageType: AlloyAbstractRestProtocol.MessageType
+  ): String = "application/json"
 
   override def updateDefaultSettings(
       model: Model,
