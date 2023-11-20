@@ -76,7 +76,7 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
     extends OpenApiProtocol[T] {
 
   /** Gets the media type of a document sent in a request, response, or
-   * error of an operation.
+    * error of an operation.
     *
     * @param messageType
     *   The message type (request, response, or error).
