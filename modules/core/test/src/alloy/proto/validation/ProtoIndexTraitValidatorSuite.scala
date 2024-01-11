@@ -23,13 +23,14 @@ import alloy.proto.ProtoInlinedOneOfTrait
 
 import scala.jdk.CollectionConverters._
 import scala.annotation.nowarn
+import alloy.OpenEnumTrait
 
 class ProtoIndexTraitValidatorSuite extends FunSuite {
 
   val string = StringShape.builder.id("com.example#String").build
   val int = IntegerShape.builder.id("com.example#Integer").build
 
-  test("structure - well-formed field numbers") {
+  test("structure - well-formed proto indexes") {
     val foo = StructureShape.builder
       .id("com.example#Foo")
       .addMember(
@@ -53,7 +54,7 @@ class ProtoIndexTraitValidatorSuite extends FunSuite {
     assertEquals(events.length, 0)
   }
 
-  test("structure - duplicate field numbers in structure are invalid") {
+  test("structure - duplicate proto indexes in structure are invalid") {
     val foo = StructureShape.builder
       .id("com.example#Foo1")
       .addMember(
@@ -81,7 +82,7 @@ class ProtoIndexTraitValidatorSuite extends FunSuite {
     )
   }
 
-  test("structure - inconsistent field numbers in structure are invalid") {
+  test("structure - inconsistent proto indexes in member are invalid") {
     val foo = StructureShape.builder
       .id("com.example#Foo")
       .addMember(
@@ -106,7 +107,7 @@ class ProtoIndexTraitValidatorSuite extends FunSuite {
   }
 
   test(
-    "structure - consistent numbers in member's union w/ protoInlinedOneOf are valid"
+    "structure - consistent indexes in member's union w/ protoInlinedOneOf are valid"
   ) {
     val union = UnionShape
       .builder()
@@ -247,7 +248,7 @@ class ProtoIndexTraitValidatorSuite extends FunSuite {
   }
 
   test(
-    "structure - union w/ @protoInlinedOneOf inconsistent numbers in member's union are invalid"
+    "structure - union w/ @protoInlinedOneOf inconsistent indexes in member's union are invalid"
   ) {
     val union = UnionShape
       .builder()
@@ -432,7 +433,7 @@ class ProtoIndexTraitValidatorSuite extends FunSuite {
     )
   }
 
-  test("union - inconsistent numbers are invalid") {
+  test("union - inconsistent proto indexes are invalid") {
     val union = UnionShape
       .builder()
       .id("com.example#Union")
@@ -465,14 +466,14 @@ class ProtoIndexTraitValidatorSuite extends FunSuite {
     )
   }
 
-  test("enum - inconsistent field numbers in structure are invalid") {
+  test("enum - inconsistent proto indexes are invalid") {
     val foo = EnumShape
       .builder()
       .id("com.example#Foo")
       .addMember(
         "NAME",
         "NAME",
-        _.addTrait(new ProtoIndexTrait(1)): @nowarn(
+        _.addTrait(new ProtoIndexTrait(0)): @nowarn(
           "msg=discarded non-Unit value"
         )
       )
@@ -492,21 +493,48 @@ class ProtoIndexTraitValidatorSuite extends FunSuite {
     )
   }
 
-  test("enum - duplicated field numbers in structure are invalid") {
+  test("int enum - inconsistent proto indexes are invalid") {
+    val foo = IntEnumShape
+      .builder()
+      .id("com.example#Foo")
+      .addMember(
+        "NAME",
+        1,
+        _.addTrait(new ProtoIndexTrait(0)): @nowarn(
+          "msg=discarded non-Unit value"
+        )
+      )
+      .addMember("AGE", 1)
+      .build()
+    val model = Model.builder
+      .addShapes(string, int, foo)
+      .build
+    val events = new ProtoIndexTraitValidator()
+      .validate(model)
+      .asScala
+      .map(_.getId)
+      .toList
+    assertEquals(
+      events,
+      List(ProtoIndexTraitValidator.INCONSISTENT_PROTO_INDEXES)
+    )
+  }
+
+  test("enum - duplicated proto indexes are invalid") {
     val foo = EnumShape
       .builder()
       .id("com.example#Foo")
       .addMember(
         "NAME",
         "NAME",
-        _.addTrait(new ProtoIndexTrait(1)): @nowarn(
+        _.addTrait(new ProtoIndexTrait(0)): @nowarn(
           "msg=discarded non-Unit value"
         )
       )
       .addMember(
         "AGE",
         "AGE",
-        _.addTrait(new ProtoIndexTrait(1)): @nowarn(
+        _.addTrait(new ProtoIndexTrait(0)): @nowarn(
           "msg=discarded non-Unit value"
         )
       )
@@ -522,6 +550,145 @@ class ProtoIndexTraitValidatorSuite extends FunSuite {
     assertEquals(
       events,
       List(ProtoIndexTraitValidator.DUPLICATED_PROTO_INDEX)
+    )
+  }
+
+  test("int enum - duplicated proto indexes are invalid") {
+    val foo = IntEnumShape
+      .builder()
+      .id("com.example#Foo")
+      .addMember(
+        "NAME",
+        1,
+        _.addTrait(new ProtoIndexTrait(0)): @nowarn(
+          "msg=discarded non-Unit value"
+        )
+      )
+      .addMember(
+        "AGE",
+        2,
+        _.addTrait(new ProtoIndexTrait(0)): @nowarn(
+          "msg=discarded non-Unit value"
+        )
+      )
+      .build()
+    val model = Model.builder
+      .addShapes(string, int, foo)
+      .build
+    val events = new ProtoIndexTraitValidator()
+      .validate(model)
+      .asScala
+      .map(_.getId)
+      .toList
+    assertEquals(
+      events,
+      List(ProtoIndexTraitValidator.DUPLICATED_PROTO_INDEX)
+    )
+  }
+
+  test("enum - absence of 0 is invalid") {
+    val foo = EnumShape
+      .builder()
+      .id("com.example#Foo")
+      .addMember(
+        "NAME",
+        "NAME",
+        _.addTrait(new ProtoIndexTrait(1)): @nowarn(
+          "msg=discarded non-Unit value"
+        )
+      )
+      .build()
+    val model = Model.builder
+      .addShapes(string, int, foo)
+      .build
+    val events = new ProtoIndexTraitValidator()
+      .validate(model)
+      .asScala
+      .map(_.getId)
+      .toList
+    assertEquals(
+      events,
+      List(ProtoIndexTraitValidator.ENUM_MUST_HAVE_ZERO)
+    )
+  }
+
+  test("int enum - absence of 0 is invalid") {
+    val foo = IntEnumShape
+      .builder()
+      .id("com.example#Foo")
+      .addMember(
+        "NAME",
+        1,
+        _.addTrait(new ProtoIndexTrait(1)): @nowarn(
+          "msg=discarded non-Unit value"
+        )
+      )
+      .build()
+    val model = Model.builder
+      .addShapes(string, int, foo)
+      .build
+    val events = new ProtoIndexTraitValidator()
+      .validate(model)
+      .asScala
+      .map(_.getId)
+      .toList
+    assertEquals(
+      events,
+      List(ProtoIndexTraitValidator.ENUM_MUST_HAVE_ZERO)
+    )
+  }
+
+  test("enum - presence of indexes on string enums is invalid") {
+    val foo = EnumShape
+      .builder()
+      .id("com.example#Foo")
+      .addMember(
+        "NAME",
+        "NAME",
+        _.addTrait(new ProtoIndexTrait(0)): @nowarn(
+          "msg=discarded non-Unit value"
+        )
+      )
+      .addTrait(new OpenEnumTrait())
+      .build()
+    val model = Model.builder
+      .addShapes(string, int, foo)
+      .build
+    val events = new ProtoIndexTraitValidator()
+      .validate(model)
+      .asScala
+      .map(_.getId)
+      .toList
+    assertEquals(
+      events,
+      List(ProtoIndexTraitValidator.OPEN_ENUM_MUST_NOT_HAVE_INDEXES)
+    )
+  }
+
+  test("int enum - presence of indexes on string enums is invalid") {
+    val foo = IntEnumShape
+      .builder()
+      .id("com.example#Foo")
+      .addMember(
+        "NAME",
+        1,
+        _.addTrait(new ProtoIndexTrait(0)): @nowarn(
+          "msg=discarded non-Unit value"
+        )
+      )
+      .addTrait(new OpenEnumTrait())
+      .build()
+    val model = Model.builder
+      .addShapes(string, int, foo)
+      .build
+    val events = new ProtoIndexTraitValidator()
+      .validate(model)
+      .asScala
+      .map(_.getId)
+      .toList
+    assertEquals(
+      events,
+      List(ProtoIndexTraitValidator.OPEN_ENUM_MUST_NOT_HAVE_INDEXES)
     )
   }
 

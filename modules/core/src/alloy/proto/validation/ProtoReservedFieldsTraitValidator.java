@@ -67,7 +67,7 @@ final public class ProtoReservedFieldsTraitValidator extends AbstractValidator {
 		final List<ValidationEvent> checkNumbers = fieldsAndIndexes.values().stream().flatMap(n -> {
 			if (numbers.contains(n)) {
 				return Stream.of(ValidationEvent.builder().id(RESERVED_NUMBER_IN_STRUCTURE)
-						.message("A reserved field number " + n + " was declared as in " + shape + ".").shape(shape)
+						.message("A reserved proto index " + n + " was declared as in " + shape + ".").shape(shape)
 						.severity(Severity.ERROR).build());
 			} else {
 				return Stream.empty();
@@ -78,7 +78,7 @@ final public class ProtoReservedFieldsTraitValidator extends AbstractValidator {
 			final boolean invalid = ranges.stream().anyMatch(r -> r.start <= n && n <= r.end);
 			if (invalid) {
 				return Stream.of(ValidationEvent.builder().id(RESERVED_NUMBER_IN_STRUCTURE)
-						.message("A reserved field number " + n + " was declared as in " + shape + ".").shape(shape)
+						.message("A reserved proto index " + n + " was declared as in " + shape + ".").shape(shape)
 						.severity(Severity.ERROR).build());
 			} else {
 				return Stream.empty();
