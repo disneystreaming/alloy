@@ -24,10 +24,9 @@ namespace alloy
     smithy.api#range
     smithy.api#required
     smithy.api#timestampFormat
-    uncheckedExamples
-    uuidFormat
-    discriminated
-    untagged
+    alloy#uuidFormat
+    alloy#discriminated
+    alloy#untagged
 ])
 @trait(selector: "service")
 structure simpleRestJson {}
