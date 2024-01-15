@@ -12,6 +12,10 @@ Additionally, the following traits can be taken into consideration by other tool
 - alloy.proto#protoEnabled
 - alloy.proto#protoReservedFields
 
+#### Serialisation
+
+The `gRPC` protocol expects the input and output of an operation to be serialised in protobuf, according to the rules described in [protobuf.md](../serialisation/protobuf.md).
+
 #### ⚠️ Out-of-the-box support for `protobuf` or `gRPC` is not provided in smithy4s smithy4s.
 
 In order to make them work you will need to:

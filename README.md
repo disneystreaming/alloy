@@ -5,201 +5,64 @@ A collection of commonly used Smithy shapes.
 
 ## Table of Contents <!-- omit in toc -->
 
-- [Using Alloy](#using-alloy)
 - [Why Alloy?](#why-alloy)
-- [Included Shapes](#included-shapes)
-  - [alloy#dateFormat](#alloydateformat)
-  - [alloy#nullable](#alloynullable)
-  - [alloy#defaultValue](#alloydefaultvalue)
-  - [alloy#dataExamples](#alloydataexamples)
-  - [alloy#openEnum](#alloyopenenum)
-  - [alloy#structurePattern](#alloystructurepattern)
-  - [alloy.openapi](#alloyopenapi)
-    - [alloy.openapi#openapiExtensions](#alloyopenapiopenapiextensions)
+- [Core alloy library](#core-alloy-library)
+  - [Constraints and behavioural traits](#constraints-and-behavioural-traits)
+  - [Serialisation](#serialisation)
+  - [Protocols](#protocols)
 - [Protocol Compliance Module](#protocol-compliance-module)
-  - [Using the Protocol Compliance Tests](#using-the-protocol-compliance-tests)
 - [Working on Alloy](#working-on-alloy)
   - [Publish Local](#publish-local)
   - [Run Tests](#run-tests)
 
-## Using Alloy
-
-Alloy Smithy shapes and validators are published to Maven Central under the following artifact names:
-
-For sbt:
-
-```scala
-"com.disneystreaming.alloy" % "alloy-core" % "x.x.x"
-"com.disneystreaming.alloy" %% "alloy-openapi" % "x.x.x"
-```
-
-For mill:
-
-```scala
-ivy"com.disneystreaming.alloy:alloy-core:x.x.x"
-ivy"com.disneystreaming.alloy::alloy-openapi:x.x.x"
-```
 
 ## Why Alloy?
 
-Alloy was created to unify the Smithy shapes that we use across our projects, including for example `smithy4s` and `smithy-translate`. Having the shapes defined in one spot means that we can use them everywhere and our tooling will interop seamlessly.
+Alloy is smithy library that contains traits and protocols that are not currently provided by the [smithy standard library](https://github.com/smithy-lang/smithy/blob/main/smithy-model/src/main/resources/software/amazon/smithy/model/loader/prelude.smithy). Alloy can be seen as a companion library to the smithy standard library (`smithy.api`).
 
-## Included Shapes
+The goals of alloy are :
 
-Alloy currently includes shapes related to the following two protocols:
+* provide traits aiming at expressing protobuf/gRPC semantics in smithy
+* provide traits allowing to capture patterns and constraints that are common in the industry (some related to http APIs, some more general)
 
-- `alloy#simpleRestJson`
-- `alloy#grpc`
+## Core alloy library
 
-That being said, you can use the shapes in Alloy without using these protocols if you want to customize your protocol differently from what we have defined here.
+The core alloy library, containing shapes and validators, is published to Maven Central at the following coordinates.
 
-
-
-### alloy#dateFormat
-
-This trait is used to express that a `String` in your model is formatted as a date. The format is defined in the [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339#section-5.6). Example: `2022-12-28`.
-
-```smithy
-structure Test {
-  @dateFormat
-  myDate: String
-}
+```
+com.disneystreaming.alloy:alloy-core:x.y.z
 ```
 
-### alloy#nullable
+It contains, in particular, traits and validators associated to the following aspects :
 
-Smithy does not make a distinction between a missing value and `null` but some Interface Definition Languages (IDL) can. This trait can be used to express this distinction.
+### Constraints and behavioural traits
 
-```smithy
-structure Foo {
- @required
- @nullable
- bar: String
-}
-```
+Alloy provides a number of [constraint and behavioural](./docs/misc/behaviour.md) traits that may be leverage by tooling and protocols.
 
-### alloy#defaultValue
+### Serialisation
 
-Smithy 2.0 introduces the [`@default` trait](https://smithy.io/2.0/spec/type-refinement-traits.html#default-trait) but this trait is restrictive and can't be used in some use case. For example, you can use `@defaultValue` to set a default of `"N/A"` on a `String` that's constrained with the `length` trait to a minimum of 5 characters. Smithy's `@default` trait won't allow that.
+Alloy defines a number of behavioural traits that can be leveraged by protocols to tweak serialisation. In particular for the following formats :
 
-```smithy
-@length(min: 5)
-string MyString
+- [JSON](./docs/serialisation/json.md)
+- [Protobuf](./docs/serialisation/protobuf.md)
+- [URL Form Data](./docs/serialisation/urlform.md)
 
-structure Foo {
- @required
- @nullable
- bar: String
-}
-```
+### Protocols
 
-### alloy#dataExamples
+Alloy defines two protocols :
 
-This trait allows you to provide concrete examples of what instances of a given shape will look like. There are three different formats that examples can be provided in: smithy, json, or string.
+- [`alloy#simpleRestJson`](./docs/protocols/SimpleRestJson.md)
+- [`alloy#grpc`](./docs/protocols/gRPC.md)
 
-- Smithy format: Here you will define your examples to match the format of the shape the trait is on. The format must match exactly, and must not include protocol specific information such as `jsonName`. A validator is run on this format type to make sure the data matches the shape it is on.
-- Json format: This format is similar to the smithy one, except you can put anything you want in the contents of the JSON. This means you can include protocol-specific pieces such as taking into account the `jsonName` trait.
-- String format: This is just a string that is not validated. This format is most useful for protocols that do not support JSON.
-
-```smithy
-@dataExamples([
-  {
-    smithy: {
-      name: "Emily",
-      age: 64
-    }
-  },
-  {
-    json: {
-      fullName: "Allison",
-      age: 22
-    }
-  },
-  {
-    string: "{ fullName: \"Sarah\" }"
-  }
-])
-structure User {
-    @jsonName("fullName")
-    name: String
-    age: Integer
-}
-```
-
-### alloy#openEnum
-
-Specifies that an enumeration is open meaning that it can accept "unknown" values that are not explicitly specified inside of the smithy enum shape definition.
-This trait should be mainly be used for interop with external libraries that require it. Often a string or integer type may be more applicable if there are many different
-possible values that the API can return.
-
-This trait can be applied to `enum` or `intEnum` shapes. Additionally it can be used on String shapes with the `smithy.api#enum` trait. This is supported for backward compatibility since the `enum` constraint trait is deprecated.
-
-```smithy
-@openEnum
-enum Shape {
-  SQUARE, CIRCLE
-}
-
-@openEnum
-intEnum IntShape {
-  SQUARE = 1
-  CIRCLE = 2
-}
-```
-
-### alloy#structurePattern
-
-The `alloy#structurePattern` trait provides a way to specify that a given `String` will conform to a provided format and that it should be parsed into a `Structure` rather than a `String`. For example:
-
-```smithy
-@structurePattern(pattern: "{foo}_{bar}", target: FooBar)
-string FooBarString
-
-structure FooBar {
-  @required
-  foo: String
-  @required
-  bar: Integer
-}
-```
-
-Now wherever `FooBarString` is used, it will really be parsing the string into the structure `FooBar`. There are a few requirements for using the `structurePattern` trait that are checked by a validator:
-
-- The target structure must have all required members and all members must target simple shapes.
-- The provided pattern must have all parameters separated by at least one character. The reason for this is that if there is no separation (e.g. "{foo}{bar}") then a parser would not be able to tell when one starts and the other begins.
-- There must be a provided pattern parameter for each member of the structure.
-
-### alloy.openapi
-
-This namespace contains shapes related to the OpenAPI format. These shapes can be used to express OpenAPI specification details that do not translate naturally in Smithy.
-
-#### alloy.openapi#openapiExtensions
-
-OpenAPI has support for [extensions](https://swagger.io/docs/specification/openapi-extensions). You can use this trait to reflect that in your Smithy specification:
-
-```smithy
-@openapiExtensions(
-  "x-foo": "bar"
-)
-list StringList {
-  member: String
-}
-```
 
 ## Protocol Compliance Module
- - Alloy contains a suite of protocol tests utilizing the [AWS HTTP Protocol Compliance Test Module]("https://smithy.io/2.0/additional-specs/http-protocol-compliance-tests.html)
- - These can be used to test an implementation of the simpleRestJson protocol to confirm compliance with the protocol .
-   For sbt:
 
-### Using the Protocol Compliance Tests
-```scala
-"com.disneystreaming.alloy" % "alloy-protocol-tests" % "x.x.x"
+Alloy provides a suite of protocol tests that utilise the [AWS HTTP Protocol Compliance Test Module]("https://smithy.io/2.0/additional-specs/http-protocol-compliance-tests.html. These tests accompany the specification of the `alloy#simpleRestJson` protocol, allowing implementations of that protocol to build confidence that the implemented behaviour is correct as per the specification.
+
+These tests are available on maven central at the following coordinates :
+
 ```
-
-For mill:
-
-```scala
-ivy"com.disneystreaming.alloy:alloy-protocol-tests:x.x.x"
+com.disneystreaming.alloy:alloy-protocol-tests:x.y.z
 ```
 
 ## Working on Alloy
