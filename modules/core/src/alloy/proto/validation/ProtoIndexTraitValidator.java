@@ -99,8 +99,8 @@ final public class ProtoIndexTraitValidator extends AbstractValidator {
 				final List<String> labels = e.getValue();
 				final String memberNames = labels.stream().collect(Collectors.joining(","));
 				return ValidationEvent
-						.builder().id(DUPLICATED_PROTO_INDEX).message("Proto index " + index
-								+ " is used multiple times in members " + memberNames + " of shape " + shape + ".")
+						.builder().id(DUPLICATED_PROTO_INDEX).message("@protoIndex( " + index
+								+ ") is used multiple times in members " + memberNames + " of shape " + shape + ".")
 						.shape(shape).severity(Severity.ERROR).build();
 			});
 		} else {
@@ -113,8 +113,8 @@ final public class ProtoIndexTraitValidator extends AbstractValidator {
 				openStringEnumChecks = Stream.empty();
 			} else {
 				openStringEnumChecks = Stream.of(ValidationEvent.builder().id(OPEN_ENUM_MUST_NOT_HAVE_INDEXES)
-						.message("Members of enumeration" + shape + "must not carry proto indexes.").shape(shape)
-						.severity(Severity.ERROR).build());
+						.message("Members of enumeration" + shape + "must not have the `@protoIndex` trait applied.")
+						.shape(shape).severity(Severity.ERROR).build());
 			}
 		} else {
 			Stream.empty();
@@ -127,11 +127,9 @@ final public class ProtoIndexTraitValidator extends AbstractValidator {
 			if (fieldsAndIndexes.containsValue(Optional.of(new ProtoIndexTrait(0)))) {
 				enumHasZeroChecks = Stream.empty();
 			} else {
-				System.out.println(allFieldsAreIndexed);
-				fieldsAndIndexes.entrySet().forEach(System.out::println);
 				ValidationEvent event = ValidationEvent.builder().id(ENUM_MUST_HAVE_ZERO)
 						.message("One of the members of enumeration" + shape
-								+ "must represent a default value, with proto index set to 0.")
+								+ "must represent a default value, by means of a `@alloy.proto#protoIndex(0)` applied trait")
 						.severity(Severity.ERROR).build();
 				enumHasZeroChecks = Stream.of(event);
 			}
