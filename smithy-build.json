@@ -1,4 +1,5 @@
 {
+  "version": "1.0",
   "imports": ["modules/core/resources", "modules/protocol-tests/resources"],
   "maven": {
     "dependencies": [

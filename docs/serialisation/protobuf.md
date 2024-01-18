@@ -78,6 +78,38 @@ message Foo {
 }
 ```
 
+#### Document
+
+Documents are translate to recursive messages
+
+Smithy:
+
+```smithy
+structure Foo {
+  document: Document
+}
+```
+
+Proto:
+```proto
+message Empty {}
+
+message Document {
+  oneof value {
+    Empty dNull = 1;
+    boolean dBoolean = 2;
+    double dNumber = 3;
+    string dString = 4;
+    repeated MyDocument dArray = 5;
+    map<string, Document> dObject = 6;
+  }
+}
+
+message Foo {
+  Document document = 1;
+}
+```
+
 #### Aggregate Types
 
 ##### Structure
