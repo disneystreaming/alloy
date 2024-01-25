@@ -141,6 +141,10 @@ object core extends BaseJavaModule {
   }
 }
 
+object protobuf extends BaseJavaModule {
+  
+}
+
 val scalaVersionsMap =
   Map("2.13" -> "2.13.7", "2.12" -> "2.12.17", "3" -> "3.3.0")
 object openapi extends Cross[OpenapiModule](scalaVersionsMap.keys.toList)

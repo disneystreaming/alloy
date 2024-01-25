@@ -39,8 +39,8 @@ public class ProtoCompactUUIDTrait extends AnnotationTrait {
 		}
 
 		@Override
-		public GrpcTrait createTrait(ShapeId target, Node node) {
-			return new GrpcTrait(node.expectObjectNode());
+		public ProtoCompactUUIDTrait createTrait(ShapeId target, Node node) {
+			return new ProtoCompactUUIDTrait(node.expectObjectNode());
 		}
 	}
 }

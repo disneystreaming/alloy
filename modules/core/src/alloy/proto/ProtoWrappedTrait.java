@@ -39,8 +39,8 @@ public class ProtoWrappedTrait extends AnnotationTrait {
 		}
 
 		@Override
-		public GrpcTrait createTrait(ShapeId target, Node node) {
-			return new GrpcTrait(node.expectObjectNode());
+		public ProtoWrappedTrait createTrait(ShapeId target, Node node) {
+			return new ProtoWrappedTrait(node.expectObjectNode());
 		}
 	}
 }

@@ -6,109 +6,155 @@ When protocols use protobuf as a serialisation, alloy also proposes a set of sem
 
 For full documentation on what each of these traits does, see the smithy specification [here](modules/core/resources/META-INF/smithy/proto/proto.smithy).
 
+Note that for convenience, `alloy` provides a module containing protobuf definitions that used downstream to ensure that the semantics described in this document are respected.
+
+```
+com.disneystreaming.alloy:alloy-protocol:x.y.z
+```
+
 #### Primitives
 
 Below is a table describing how smithy shapes translate to proto constructs.
 
 Protobuf supports a number of [scalar types](https://developers.google.com/protocol-buffers/docs/proto3#scalar) that do not have first class support in smithy. In order to allow for expressing some of these in smithy, `alloy` provides a `alloy.proto#protoNumType` trait that can refine the meaning of `Integer` or `Long` types in protobuf semantics.
 
-Additionally, in the context of `alloy`, the absence of the `@required` trait is interpreted by referencing wrapper types present in the `google.protobuf` library, which permits the distinction between the absence of a value and the presence of a default value.
 
-| Smithy type          | @protoNumType | @required | Proto                        |
-| -------------------- | ------------- | --------- | ---------------------------- |
-| bigDecimal           | N/A           | N/A       | message { string value = 1 } |
-| bigInteger           | N/A           | N/A       | message { string value = 1 } |
-| blob                 | N/A           | false     | google.protobuf.BytesValue   |
-| blob                 | N/A           | true      | bytes                        |
-| boolean              | N/A           | false     | google.protobuf.BoolValue    |
-| boolean              | N/A           | true      | bool                         |
-| double               | N/A           | false     | google.protobuf.DoubleValue  |
-| double               | N/A           | true      | double                       |
-| float                | N/A           | false     | google.protobuf.FloatValue   |
-| float                | N/A           | true      | float                        |
-| integer, byte, short | FIXED         | false     | google.protobuf.Int32Value   |
-| integer, byte, short | FIXED         | true      | fixed32                      |
-| integer, byte, short | FIXED_SIGNED  | false     | google.protobuf.Int32Value   |
-| integer, byte, short | FIXED_SIGNED  | true      | sfixed32                     |
-| integer, byte, short | N/A           | true      | google.protobuf.Int32Value   |
-| integer, byte, short | N/A           | true      | int32                        |
-| integer, byte, short | SIGNED        | false     | google.protobuf.Int32Value   |
-| integer, byte, short | SIGNED        | true      | sint32                       |
-| integer, byte, short | UNSIGNED      | false     | google.protobuf.UInt32Value  |
-| integer, byte, short | UNSIGNED      | true      | uint32                       |
-| long                 | FIXED         | false     | google.protobuf.Int64Value   |
-| long                 | FIXED         | true      | fixed64                      |
-| long                 | FIXED_SIGNED  | false     | google.protobuf.Int64Value   |
-| long                 | FIXED_SIGNED  | true      | sfixed64                     |
-| long                 | N/A           | true      | google.protobuf.Int64Value   |
-| long                 | N/A           | true      | int64                        |
-| long                 | SIGNED        | false     | google.protobuf.Int64Value   |
-| long                 | SIGNED        | true      | sint64                       |
-| long                 | UNSIGNED      | false     | google.protobuf.UInt64Value  |
-| long                 | UNSIGNED      | true      | uint64                       |
-| string               | N/A           | false     | google.protobuf.StringValue  |
-| string               | N/A           | true      | string                       |
-| timestamp            | N/A           | N/A       | message { long value = 1 }   |
+| Smithy type          | @protoNumType | Proto                                         |
+| -------------------- | ------------- | --------------------------------------------- |
+| boolean              | N/A           | bool                                          |
+| bigDecimal           | N/A           | string                                        |
+| bigInteger           | N/A           | string                                        |
+| blob                 | N/A           | bytes                                         |
+| double               | N/A           | double                                        |
+| float                | N/A           | float                                         |
+| string               | N/A           | string                                        |
+| integer, byte, short | N/A           | int32                                         |
+| integer, byte, short | FIXED         | fixed32                                       |
+| integer, byte, short | FIXED_SIGNED  | sfixed32                                      |
+| integer, byte, short | SIGNED        | sint32                                        |
+| integer, byte, short | UNSIGNED      | uint32                                        |
+| long                 | N/A           | int64                                         |
+| long                 | FIXED         | fixed64                                       |
+| long                 | FIXED_SIGNED  | sfixed64                                      |
+| long                 | SIGNED        | sint64                                        |
+| long                 | UNSIGNED      | uint64                                        |
+| timestamp            | N/A           | message { long seconds = 1; long nanos = 2; } |
 
-_Note: the `@protoNumType` has no effect on non-required integer/long (except `UNSIGNED`). This is because there are no FIXED, FIXED_SIGNED or SIGNED instances in Google's protobuf wrappers_
+##### alloy.proto#protoWrapped
+
+Additionally, in the context of `alloy`, the presence of the `@protoWrapped` trait is interpreted as requiring the primitive to be wrapped in a one-field message.
+
+For instance :
+
+```smithy
+@protoWrapped
+string MyString
+```
+
+would be converted to
+
+```proto
+message MyString {
+  string value = 1;
+}
+```
+
+When converting .smithy IDL files to .proto IDL, types from the `google.protobuf` library and the `alloy.protobuf` library can be used.
+Using `protoWrapped` is interesting as it permits the distinction between the absence of a value and the presence of a default value.
+
+| Smithy type          | @protoNumType |                                 |
+| -------------------- | ------------- | ------------------------------- |
+| float                | N/A           | google.protobuf.FloatValue      |
+| blob                 | N/A           | google.protobuf.BytesValue      |
+| boolean              | N/A           | google.protobuf.BoolValue       |
+| double               | N/A           | google.protobuf.DoubleValue     |
+| bigDecimal           | N/A           | alloy.protobuf.BigDecimalValue  |
+| bigInteger           | N/A           | alloy.protobuf.BigIntegerValue  |
+| string               | N/A           | google.protobuf.StringValue     |
+| integer, byte, short | N/A           | google.protobuf.Int32Value      |
+| integer, byte, short | FIXED         | alloy.protobuf.FixedInt32Value  |
+| integer, byte, short | FIXED_SIGNED  | alloy.protobuf.SFixedInt32Value |
+| integer, byte, short | SIGNED        | alloy.protobuf.SInt32Value      |
+| integer, byte, short | UNSIGNED      | google.protobuf.UInt32Value     |
+| long                 | N/A           | google.protobuf.SInt64Value     |
+| long                 | FIXED         | alloy.protobuf.Fixed64Value     |
+| long                 | FIXED_SIGNED  | alloy.protobuf.SFixed64Value    |
+| long                 | SIGNED        | alloy.protobuf.SInt64Value      |
+| long                 | UNSIGNED      | google.protobuf.UInt64Value     |
+
+##### alloy.proto#protoNumType
+
+Integer and Long shapes can be annotated with the `@alloy.proto#protoNumType` in order to signal what encoding should be used during protobuf serialisation.
+
+- SIGNED
+- UNSIGNED
+- FIXED
+- FIXED_SIGNED
+-
+See [here](https://protobuf.dev/programming-guides/proto3/#scalar) for documentation about these encodings.
+
 
 #### UUIDs
 
-`alloy` gives special meaning to the `alloy#UUID` shape in the context of protobuf : `UUIDs` are supposed to be encoding by means of a message containing two long values, which is more optimal than serialising a string.
+By default, string shapes annotated with `@uuidFormat` are serialised as protobuf strings. However, a `alloy.proto#protoCompactUUID` trait is provided, which signals that the serialised form should be a message containing two int64 values :
 
 Smithy:
 
 ```smithy
+use alloy#uuidFormat
+use alloy.proto#protoCompactUUID
+
+@protoCompactUUID
+@uuidFormat
+string MyUUID
+
 structure Foo {
-  @required
   uuid : alloy#UUID
 }
-
 ```
 
 Proto:
+
 ```proto
-message UUID {
+message MyUUID {
   int64 upper_bits = 1;
   int64 lower_bits = 2;
 }
 
 message Foo {
-  uuid: UUID
+  uuid: MyUUID
 }
 ```
 
 #### Document
 
-Documents are translate to recursive messages
+Documents should be serialised using a protobuf message equivalent to the one below :
 
-Smithy:
-
-```smithy
-structure Foo {
-  document: Document
-}
-```
-
-Proto:
 ```proto
-message Empty {}
+message DNull {
+}
+
+message DArray {
+  repeated Document values = 1;
+}
+
+message DObject {
+  map<string, Document> values = 1;
+}
 
 message Document {
   oneof value {
-    Empty dNull = 1;
-    boolean dBoolean = 2;
+    DNull dNull = 1;
+    bool dBoolean = 2;
     double dNumber = 3;
     string dString = 4;
-    repeated MyDocument dArray = 5;
-    map<string, Document> dObject = 6;
+    DArray dArray = 5;
+    DObject dObject = 6;
   }
 }
-
-message Foo {
-  Document document = 1;
-}
 ```
+
+For convenience, alloy provides this proto definition in a jar publised to maven-central `alloy-protobuf`
 
 #### Aggregate Types
 
@@ -173,7 +219,6 @@ Smithy:
 use alloy.proto#protoInlinedOneOf
 
 structure Union {
-  @required
   value: TestUnion
 }
 
@@ -373,8 +418,7 @@ When one member is annotated with a `@protoIndex`, all members have to be annota
 ##### protoIndex for enumerations
 
 Members of closed enumerations (whether string or int) can be annotated by `alloy.proto#protoIndex` in smithy to customise the corresponding proto index that should be used
-during serialisation. An additional constraint is that when users elect to specify `alloy.proto#protoIndex`, they are required to assign the `0` value to one of the enumeration
-members, as it is a requirement on the protobuf side.
+during serialisation. An additional constraint is that when users elect to specify `alloy.proto#protoIndex`, they are required to assign the `0` value to one of the enumeration members, as it is a requirement on the protobuf side.
 
 On the other hand, members of open enumerations MUST NOT be annotated with `alloy.proto#protoIndex`, as open enumerations in Smithy translate to the raw string/int in protobuf,
 allowing for the capture of unknown value regardless of how the target language generates enumerations.
@@ -423,15 +467,6 @@ union MyUnion {
   b: Integer
 }
 ```
-
-#### alloy.proto#protoNumType
-
-Specifies the type of signing that should be used for integers and longs. Options are:
-
-- SIGNED
-- UNSIGNED
-- FIXED
-- FIXED_SIGNED
 
 ### Additional protobuf-related traits
 

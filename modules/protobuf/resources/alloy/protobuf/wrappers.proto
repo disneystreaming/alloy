@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package alloy.protobuf;
+
+import "alloy/protobuf/types.proto";
+
+message TimestampValue {
+  alloy.protobuf.Timestamp value = 1;
+}
+
+message DocumentValue {
+  alloy.protobuf.Document value = 1;
+}
+
+message CompactUUIDValue {
+  alloy.protobuf.CompactUUID value = 1;
+}
+
+message BigIntegerValue {
+  string value = 1;
+}
+
+message BigDecimalValue {
+  string value = 1;
+}
+
+message ByteValue {
+  int32 value = 1;
+}
+
+message ShortValue {
+  int32 value = 1;
+}
+
+message Fixed32Value {
+  fixed32 value = 1;
+}
+
+message Fixed64Value {
+  fixed64 value = 1;
+}
+
+message SFixed32Value {
+  sfixed32 value = 1;
+}
+
+message SFixed64Value {
+  sfixed64 value = 1;
+}
+
+message SInt32Value {
+  sint32 value = 1;
+}
+
+message SInt64Value {
+  sint64 value = 1;
+}
