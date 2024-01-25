@@ -29,7 +29,7 @@ import alloy.proto.ProtoIndexTrait
 class ProtoIntEnumValidatorSuite extends FunSuite {
 
   test(
-    "int-enum - no zero leads to errors (when shape is connected to proto-enabled shapes )"
+    "int-enum - no zero leads to errors (when shape is connected to proto-enabled shapes)"
   ) {
     val structure = StructureShape
       .builder()

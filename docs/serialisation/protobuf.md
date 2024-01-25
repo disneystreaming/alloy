@@ -1,4 +1,4 @@
-### Protobuf serialisation
+## Protobuf serialisation
 
 When protocols use protobuf as a serialisation, alloy also proposes a set of semantics for how smithy shapes translate to protobuf-specific concepts. In this document, we describe these semantics by explaining how the smithy code should translate to proto code representing the equivalent data.
 
@@ -12,12 +12,12 @@ Note that for convenience, `alloy` provides a module containing protobuf definit
 com.disneystreaming.alloy:alloy-protocol:x.y.z
 ```
 
-#### Validation
+### Validation
 
 `alloy` comes with validator that verifies the abidance of shapes to the rules described below. Note that these validators are protocol-specific, and
 are only verifying shapes that belong to the transitive closure of shapes annotated with either `alloy.proto#grpc` or `alloy.proto#protoEnabled`.
 
-#### Primitives
+### Primitives
 
 Below is a table describing how smithy shapes translate to proto constructs.
 
@@ -45,7 +45,7 @@ Protobuf supports a number of [scalar types](https://developers.google.com/proto
 | long                 | UNSIGNED      | uint64                                        |
 | timestamp            | N/A           | message { long seconds = 1; long nanos = 2; } |
 
-##### alloy.proto#protoWrapped
+#### alloy.proto#protoWrapped
 
 Additionally, in the context of `alloy`, the presence of the `@protoWrapped` trait is interpreted as requiring the primitive to be wrapped in a one-field message.
 
@@ -87,7 +87,7 @@ Using `protoWrapped` is interesting as it permits the distinction between the ab
 | long                 | SIGNED        | alloy.protobuf.SInt64Value      |
 | long                 | UNSIGNED      | google.protobuf.UInt64Value     |
 
-##### alloy.proto#protoNumType
+#### alloy.proto#protoNumType
 
 Integer and Long shapes can be annotated with the `@alloy.proto#protoNumType` in order to signal what encoding should be used during protobuf serialisation.
 
@@ -131,7 +131,7 @@ message Foo {
 }
 ```
 
-#### Document
+### Documents
 
 Documents should be serialised using a protobuf message equivalent to the one below :
 
@@ -161,12 +161,12 @@ message Document {
 
 For convenience, alloy provides this proto definition in a jar publised to maven-central `alloy-protobuf`
 
-#### Aggregate Types
+### Aggregate Types
 
 Structure, unions and (string) enumerations follow the rule that unless specified otherwise, the "proto indexes" (or "field numbers") assigned
 to their members should be monotonically increase. The first member receives the index `1` in the case of structures and unions, whilst it receives the index `0` in the case of enumerations.
 
-##### Structure
+#### Structures
 
 Smithy:
 ```smithy
@@ -186,7 +186,7 @@ message Testing {
 }
 ```
 
-##### Union
+#### Unions
 
 Unions in Smithy are tricky to translate to Protobuf because of the nature of `oneOf` : unions are first-class citizens in Smithy, whereas `oneOf` can only exist relatively to messages in proto. Therefore, the default encoding for unions in protobuf is equivalent to the one of a proto `message` that contains a `definition` field which is the `oneOf`. For example:
 
@@ -250,6 +250,11 @@ message Union {
   }
 }
 ```
+
+##### Union members targeting collections
+
+Protobuf doesn't allow `oneof` members to have `repeated` or `map` fields. As a result, a smithy union with a members targeting a collection shapes MUST
+either have the `@protoWrapped` trait or target a collection shape have the `@protoWrapped` trait.
 
 ##### Inlined unions (`alloy.proto#protoInlinedOneOf`)
 
@@ -335,7 +340,7 @@ message StringStringMap {
 }
 ```
 
-##### String Enum (closed)
+##### String Enumerations (closed)
 
 Smithy:
 ```smithy
@@ -355,7 +360,7 @@ enum Color {
 }
 ```
 
-##### String Enum (open)
+##### String Enumerations (open)
 
 Open string enumerations are considered as raw strings when serialised to protobuf :
 
@@ -380,7 +385,7 @@ message Foo {
 }
 ```
 
-##### Int Enum (closed)
+##### Integer Enumerations (closed)
 
 Each value translates to the proto index. Because of this, one of the values MUST be 0, as proto enforces each enumeration to have a value set to 0.
 
@@ -402,7 +407,7 @@ enum Color {
 }
 ```
 
-##### Int Enum (open)
+##### Integer Enumerations (open)
 
 Open int enumerations are considered as raw integers when serialised to protobuf :
 

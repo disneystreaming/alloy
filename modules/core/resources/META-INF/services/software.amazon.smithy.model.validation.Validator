@@ -3,6 +3,7 @@ alloy.proto.validation.ProtoIndexTraitValidator
 alloy.proto.validation.ProtoInlinedOneOfValidator
 alloy.proto.validation.ProtoReservedFieldsTraitValidator
 alloy.proto.validation.ProtoIntEnumValidator
+alloy.proto.validation.ProtoUnionMemberValidator
 alloy.validation.DataExamplesTraitValidator
 alloy.validation.DefaultValueTraitValidator
 alloy.validation.DiscriminatedUnionValidator
