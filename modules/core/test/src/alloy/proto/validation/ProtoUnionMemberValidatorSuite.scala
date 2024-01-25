@@ -39,13 +39,13 @@ class ProtoUnionMemberValidatorSuite extends FunSuite {
     val list = ListShape
       .builder()
       .id("com.example#List")
-      .member(ShapeId.from("shape.api#String"))
+      .member(ShapeId.from("smithy.api#String"))
       .build()
     val map = MapShape
       .builder()
       .id("com.example#Map")
-      .key(ShapeId.from("shape.api#String"))
-      .value(ShapeId.from("shape.api#String"))
+      .key(ShapeId.from("smithy.api#String"))
+      .value(ShapeId.from("smithy.api#String"))
       .build()
     val foo = UnionShape.builder
       .id("com.example#Foo")
@@ -93,13 +93,13 @@ class ProtoUnionMemberValidatorSuite extends FunSuite {
     val list = ListShape
       .builder()
       .id("com.example#List")
-      .member(ShapeId.from("shape.api#String"))
+      .member(ShapeId.from("smithy.api#String"))
       .build()
     val map = MapShape
       .builder()
       .id("com.example#Map")
-      .key(ShapeId.from("shape.api#String"))
-      .value(ShapeId.from("shape.api#String"))
+      .key(ShapeId.from("smithy.api#String"))
+      .value(ShapeId.from("smithy.api#String"))
       .build()
     val foo = UnionShape.builder
       .id("com.example#Foo")
@@ -128,14 +128,14 @@ class ProtoUnionMemberValidatorSuite extends FunSuite {
     val list = ListShape
       .builder()
       .id("com.example#List")
-      .member(ShapeId.from("shape.api#String"))
+      .member(ShapeId.from("smithy.api#String"))
       .addTrait(new ProtoWrappedTrait())
       .build()
     val map = MapShape
       .builder()
       .id("com.example#Map")
-      .key(ShapeId.from("shape.api#String"))
-      .value(ShapeId.from("shape.api#String"))
+      .key(ShapeId.from("smithy.api#String"))
+      .value(ShapeId.from("smithy.api#String"))
       .addTrait(new ProtoWrappedTrait())
       .build()
     val foo = UnionShape.builder
@@ -159,13 +159,13 @@ class ProtoUnionMemberValidatorSuite extends FunSuite {
     val list = ListShape
       .builder()
       .id("com.example#List")
-      .member(ShapeId.from("shape.api#String"))
+      .member(ShapeId.from("smithy.api#String"))
       .build()
     val map = MapShape
       .builder()
       .id("com.example#Map")
-      .key(ShapeId.from("shape.api#String"))
-      .value(ShapeId.from("shape.api#String"))
+      .key(ShapeId.from("smithy.api#String"))
+      .value(ShapeId.from("smithy.api#String"))
       .build()
     val foo = UnionShape.builder
       .id("com.example#Foo")
