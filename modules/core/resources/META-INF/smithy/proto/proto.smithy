@@ -90,7 +90,9 @@ structure protoInlinedOneOf {}
 // This trait can be used to enforce values being wrapped in
 // single-field messages, which allows for distinguishing between
 // absence of values and default values.
-@trait(selector: ":test(simpleType, member > simpleType)")
+@trait(
+    selector: ":test(simpleType, list, map, member > simpleType, member > list, member > map)"
+)
 structure protoWrapped {}
 
 // indicates that string abiding by @alloy#uuidFormat should
