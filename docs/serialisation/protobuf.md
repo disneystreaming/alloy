@@ -12,6 +12,11 @@ Note that for convenience, `alloy` provides a module containing protobuf definit
 com.disneystreaming.alloy:alloy-protocol:x.y.z
 ```
 
+#### Validation
+
+`alloy` comes with validator that verifies the abidance of shapes to the rules described below. Note that these validators are protocol-specific, and
+are only verifying shapes that belong to the transitive closure of shapes annotated with either `alloy.proto#grpc` or `alloy.proto#protoEnabled`.
+
 #### Primitives
 
 Below is a table describing how smithy shapes translate to proto constructs.
@@ -90,7 +95,7 @@ Integer and Long shapes can be annotated with the `@alloy.proto#protoNumType` in
 - UNSIGNED
 - FIXED
 - FIXED_SIGNED
--
+
 See [here](https://protobuf.dev/programming-guides/proto3/#scalar) for documentation about these encodings.
 
 
@@ -157,6 +162,9 @@ message Document {
 For convenience, alloy provides this proto definition in a jar publised to maven-central `alloy-protobuf`
 
 #### Aggregate Types
+
+Structure, unions and (string) enumerations follow the rule that unless specified otherwise, the "proto indexes" (or "field numbers") assigned
+to their members should be monotonically increase. The first member receives the index `1` in the case of structures and unions, whilst it receives the index `0` in the case of enumerations.
 
 ##### Structure
 
@@ -243,21 +251,66 @@ message Union {
 }
 ```
 
+##### Inlined unions (`alloy.proto#protoInlinedOneOf`)
+
+The `alloy.proto#protoInlinedOneOf` trait can be used to inline the corresponding `oneof` in a protobuf message. A union with this trait MUST be used referenced exactly once, by a structure member.
+
+For example, this is valid:
+
+```smithy
+structure Test {
+  myUnion: MyUnion
+}
+
+@protoInlinedOneOf
+union MyUnion {
+  a: String,
+  b: Integer
+}
+```
+
+But this is not because the `MyUnion` is used in multiple shapes.
+
+```smithy
+structure Test {
+  myUnion: MyUnion
+}
+structure OtherStruct {
+  aUnion: MyUnion
+}
+
+@protoInlinedOneOf
+union MyUnion {
+  a: String,
+  b: Integer
+}
+```
+
+This is also invalid because `MyUnion` is never used.
+
+```smithy
+@protoInlinedOneOf
+union MyUnion {
+  a: String,
+  b: Integer
+}
+```
+
 ##### List
 
 Smithy:
 ```smithy
-list StringArrayType {
+list StringList {
     member: String
 }
-structure StringArray {
-    value: StringArrayType
+structure Struct {
+    value: StringList
 }
 ```
 
 Proto:
 ```proto
-message StringArray {
+message Struct {
   repeated string value = 1;
 }
 ```
@@ -329,14 +382,14 @@ message Foo {
 
 ##### Int Enum (closed)
 
-NB : the value of int enums at the smithy level is irrelevant : unless otherwise specified, each enum value is allocated to a protobuf index.
+Each value translates to the proto index. Because of this, one of the values MUST be 0, as proto enforces each enumeration to have a value set to 0.
 
 Smithy:
 ```smithy
 intEnum Color {
-    RED = 6
-    GREEN = 7
-    BLUE = 8
+    RED = 0
+    GREEN = 5
+    BLUE = 6
 }
 ```
 
@@ -344,8 +397,8 @@ Proto:
 ```proto
 enum Color {
   RED = 0;
-  GREEN = 1;
-  BLUE = 2;
+  GREEN = 5;
+  BLUE = 6;
 }
 ```
 
@@ -376,23 +429,9 @@ message Foo {
 
 #### alloy.proto#protoIndex
 
-Marks an explicit index to be used for a member when it gets serialised to protobuf. For example:
+The `alloy.proto#protoIndex` trait marks an explicit index to be used for a member when it gets serialised to protobuf. For example:
 
-```smithy
-structure Test {
-  str: String
-}
-```
-
-Is equivalent to:
-
-```proto
-message Test {
-  string str = 1;
-}
-```
-
-Where the following:
+the following
 
 ```smithy
 structure Test {
@@ -401,7 +440,7 @@ structure Test {
 }
 ```
 
-Is equivalent to:
+has the following meaning in proto semantics
 
 ```proto
 message Test {
@@ -417,68 +456,19 @@ When one member is annotated with a `@protoIndex`, all members have to be annota
 
 ##### protoIndex for enumerations
 
-Members of closed enumerations (whether string or int) can be annotated by `alloy.proto#protoIndex` in smithy to customise the corresponding proto index that should be used
-during serialisation. An additional constraint is that when users elect to specify `alloy.proto#protoIndex`, they are required to assign the `0` value to one of the enumeration members, as it is a requirement on the protobuf side.
+Members of closed enumerations (whether string or int) can be annotated by `alloy.proto#protoIndex` in smithy to customise the corresponding proto index that should be used during serialisation. An additional constraint is that when users elect to specify `alloy.proto#protoIndex`, they are required to assign the `0` value to one of the enumeration members, as it is a requirement on the protobuf side.
 
-On the other hand, members of open enumerations MUST NOT be annotated with `alloy.proto#protoIndex`, as open enumerations in Smithy translate to the raw string/int in protobuf,
-allowing for the capture of unknown value regardless of how the target language generates enumerations.
-
-#### alloy.proto#protoInlinedOneOf
-
-This annotation can be used to customize the rendering on Unions in protobuf. When you add this annotation to a Union, you must make sure that this Union is used exactly once as part of a structure. A validator bundled in this library will ensure this is the case.
-
-For example, this is valid:
-
-```smithy
-structure Test {
-  myUnion: MyUnion
-}
-
-@protoInlinedOneOf
-union MyUnion {
-  a: String,
-  b: Integer
-}
-```
-
-But this is not because the `MyUnion` is used in multiple shapes.
-
-```smithy
-structure Test {
-  myUnion: MyUnion
-}
-structure OtherStruct {
-  aUnion: MyUnion
-}
-
-@protoInlinedOneOf
-union MyUnion {
-  a: String,
-  b: Integer
-}
-```
-
-This is also invalid because `MyUnion` is never used.
-
-```smithy
-@protoInlinedOneOf
-union MyUnion {
-  a: String,
-  b: Integer
-}
-```
+On the other hand, members of open enumerations MUST NOT be annotated with `alloy.proto#protoIndex`, as open enumerations in Smithy translate to the raw string/int in protobuf, allowing for the capture of unknown value regardless of how the target language generates enumerations.
 
 ### Additional protobuf-related traits
 
 #### alloy.proto#protoEnabled
 
-This trait can be used by tooling to filter-in the list of shapes that should be taken into consideration when performing some protobuf-related validation or processing.
-This is used, for example, by the [smithy-translate](https://github.com/disneystreaming/smithy-translate/) tool.
+This trait can be used by tooling to filter-in the list of shapes that should be taken into consideration when performing some protobuf-related validation or processing. This is used, for example, by the [smithy-translate](https://github.com/disneystreaming/smithy-translate/) tool.
 
 #### alloy.proto#protoReservedFields
 
-This can be used by tooling to mark some fields as reserved, which can be helpful to prevent some backward/forward compatibility problems when using smithy to describe
-protobuf/gRPC interactions.
+This can be used by tooling to mark some fields as reserved, which can be helpful to prevent some backward/forward compatibility problems when using smithy to describe protobuf/gRPC interactions.
 
 It allows to mark certain field indexes as unusable by the smithy specification. For example, if a range is provided of 1 to 10 then the proto indexes
 for any fields in that structure must fall outside of that range. Ranges are inclusive.

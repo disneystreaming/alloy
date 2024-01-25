@@ -21,22 +21,12 @@ structure grpc {}
 
 /// Marks an explicit index to be used for a structure member when it is
 /// interpreted as protobuf. For example:
-/// structure Test {
-/// str: String
-/// }
+///
+/// structure Test { @protoIndex(2) str: String }
+///
 /// Is equivalent to:
-/// message Test {
-/// string str = 1;
-/// }
-/// Where the following:
-/// structure Test {
-/// @protoIndex(2)
-/// str: String
-/// }
-/// Is equivalent to:
-/// message Test {
-/// string str = 2;
-/// }
+///
+/// message Test { string str = 2 }
 @trait(selector: ":is(structure > member,union > member,enum > member)")
 integer protoIndex
 
@@ -105,5 +95,7 @@ structure protoWrapped {}
 
 // indicates that string abiding by @alloy#uuidFormat should
 // be encoded using a proto message containing 2 long values.
-@trait(selector: ":test(string [trait|alloy#uuidFormat], member > string [trait|alloy#uuidFormat])")
+@trait(
+    selector: ":test(string [trait|alloy#uuidFormat], member > string [trait|alloy#uuidFormat])"
+)
 structure protoCompactUUID {}
