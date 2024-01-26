@@ -163,8 +163,10 @@ For convenience, alloy provides this proto definition in a jar publised to maven
 
 ### Aggregate Types
 
-Structure, unions and (string) enumerations follow the rule that unless specified otherwise, the "proto indexes" (or "field numbers") assigned
-to their members should be monotonically increase. The first member receives the index `1` in the case of structures and unions, whilst it receives the index `0` in the case of enumerations.
+In the absence of explicit `@protoIndex` traits on their members, the following rules is applied for structures/unions/string enumerations:
+
+* In the case of structure and union members, the members should be treated as having an implicit protobuf field value starting from 1 for the first member, and increasing monotonically (by 1) for each subsequent member.
+* In the case of string enumerations, the members should be treated as having an implicit protobuf field value string from 0 for the first member, and increasing monotonically (by 1) for each subsequent member.
 
 #### Structures
 
