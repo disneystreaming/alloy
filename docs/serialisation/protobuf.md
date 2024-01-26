@@ -14,7 +14,7 @@ com.disneystreaming.alloy:alloy-protocol:x.y.z
 
 ### Validation
 
-`alloy` comes with validator that verifies the abidance of shapes to the rules described below. Note that these validators are protocol-specific, and
+`alloy` comes with validators that verify the abidance of shapes to the rules described below. Note that these validators are protocol-specific, and
 are only verifying shapes that belong to the transitive closure of shapes annotated with either `alloy.proto#grpc` or `alloy.proto#protoEnabled`.
 
 ### Primitives
