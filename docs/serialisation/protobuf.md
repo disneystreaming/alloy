@@ -137,7 +137,7 @@ Documents should be serialised using a protobuf message equivalent to the [`goog
 
 ### Timestamp
 
-Documents should be serialised using a protobuf message equivalent to the [`google.protobuf.Timestamp`](https://github.com/protocolbuffers/protobuf/blob/5ecfdd76ef25f069cd84fac0b0fb3b95e2d61a34/src/google/protobuf/timestamp.proto#L133) type, which is commonly used in the protobuf ecosystem to represent [Timestamp values](https://protobuf.dev/reference/protobuf/google.protobuf/#timestamp).
+Timestamps should be serialised using a protobuf message equivalent to the [`google.protobuf.Timestamp`](https://github.com/protocolbuffers/protobuf/blob/5ecfdd76ef25f069cd84fac0b0fb3b95e2d61a34/src/google/protobuf/timestamp.proto#L133) type, which is commonly used in the protobuf ecosystem to represent [Timestamp values](https://protobuf.dev/reference/protobuf/google.protobuf/#timestamp).
 
 
 ### Aggregate Types
