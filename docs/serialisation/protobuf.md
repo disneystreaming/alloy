@@ -133,33 +133,12 @@ message Foo {
 
 ### Documents
 
-Documents should be serialised using a protobuf message equivalent to the one below :
+Documents should be serialised using a protobuf message equivalent to the [`google.protobuf.Value`](https://github.com/protocolbuffers/protobuf/blob/5ecfdd76ef25f069cd84fac0b0fb3b95e2d61a34/src/google/protobuf/struct.proto#L62) type, which is commonly used in the protobuf ecosystem to represent [JSON values](https://protobuf.dev/reference/protobuf/google.protobuf/#value).
 
-```proto
-message DNull {
-}
+### Timestamp
 
-message DArray {
-  repeated Document values = 1;
-}
+Documents should be serialised using a protobuf message equivalent to the [`google.protobuf.Timestamp`](https://github.com/protocolbuffers/protobuf/blob/5ecfdd76ef25f069cd84fac0b0fb3b95e2d61a34/src/google/protobuf/timestamp.proto#L133) type, which is commonly used in the protobuf ecosystem to represent [Timestamp values](https://protobuf.dev/reference/protobuf/google.protobuf/#timestamp).
 
-message DObject {
-  map<string, Document> values = 1;
-}
-
-message Document {
-  oneof value {
-    DNull dNull = 1;
-    bool dBoolean = 2;
-    double dNumber = 3;
-    string dString = 4;
-    DArray dArray = 5;
-    DObject dObject = 6;
-  }
-}
-```
-
-For convenience, alloy provides this proto definition in a jar publised to maven-central `alloy-protobuf`
 
 ### Aggregate Types
 
