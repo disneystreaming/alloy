@@ -27,7 +27,9 @@ structure grpc {}
 /// Is equivalent to:
 ///
 /// message Test { string str = 2 }
-@trait(selector: ":is(structure > member,union > member,enum > member)")
+@trait(
+    selector: ":is(structure > member,union > member,enum > member, intEnum > member)"
+)
 integer protoIndex
 
 /// Specifies which type of number signing should be used on integers
