@@ -426,7 +426,7 @@ structure Test {
 }
 ```
 
-has the following meaning in proto semantics
+has the following meaning in protobuf semantics
 
 ```proto
 message Test {
