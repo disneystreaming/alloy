@@ -29,6 +29,7 @@ import alloy.OpenEnumTrait;
 import alloy.proto.ProtoEnabledTrait;
 import alloy.proto.ProtoIndexTrait;
 import alloy.proto.GrpcTrait;
+import alloy.validation.OptionHelper;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -47,8 +48,8 @@ public final class ProtoIntEnumValidator extends AbstractValidator {
 		Set<Shape> grpcShapes = model.getShapesWithTrait(GrpcTrait.class);
 		return Stream.concat(protoEnabledShapes.stream(), grpcShapes.stream())
 				// this rule applies to protoEnabled-connected shapes
-				.flatMap(shape -> walker.walkShapes(shape).stream()).filter(shape -> shape.isIntEnumShape()) //
-				.map(shape -> (IntEnumShape) shape)
+				.flatMap(shape -> walker.walkShapes(shape).stream())
+				.flatMap(shape -> OptionHelper.toStream(shape.asIntEnumShape()))
 				// this rule applies to int enums the members of which are not labelled with
 				// @protoIndex
 				.filter(intEnum -> !intEnum.hasTrait(OpenEnumTrait.class)).filter(intEnum -> intEnum.members().stream()

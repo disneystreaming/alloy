@@ -25,6 +25,7 @@ import software.amazon.smithy.model.neighbor.NeighborProvider;
 import software.amazon.smithy.model.neighbor.Walker;
 import alloy.OpenEnumTrait;
 import alloy.proto.*;
+import alloy.validation.OptionHelper;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -43,8 +44,8 @@ public final class ProtoMapKeyValidator extends AbstractValidator {
 		Set<Shape> grpcShapes = model.getShapesWithTrait(GrpcTrait.class);
 		return Stream.concat(protoEnabledShapes.stream(), grpcShapes.stream())
 				// this rule applies to protoEnabled-connected shapes
-				.flatMap(shape -> walker.walkShapes(shape).stream()).filter(shape -> shape.isMapShape())
-				.map(shape -> (MapShape) shape).flatMap(mapShape -> {
+				.flatMap(shape -> walker.walkShapes(shape).stream())
+				.flatMap(shape -> OptionHelper.toStream(shape.asMapShape())).flatMap(mapShape -> {
 					MemberShape key = mapShape.getKey();
 					Shape keyTarget = model.expectShape(key.getTarget());
 					boolean keyHasWrapped = key.hasTrait(ProtoWrappedTrait.class);
