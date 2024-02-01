@@ -442,7 +442,7 @@ When one member is annotated with a `@protoIndex`, all members have to be annota
 
 ##### protoIndex for enumerations
 
-Members of closed enumerations (whether string or int) can be annotated by `alloy.proto#protoIndex` in smithy to customise the corresponding proto index that should be used during serialisation. An additional constraint is that when users elect to specify `alloy.proto#protoIndex`, they are required to assign the `0` value to one of the enumeration members, as it is a requirement on the protobuf side.
+Members of closed enumerations (whether string or int) can be annotated by `alloy.proto#protoIndex` in smithy to customise the corresponding proto index that should be used during serialisation. An additional constraint is that when users elect to specify `alloy.proto#protoIndex`, they are required to assign the `0` value to one of the enumeration members, as it is a requirement for protobuf.
 
 On the other hand, members of open enumerations MUST NOT be annotated with `alloy.proto#protoIndex`, as open enumerations in Smithy translate to the raw string/int in protobuf, allowing for the capture of unknown value regardless of how the target language generates enumerations.
 
