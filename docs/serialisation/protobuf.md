@@ -239,7 +239,7 @@ either have the `@protoWrapped` trait or target a collection shape have the `@pr
 
 ##### Inlined unions (`alloy.proto#protoInlinedOneOf`)
 
-The `alloy.proto#protoInlinedOneOf` trait can be used to inline the corresponding `oneof` in a protobuf message. A union with this trait MUST be used referenced exactly once, by a structure member.
+The `alloy.proto#protoInlinedOneOf` trait can be used to inline the corresponding `oneof` in a protobuf message. A union with this trait MUST be used exactly once, by a structure member.
 
 For example, this is valid:
 
