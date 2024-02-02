@@ -62,3 +62,7 @@ modules/website/static/api
 *.hnir
 
 .bsp
+
+# smithy LSP
+build/smithy
+.smithy.lsp.log

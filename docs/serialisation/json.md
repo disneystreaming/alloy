@@ -1,8 +1,8 @@
-### JSON serialisation
+## JSON serialisation
 
 `alloy` defines a number of traits that can be taken into consideration by protocols to express additional constraints and encodings typically found in the industry.
 
-#### Unions
+### Unions
 
 Unions in this protocol can be encoded in three different ways: tagged, discriminated, and untagged.
 
@@ -11,7 +11,7 @@ By default, the specification of the Smithy language hints that the `tagged-unio
 However, `alloy#simpleRestJson` supports two additional encodings: `discriminated` and `untagged`, which users can opt-in via the `alloy#discriminated` and `alloy#untagged` trait, respectively. These are mostly offered as a way to retrofit existing APIs in Smithy.
 
 
-##### Tagged union
+#### Tagged union
 
 This is the default behavior, and happens to visually match how Smithy unions are declared. In this encoding, the union is encoded as a JSON object with a single key-value pair, the key signalling which alternative has been encoded.
 

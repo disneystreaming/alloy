@@ -2,6 +2,19 @@ $version: "2"
 
 namespace alloy.test
 
+use alloy#dataExamples
+use alloy#dateFormat
+use alloy#defaultValue
+use alloy#discriminated
+use alloy#nullable
+use alloy#openEnum
+use alloy#simpleRestJson
+use alloy#structurePattern
+use alloy#uncheckedExamples
+use alloy#untagged
+use alloy#urlFormFlattened
+use alloy#urlFormName
+use alloy#uuidFormat
 use alloy.common#countryCodeFormat
 use alloy.common#emailFormat
 use alloy.common#hexColorCodeFormat
@@ -13,34 +26,31 @@ use alloy.proto#protoEnabled
 use alloy.proto#protoIndex
 use alloy.proto#protoInlinedOneOf
 use alloy.proto#protoNumType
+use alloy.proto#protoCompactUUID
+use alloy.proto#protoWrapped
 use alloy.proto#protoReservedFields
-use alloy#dateFormat
-use alloy#defaultValue
-use alloy#discriminated
-use alloy#nullable
-use alloy#openEnum
-use alloy#uncheckedExamples
-use alloy#untagged
-use alloy#uuidFormat
-use alloy#simpleRestJson
-use alloy#dataExamples
-use alloy#structurePattern
-use alloy#urlFormFlattened
-use alloy#urlFormName
 
 @dateFormat
 string MyDate
+
 @emailFormat
-string Email 
+@protoWrapped
+string Email
+
 @countryCodeFormat
 string CountryCode
+
 @languageCodeFormat
 string LanguageCode
+
 @languageTagFormat
 string LanguageTag
+
 @hexColorCodeFormat
 string HexColorCode
+
 @uuidFormat
+@protoCompactUUID
 string ID
 
 structure SomeStruct {
@@ -49,22 +59,21 @@ structure SomeStruct {
     withDef: String
 }
 
-@openapiExtensions(
-  "x-foo": "bar"
-)
+@openapiExtensions("x-foo": "bar")
 list StringList {
     member: String
 }
 
 @discriminated("kind")
 union Thing {
-    a: MyA,
+    a: MyA
     b: MyB
 }
 
 structure MyA {
     value: String
 }
+
 structure MyB {
     value: Integer
 }
@@ -75,7 +84,12 @@ service MyGrpcService {
     operations: [GetAge]
 }
 
-@uncheckedExamples([{title: "dummy", input: { name: "john" }}])
+@uncheckedExamples([{
+    title: "dummy"
+    input: {
+        name: "john"
+    }
+}])
 @http(method: "GET", uri: "/age")
 operation GetAge {
     input := {
@@ -89,7 +103,9 @@ operation GetAge {
 }
 
 @protoEnabled
-@protoReservedFields([{number: 2}])
+@protoReservedFields([{
+    number: 2
+}])
 structure ProtoStruct {
     @protoIndex(1)
     @protoNumType("SIGNED")
@@ -98,7 +114,7 @@ structure ProtoStruct {
 
 @untagged
 union UntaggedUnion {
-    a: Integer,
+    a: Integer
     b: String
 }
 
@@ -115,24 +131,21 @@ structure UnionHost {
 
 @protoInlinedOneOf
 union OtherUnion {
-    a: String,
+    a: String
     b: Integer
 }
 
-@dataExamples([
-    {
-        smithy: {
-            one: "numberOne",
-            two: 2
-        }
-    },
-    {
-        smithy: {
-            one: "numberOneAgain",
-            two: 22
-        }
+@dataExamples([{
+    smithy: {
+        one: "numberOne"
+        two: 2
     }
-])
+}, {
+    smithy: {
+        one: "numberOneAgain"
+        two: 22
+    }
+}])
 structure TestExamples {
     one: String
     two: Integer
@@ -156,10 +169,7 @@ structure TestStringExamples {
     two: Integer
 }
 
-@structurePattern(
-    pattern: "{test}__{test2}"
-    target: TestStructureTarget
-)
+@structurePattern(pattern: "{test}__{test2}", target: TestStructureTarget)
 string TestStructurePattern
 
 structure TestStructureTarget {
@@ -180,7 +190,10 @@ intEnum TestOpenIntEnum {
 }
 
 @openEnum
-@enum([{value: "A", name: "A"}])
+@enum([{
+    value: "A"
+    name: "A"
+}])
 string TestOpenEnumTraitEnum
 
 structure TestUrlFormFlattened {

@@ -6,6 +6,8 @@ The following traits should be taken into consideration by implementors of the p
 
 - alloy.proto#protoIndex
 - alloy.proto#protoNumType
+- alloy.proto#protoWrapped
+- alloy.proto#protoCompactUUID
 
 Additionally, the following traits can be taken into consideration by other tooling to translate smithy specifications to proto specifications.
 

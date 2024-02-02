@@ -107,12 +107,12 @@ final public class ProtoIndexTraitValidator extends AbstractValidator {
 			indexCheck = Stream.empty();
 		}
 
-		Stream<ValidationEvent> openStringEnumChecks = null;
+		Stream<ValidationEvent> openEnumChecks = null;
 		if ((shape.isEnumShape() || shape.isIntEnumShape()) && shape.hasTrait(OpenEnumTrait.class)) {
 			if (noFieldIsIndexed) {
-				openStringEnumChecks = Stream.empty();
+				openEnumChecks = Stream.empty();
 			} else {
-				openStringEnumChecks = Stream.of(ValidationEvent.builder().id(OPEN_ENUM_MUST_NOT_HAVE_INDEXES)
+				openEnumChecks = Stream.of(ValidationEvent.builder().id(OPEN_ENUM_MUST_NOT_HAVE_INDEXES)
 						.message("Members of enumeration" + shape + "must not have the `@protoIndex` trait applied.")
 						.shape(shape).severity(Severity.ERROR).build());
 			}
@@ -137,8 +137,7 @@ final public class ProtoIndexTraitValidator extends AbstractValidator {
 			enumHasZeroChecks = Stream.empty();
 		}
 
-		return Stream.of(indexCheck, enumHasZeroChecks, openStringEnumChecks).flatMap(s -> s)
-				.collect(Collectors.toList());
+		return Stream.of(indexCheck, enumHasZeroChecks, openEnumChecks).flatMap(s -> s).collect(Collectors.toList());
 
 	}
 
