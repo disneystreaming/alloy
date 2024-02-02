@@ -83,7 +83,7 @@ class ProtoIntEnumValidatorSuite extends FunSuite {
   }
 
   test(
-    "int-enum - no-zero on open enums is valid if protoIndex(0) is present"
+    "int-enum - no-zero on closed enums is valid if protoIndex(0) is present"
   ) {
     val structure = StructureShape
       .builder()
