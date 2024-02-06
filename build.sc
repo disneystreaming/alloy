@@ -141,9 +141,7 @@ object core extends BaseJavaModule {
   }
 }
 
-object protobuf extends BaseJavaModule {
-  
-}
+object protobuf extends BaseJavaModule {}
 
 val scalaVersionsMap =
   Map("2.13" -> "2.13.7", "2.12" -> "2.12.17", "3" -> "3.3.0")
@@ -208,8 +206,8 @@ object Deps {
   }
 
   val munit = new {
-    val munit = ivy"org.scalameta::munit::1.0.0-M10"
-    val scalaCheck = ivy"org.scalameta::munit-scalacheck::1.0.0-M10"
+    val munit = ivy"org.scalameta::munit::1.0.0-M11"
+    val scalaCheck = ivy"org.scalameta::munit-scalacheck::1.0.0-M11"
     val all = Agg(munit, scalaCheck)
   }
 }
