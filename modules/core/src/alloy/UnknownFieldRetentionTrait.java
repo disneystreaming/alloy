@@ -1,4 +1,4 @@
-/* Copyright 2023 Disney Streaming
+/* Copyright 2024 Disney Streaming
  *
  * Licensed under the Tomorrow Open Source Technology License, Version 1.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,16 @@ import software.amazon.smithy.model.node.Node;
 import software.amazon.smithy.model.shapes.ShapeId;
 import software.amazon.smithy.model.traits.AnnotationTrait;
 
-public final class UrlFormFlattenedTrait extends AnnotationTrait {
-	public static ShapeId ID = ShapeId.from("alloy#urlFormFlattened");
+public final class UnknownFieldRetentionTrait extends AnnotationTrait {
+	public static ShapeId ID = ShapeId.from("alloy#unknownFieldRetention");
 
-	public UrlFormFlattenedTrait() {
+	public UnknownFieldRetentionTrait() {
 		super(ID, Node.objectNode());
 	}
 
-	public static final class Provider extends AnnotationTrait.Provider<UrlFormFlattenedTrait> {
+	public static final class Provider extends AnnotationTrait.Provider<UnknownFieldRetentionTrait> {
 		public Provider() {
-			super(ID, (node) -> new UrlFormFlattenedTrait());
+			super(ID, (node) -> new UnknownFieldRetentionTrait());
 		}
 	}
 }

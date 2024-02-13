@@ -1,4 +1,4 @@
-/* Copyright 2023 Disney Streaming
+/* Copyright 2024 Disney Streaming
  *
  * Licensed under the Tomorrow Open Source Technology License, Version 1.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,25 +18,25 @@ package alloy
 import software.amazon.smithy.model.shapes.ListShape
 import software.amazon.smithy.model.shapes.MemberShape
 import software.amazon.smithy.model.shapes.ShapeId
-import software.amazon.smithy.model.shapes.StringShape
+import software.amazon.smithy.model.shapes.DocumentShape
 import software.amazon.smithy.model.shapes.StructureShape
 import software.amazon.smithy.model.Model
 import java.util.Optional
 
-final class UrlFormFlattenedTraitProviderSpec extends munit.FunSuite {
+final class UnknownFieldRetentionTraitProviderSpec extends munit.FunSuite {
 
   test("has trait") {
-    val stringShape = StringShape
+    val documentShape = DocumentShape
       .builder()
-      .id(ShapeId.fromParts("test", "MyString"))
+      .id(ShapeId.fromParts("test", "MyDocument"))
       .build()
-    val listShape = ListShape
+    val mapShape = ListShape
       .builder()
-      .id(ShapeId.fromParts("test", "MyList"))
-      .member(stringShape.getId)
+      .id(ShapeId.fromParts("test", "MyMap"))
+      .member(documentShape.getId)
       .build()
     val structId = ShapeId.fromParts("test", "MyStruct")
-    val targetId = structId.withMember("myList")
+    val targetId = structId.withMember("myMap")
     val structShape = StructureShape
       .builder()
       .id(structId)
@@ -44,21 +44,21 @@ final class UrlFormFlattenedTraitProviderSpec extends munit.FunSuite {
         MemberShape
           .builder()
           .id(targetId)
-          .target(listShape.getId)
-          .addTrait(new UrlFormFlattenedTrait)
+          .target(mapShape.getId)
+          .addTrait(new UnknownFieldRetentionTrait)
           .build()
       )
       .build()
 
     val model =
       Model.assembler.disableValidation
-        .addShapes(structShape, listShape, stringShape)
+        .addShapes(structShape, mapShape, documentShape)
         .assemble()
         .unwrap()
 
     val result = model
       .getShape(targetId)
-      .map(shape => shape.hasTrait(classOf[UrlFormFlattenedTrait]))
+      .map(shape => shape.hasTrait(classOf[UnknownFieldRetentionTrait]))
 
     assertEquals(result, Optional.of(true))
   }

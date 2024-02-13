@@ -23,5 +23,6 @@ alloy.StructurePatternTrait$Provider
 alloy.UrlFormFlattenedTrait$Provider
 alloy.UrlFormNameTrait$Provider
 alloy.UncheckedExamplesTrait$Provider
+alloy.UnknownFieldRetentionTrait$Provider
 alloy.UntaggedUnionTrait$Provider
 alloy.UuidFormatTrait$Provider
