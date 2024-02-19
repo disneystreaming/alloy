@@ -141,9 +141,7 @@ object core extends BaseJavaModule {
   }
 }
 
-object protobuf extends BaseJavaModule {
-  
-}
+object protobuf extends BaseJavaModule {}
 
 val scalaVersionsMap =
   Map("2.13" -> "2.13.7", "2.12" -> "2.12.17", "3" -> "3.3.0")
@@ -189,7 +187,7 @@ object `protocol-tests` extends BaseJavaModule {
 
 object Deps {
   val smithy = new {
-    val smithyVersion = "1.43.0"
+    val smithyVersion = "1.45.0"
     val model = ivy"software.amazon.smithy:smithy-model:$smithyVersion"
     val awsTraits = ivy"software.amazon.smithy:smithy-aws-traits:$smithyVersion"
     val awsProtocolTestTraits =
