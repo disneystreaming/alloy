@@ -211,10 +211,5 @@ structure TestUnknownFieldRetention {
    foo: String
    bar: String
    @unknownFieldRetention
-   bazes: RetainedUnknownFields
-}
-
-map RetainedUnknownFields {
-   key: String
-   value: Document
+   bazes: Document
 }

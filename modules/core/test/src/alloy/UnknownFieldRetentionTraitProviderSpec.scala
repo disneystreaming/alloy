@@ -15,7 +15,6 @@
 
 package alloy
 
-import software.amazon.smithy.model.shapes.ListShape
 import software.amazon.smithy.model.shapes.MemberShape
 import software.amazon.smithy.model.shapes.ShapeId
 import software.amazon.smithy.model.shapes.DocumentShape
@@ -30,11 +29,6 @@ final class UnknownFieldRetentionTraitProviderSpec extends munit.FunSuite {
       .builder()
       .id(ShapeId.fromParts("test", "MyDocument"))
       .build()
-    val mapShape = ListShape
-      .builder()
-      .id(ShapeId.fromParts("test", "MyMap"))
-      .member(documentShape.getId)
-      .build()
     val structId = ShapeId.fromParts("test", "MyStruct")
     val targetId = structId.withMember("myMap")
     val structShape = StructureShape
@@ -44,7 +38,7 @@ final class UnknownFieldRetentionTraitProviderSpec extends munit.FunSuite {
         MemberShape
           .builder()
           .id(targetId)
-          .target(mapShape.getId)
+          .target(documentShape.getId)
           .addTrait(new UnknownFieldRetentionTrait)
           .build()
       )
@@ -52,7 +46,7 @@ final class UnknownFieldRetentionTraitProviderSpec extends munit.FunSuite {
 
     val model =
       Model.assembler.disableValidation
-        .addShapes(structShape, mapShape, documentShape)
+        .addShapes(structShape, documentShape)
         .assemble()
         .unwrap()
 
