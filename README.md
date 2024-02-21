@@ -37,7 +37,7 @@ It contains, in particular, traits and validators associated to the following as
 
 ### Constraints and behavioural traits
 
-Alloy provides a number of [constraint and behavioural](./docs/misc/behaviour.md) traits that may be leverage by tooling and protocols.
+Alloy provides a number of [constraint and behavioural](./docs/misc/constraints.md) traits that may be leverage by tooling and protocols.
 
 ### Serialisation
 
