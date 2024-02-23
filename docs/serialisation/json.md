@@ -110,3 +110,45 @@ are encoded as such
 { "tpe": "first", "myString": "alloy" }
 { "tpe": "second", "myInt": 42 }
 ```
+
+### Null values
+
+By default, in Smithy a field having a value of `null` and the field being absent are not distinguished. However, this is not required by JSON semantics and APIs can treat the two differently. In order to support this, the additional trait `alloy.nullable` is provided. Annotating the member of a structure field with this indicates that explicit nulls should be preserved on both serialization and deserialization.
+
+For example, assuming the following smithy structure
+
+```smithy
+use alloy#nullable
+
+structure Foo {
+  @nullable
+  nullable: Integer
+  regular: Integer
+}
+```
+
+The JSON objects
+
+```json
+{ "nullable": null, "regular": null }
+{ "nullable": 4, "regular": 4 }
+{}
+```
+
+are respectively decoded as
+
+```scala
+Foo(Some(Nullable.Null), None)
+Foo(Some(Nullable.Value(4)), Some(4))
+Foo(None, None)
+```
+
+or some similar type which preserves the information that an explicit `null` was passed. These objects are in turn encoded as
+
+```json
+{ "nullable": null }
+{ "nullable": 4, "regular": 4 }
+{}
+```
+
+This means that `@nullable` allows round-tripping null values.
