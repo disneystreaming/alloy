@@ -135,7 +135,7 @@ The JSON objects
 {}
 ```
 
-are respectively decoded as
+are respectively decoded as follows in Scala (when using [smithy4s](https://disneystreaming.github.io/smithy4s/)):  
 
 ```scala
 Foo(Some(Nullable.Null), None)
