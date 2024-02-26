@@ -113,7 +113,7 @@ are encoded as such
 
 ### Null values
 
-By default, in Smithy a field having a value of `null` and the field being absent are not distinguished. However, this is not required by JSON semantics and APIs can treat the two differently. In order to support this, the additional trait `alloy.nullable` is provided. Annotating the member of a structure field with this indicates that explicit nulls should be preserved on both serialization and deserialization.
+The standard Smithy toolset does not provide any semantics for distinguishing between a JSON field being set to `null` and the same field being absent from its carrying JSON object. However, depending on the use-case, the difference can be meaningful. In order to support such use-cases, the additional trait `alloy.nullable` is provided. Annotating the member of a structure field with this indicates that a value serialised to `null` was a conscious decision (as opposed to omitting the value altogether), and that deserialisation should retain this information.
 
 For example, assuming the following smithy structure
 
