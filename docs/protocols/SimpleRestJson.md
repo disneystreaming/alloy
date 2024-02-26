@@ -22,6 +22,7 @@ The `alloy#simpleRestJson` protocol is a REST protocol in which all HTTP bodies 
 - alloy#uuidFormat
 - alloy#discriminated
 - alloy#untagged
+- alloy#nullable
 
 #### Protocol Behavior and Semantics
 
@@ -120,3 +121,4 @@ Furthermore, implementors of the protocol have to take into consideration additi
 - `alloy#untagged`
 - `alloy#discriminated`
 - `alloy#uuidFormat`
+- `alloy#nullable`
