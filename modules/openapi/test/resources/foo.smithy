@@ -2,6 +2,7 @@ namespace foo
 
 use alloy#simpleRestJson
 use alloy#discriminated
+use alloy#nullable
 use alloy#untagged
 use alloy#dataExamples
 
@@ -80,6 +81,9 @@ structure Greeting {
 @httpError(500)
 structure GeneralServerError {
   message: String,
+
+  @nullable
+  count: Integer
 }
 
 structure GetUnionResponse {
