@@ -272,6 +272,11 @@
         "properties": {
           "message": {
             "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           }
         }
       },
