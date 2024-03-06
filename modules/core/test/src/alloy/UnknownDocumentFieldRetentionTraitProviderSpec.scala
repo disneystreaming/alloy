@@ -22,7 +22,8 @@ import software.amazon.smithy.model.shapes.StructureShape
 import software.amazon.smithy.model.Model
 import java.util.Optional
 
-final class UnknownFieldRetentionTraitProviderSpec extends munit.FunSuite {
+final class UnknownDocumentFieldRetentionTraitProviderSpec
+    extends munit.FunSuite {
 
   test("has trait") {
     val documentShape = DocumentShape
@@ -39,7 +40,7 @@ final class UnknownFieldRetentionTraitProviderSpec extends munit.FunSuite {
           .builder()
           .id(targetId)
           .target(documentShape.getId)
-          .addTrait(new UnknownFieldRetentionTrait)
+          .addTrait(new UnknownDocumentFieldRetentionTrait)
           .build()
       )
       .build()
@@ -52,7 +53,7 @@ final class UnknownFieldRetentionTraitProviderSpec extends munit.FunSuite {
 
     val result = model
       .getShape(targetId)
-      .map(shape => shape.hasTrait(classOf[UnknownFieldRetentionTrait]))
+      .map(shape => shape.hasTrait(classOf[UnknownDocumentFieldRetentionTrait]))
 
     assertEquals(result, Optional.of(true))
   }
