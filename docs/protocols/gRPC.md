@@ -6,6 +6,7 @@ The following traits should be taken into consideration by implementors of the p
 
 - alloy.proto#protoIndex
 - alloy.proto#protoNumType
+- alloy.proto#protoTimestampFormat
 - alloy.proto#protoWrapped
 - alloy.proto#protoCompactUUID
 
