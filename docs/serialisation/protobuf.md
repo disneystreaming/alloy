@@ -44,7 +44,7 @@ Protobuf supports a number of [scalar types](https://developers.google.com/proto
 | long                 | SIGNED        | N/A                   | sint64                                        |
 | long                 | UNSIGNED      | N/A                   | uint64                                        |
 | timestamp            | N/A           | none or PROTOBUF      | message { long seconds = 1; long nanos = 2; } |
-| timestamp            | N/A           | EPOCH_MILLIS          | int64                                         |
+| timestamp            | N/A           | EPOCH_MILLIS          | message { long milliseconds = 1;              |
 
 #### alloy.proto#protoWrapped
 
@@ -103,7 +103,7 @@ See [here](https://protobuf.dev/programming-guides/proto3/#scalar) for documenta
 
 Timestamp shapes can be annotated with the `@alloy.proto#protoTimestampFormat` trait in order to signal what type of encoding should be used for timestamps in proto serialisation/deserialisation.
 
-Possible values are `PROTOBUF` and `EPOCH_MILLIS`. `PROTOBUF` is the default that is used in the absence of this trait. When `EPOCH_MILLIS` is specified then the timestamp will be represented as an `int64` in the corresponding proto definition.
+Possible values are `PROTOBUF` and `EPOCH_MILLIS`. `PROTOBUF` is the default that is used in the absence of this trait. When `EPOCH_MILLIS` is specified then the timestamp will be represented as a wrapped `int64` in the corresponding proto definition.
 
 #### UUIDs
 
