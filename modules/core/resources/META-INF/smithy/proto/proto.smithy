@@ -12,6 +12,7 @@ use alloy#uuidFormat
         protoReservedFields
         protoIndex
         protoNumType
+        protoTimestampFormat
         protoEnabled
         uncheckedExamples
     ]
@@ -40,6 +41,16 @@ enum protoNumType {
     UNSIGNED
     FIXED
     FIXED_SIGNED
+}
+
+/// Specifies which type of timestamp representation should be used
+/// PROTOBUF indicates that the default encoding should be used
+/// EPOCH_MILLIS indicates that an int64 should be used instead of the
+/// default encoding.
+@trait(selector: ":test(timestamp, member > timestamp)")
+enum protoTimestampFormat {
+  PROTOBUF
+  EPOCH_MILLIS
 }
 
 /// Marks certain field indexes as unusable by the smithy

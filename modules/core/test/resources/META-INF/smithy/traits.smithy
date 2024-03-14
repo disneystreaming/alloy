@@ -26,6 +26,7 @@ use alloy.proto#protoEnabled
 use alloy.proto#protoIndex
 use alloy.proto#protoInlinedOneOf
 use alloy.proto#protoNumType
+use alloy.proto#protoTimestampFormat
 use alloy.proto#protoCompactUUID
 use alloy.proto#protoWrapped
 use alloy.proto#protoReservedFields
@@ -110,6 +111,11 @@ structure ProtoStruct {
     @protoIndex(1)
     @protoNumType("SIGNED")
     age: Integer
+}
+
+structure ProtoStructTwo {
+    @protoTimestampFormat("EPOCH_MILLIS")
+    test: Timestamp
 }
 
 @untagged
