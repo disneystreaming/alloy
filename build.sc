@@ -187,7 +187,7 @@ object `protocol-tests` extends BaseJavaModule {
 
 object Deps {
   val smithy = new {
-    val smithyVersion = "1.45.0"
+    val smithyVersion = "1.46.0"
     val model = ivy"software.amazon.smithy:smithy-model:$smithyVersion"
     val awsTraits = ivy"software.amazon.smithy:smithy-aws-traits:$smithyVersion"
     val awsProtocolTestTraits =
