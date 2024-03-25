@@ -32,6 +32,7 @@ import software.amazon.smithy.openapi.model._
 import java.util
 import java.util.function.Function
 import scala.jdk.CollectionConverters._
+import software.amazon.smithy.model.traits.ExamplesTrait.Example
 
 /*
  * Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
@@ -426,6 +427,43 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
     result.asScala
   }
 
+  private def reorganizeExampleTraits(
+      operation: OperationShape,
+      shape: StructureShape
+  ): Shape = {
+    val isErrorShape = shape.hasTrait(classOf[ErrorTrait])
+    val operationOrError =
+      if (isErrorShape) shape
+      else operation
+
+    val allExamples: List[Example] =
+      operation
+        .getTrait(classOf[ExamplesTrait])
+        .asScala
+        .toList
+        .flatMap(_.getExamples.asScala)
+    val allRelevantExamples: List[Example] =
+      // error response so only include examples that are matching to this error shape
+      if (isErrorShape)
+        allExamples
+          .filter(
+            _.getError().asScala.map(_.getShapeId).contains(shape.toShapeId)
+          )
+      // not an error response so no error examples should be included
+      else allExamples.filter(_.getError().isEmpty())
+    val newExamplesTraitBuilder = ExamplesTrait.builder()
+    allRelevantExamples.foreach { ex => newExamplesTraitBuilder.addExample(ex) }
+    val exTrait: Trait = newExamplesTraitBuilder.build()
+    val newShape: Shape =
+      (Shape.shapeToBuilder(operationOrError): AbstractShapeBuilder[_, _])
+        .addTrait(exTrait)
+        .build()
+
+    if (allRelevantExamples.nonEmpty)
+      newShape
+    else operationOrError
+  }
+
   private def updateResponsesMapWithResponseStatusAndObject(
       context: Context[T],
       bindingIndex: HttpBindingIndex,
@@ -433,9 +471,7 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
       shape: StructureShape,
       responses: util.Map[String, ResponseObject]
   ) = {
-    val operationOrError =
-      if (shape.hasTrait(classOf[ErrorTrait])) shape
-      else operation
+    val operationOrError = reorganizeExampleTraits(operation, shape)
     val statusCode = context.getOpenApiProtocol.getOperationResponseStatusCode(
       context,
       operationOrError

@@ -1,3 +1,5 @@
+$version: "2"
+
 namespace foo
 
 use alloy#simpleRestJson
@@ -14,7 +16,7 @@ use alloy#dataExamples
 service HelloWorldService {
   version: "0.0.1",
   errors: [GeneralServerError],
-  operations: [Greet, GetUnion, GetValues]
+  operations: [Greet, GetUnion, GetValues, TestErrorsInExamples]
 }
 
 @externalDocumentation(
@@ -26,6 +28,49 @@ service HelloWorldService {
 operation Greet {
   input: Person,
   output: Greeting
+}
+
+@error("client")
+@httpError(404)
+structure NotFound {
+  @required
+  message: String
+}
+
+@examples([
+  {
+      title: "ONE"
+      input: {
+          in: "test input"
+      }
+      output: {
+          out: "test output"
+      }
+  }
+  {
+        title: "TWO"
+        input: {
+            in: "test input two"
+        }
+        error: {
+            shapeId: NotFound
+            content: {
+                message: "Not found message"
+            }
+        }
+    }
+])
+@http(method: "POST", uri: "/test_errors")
+operation TestErrorsInExamples {
+  input := {
+    @required
+    in: String
+  }
+  output := {
+    @required
+    out: String
+  }
+  errors: [NotFound]
 }
 
 @readonly

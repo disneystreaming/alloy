@@ -69,9 +69,11 @@ object ExampleNode {
       memberNames: List[String]
   ): ExampleNode = {
     val members: List[(String, Node)] = memberNames.flatMap(name =>
-      example.getOutput.asScala.flatMap(
-        _.getMember(name).asScala.map(name -> _)
-      )
+      example.getOutput.asScala
+        .orElse(example.getError.asScala.map(_.getContent))
+        .flatMap(
+          _.getMember(name).asScala.map(name -> _)
+        )
     )
     ExampleNode(example, members)
   }
