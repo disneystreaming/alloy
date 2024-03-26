@@ -459,9 +459,7 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
         .addTrait(exTrait)
         .build()
 
-    if (allRelevantExamples.nonEmpty)
-      newShape
-    else operationOrError
+    newShape
   }
 
   private def updateResponsesMapWithResponseStatusAndObject(
