@@ -39,26 +39,26 @@ structure NotFound {
 
 @examples([
   {
-      title: "ONE"
-      input: {
-          in: "test input"
-      }
-      output: {
-          out: "test output"
-      }
+    title: "ONE"
+    input: {
+        in: "test input"
+    }
+    output: {
+        out: "test output"
+    }
   }
   {
-        title: "TWO"
-        input: {
-            in: "test input two"
-        }
-        error: {
-            shapeId: NotFound
-            content: {
-                message: "Not found message"
-            }
+    title: "TWO"
+    input: {
+        in: "test input two"
+    }
+    error: {
+        shapeId: NotFound
+        content: {
+            message: "Not found message"
         }
     }
+  }
 ])
 @http(method: "POST", uri: "/test_errors")
 operation TestErrorsInExamples {
