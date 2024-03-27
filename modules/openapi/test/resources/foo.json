@@ -129,6 +129,79 @@
         }
       }
     },
+    "/test_errors": {
+      "post": {
+        "operationId": "TestErrorsInExamples",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TestErrorsInExamplesRequestContent"
+              },
+              "examples": {
+                "ONE": {
+                  "value": {
+                    "in": "testinput"
+                  }
+                },
+                "TWO": {
+                  "value": {
+                    "in": "testinputtwo"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "TestErrorsInExamples200response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestErrorsInExamplesResponseContent"
+                },
+                "examples": {
+                  "ONE": {
+                    "value": {
+                      "out": "testoutput"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "NotFound404response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotFoundResponseContent"
+                },
+                "examples": {
+                  "TWO": {
+                    "value": {
+                      "message": "Notfoundmessage"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "GeneralServerError500response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/values": {
       "get": {
         "operationId": "GetValues",
@@ -340,6 +413,17 @@
           }
         ]
       },
+      "NotFoundResponseContent": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
       "SomeValue": {
         "oneOf": [
           {
@@ -351,6 +435,28 @@
             "title": "value",
             "format": "int32"
           }
+        ]
+      },
+      "TestErrorsInExamplesRequestContent": {
+        "type": "object",
+        "properties": {
+          "in": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "in"
+        ]
+      },
+      "TestErrorsInExamplesResponseContent": {
+        "type": "object",
+        "properties": {
+          "out": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "out"
         ]
       }
     }
