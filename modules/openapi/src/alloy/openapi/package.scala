@@ -81,8 +81,9 @@ package object openapi {
         config.setService(serviceId)
         config.setProtocol(protocol)
         config.setIgnoreUnsupportedTraits(true)
-        val openapi = OpenApiConverter.create().config(config).convert(model)
-        val jsonString = Node.prettyPrintJson(openapi.toNode())
+        val openapi =
+          OpenApiConverter.create().config(config).convertToNode(model)
+        val jsonString = Node.prettyPrintJson(openapi)
         OpenApiConversionResult(protocol, serviceId, jsonString)
       }
     }
