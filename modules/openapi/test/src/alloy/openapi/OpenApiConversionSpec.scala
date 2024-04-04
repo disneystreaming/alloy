@@ -19,8 +19,11 @@ import _root_.software.amazon.smithy.model.Model
 
 import scala.io.Source
 import scala.util.Using
+import software.amazon.smithy.model.node.Node
 import software.amazon.smithy.openapi.OpenApiConfig
 import software.amazon.smithy.openapi.OpenApiVersion
+
+import scala.jdk.CollectionConverters._
 
 final class OpenApiConversionSpec extends munit.FunSuite {
 
@@ -73,16 +76,51 @@ final class OpenApiConversionSpec extends munit.FunSuite {
       .assemble()
       .unwrap()
 
-    val result = convertWithConfig(model, None, _ => {
-      val config = new OpenApiConfig()
-      config.setVersion(OpenApiVersion.VERSION_3_1_0)
-      config
-    })
+    val result = convertWithConfig(
+      model,
+      None,
+      _ => {
+        val config = new OpenApiConfig()
+        config.setVersion(OpenApiVersion.VERSION_3_1_0)
+        config
+      }
+    )
       .map(_.contents)
       .mkString
       .filterNot(_.isWhitespace)
 
     assert(result.contains("\"openapi\":\"3.1.0"))
+  }
+
+  test("OpenAPI conversion with JSON manipulating config") {
+    val model = Model
+      .assembler()
+      .addImport(getClass().getClassLoader().getResource("foo.smithy"))
+      .discoverModels()
+      .assemble()
+      .unwrap()
+
+    val config = new OpenApiConfig()
+    config.setJsonAdd(
+      Map[String, Node](
+        "/info/title" -> Node.from("Customtitlegoeshere")
+      ).asJava
+    )
+    config.setSubstitutions(
+      Map[String, Node]("X-Bamtech-Partner" -> Node.from("X-Foo")).asJava
+    )
+
+    val result = convertWithConfig(
+      model,
+      None,
+      _ => config
+    ).map(_.contents)
+      .mkString
+      .filterNot(_.isWhitespace)
+
+    assert(result.contains("\"title\":\"Customtitlegoeshere\""))
+    assert(!result.contains("X-Bamtech-Partner"))
+    assert(result.contains("\"name\":\"X-Foo\""))
   }
 
 }
