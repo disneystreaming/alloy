@@ -314,5 +314,5 @@ operation HttpPayloadWithDefault {
 structure HttpPayloadWithDefaultInputOutput {
     @httpPayload
     @default("default value")
-    nested: String,
+    body: String,
 }

@@ -18,7 +18,7 @@ apply HttpPayloadWithDefault @httpRequestTests([{
     }
     requireHeaders: ["Content-Length"]
     params: {
-        nested: "custom value"
+        body: "custom value"
     }
     bodyMediaType: "application/json"
 }, {
@@ -31,7 +31,7 @@ apply HttpPayloadWithDefault @httpRequestTests([{
         "Content-Type": "application/json"
     }
     params: {
-        nested: "default value"
+        body: "default value"
     }
 }])
 
@@ -46,7 +46,7 @@ apply HttpPayloadWithDefault @httpResponseTests([{
         "Content-Type": "application/json"
     }
     params: {
-        nested: "custom value"
+        body: "custom value"
     }
 }, {
     id: "SimpleRestJsonNoneHttpPayloadWithDefault"
@@ -57,6 +57,6 @@ apply HttpPayloadWithDefault @httpResponseTests([{
         "Content-Type": "application/json"
     }
     params: {
-        nested: "default value"
+        body: "default value"
     }
 }])
