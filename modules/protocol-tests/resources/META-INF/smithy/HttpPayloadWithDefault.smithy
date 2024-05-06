@@ -34,3 +34,29 @@ apply HttpPayloadWithDefault @httpRequestTests([{
         nested: "default value"
     }
 }])
+
+apply HttpPayloadWithDefault @httpResponseTests([{
+    id: "SimpleRestJsonSomeHttpPayloadWithDefault"
+    documentation: "Pass simple string value as is if payload provided"
+    protocol: simpleRestJson
+    code: 200
+    body: "\"custom value\""
+    bodyMediaType: "application/json"
+    headers: {
+        "Content-Type": "application/json"
+    }
+    params: {
+        nested: "custom value"
+    }
+}, {
+    id: "SimpleRestJsonNoneHttpPayloadWithDefault"
+    documentation: "Use default value when there is no payload"
+    protocol: simpleRestJson
+    code: 200
+    headers: {
+        "Content-Type": "application/json"
+    }
+    params: {
+        nested: "default value"
+    }
+}])
