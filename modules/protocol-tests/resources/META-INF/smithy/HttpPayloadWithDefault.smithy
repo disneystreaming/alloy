@@ -27,9 +27,9 @@ apply HttpPayloadWithDefault @httpRequestTests([{
     protocol: simpleRestJson
     method: "PUT"
     uri: "/httpPayloadWithDefault"
-    // headers: {
-    // "Content-Type": "application/json"
-    // }
+    headers: {
+        "Content-Type": "application/json"
+    }
     params: {
         nested: "default value"
     }
