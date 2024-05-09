@@ -27,9 +27,6 @@ apply HttpPayloadWithDefault @httpRequestTests([{
     protocol: simpleRestJson
     method: "PUT"
     uri: "/httpPayloadWithDefault"
-    headers: {
-        "Content-Type": "application/json"
-    }
     params: {
         body: "default value"
     }
@@ -53,9 +50,6 @@ apply HttpPayloadWithDefault @httpResponseTests([{
     documentation: "Use default value when there is no payload"
     protocol: simpleRestJson
     code: 200
-    headers: {
-        "Content-Type": "application/json"
-    }
     params: {
         body: "default value"
     }
