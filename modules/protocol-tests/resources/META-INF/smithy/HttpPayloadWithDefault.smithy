@@ -37,7 +37,7 @@ apply HttpPayloadWithDefault @httpRequestTests([{
 
 apply HttpPayloadWithDefault @httpResponseTests([{
     id: "SimpleRestJsonSomeHttpPayloadWithDefault"
-    documentation: "Pass simple string value as is if payload provided"
+    documentation: "Pass JSON string value as is if payload provided"
     protocol: simpleRestJson
     code: 200
     body: "\"custom value\""
