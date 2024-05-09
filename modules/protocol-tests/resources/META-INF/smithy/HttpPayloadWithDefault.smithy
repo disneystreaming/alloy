@@ -8,7 +8,7 @@ use smithy.test#httpResponseTests
 
 apply HttpPayloadWithDefault @httpRequestTests([{
     id: "SimpleRestJsonSomeHttpPayloadWithDefault"
-    documentation: "Pass simple string value as is if payload provided"
+    documentation: "Pass JSON string value as is if payload provided"
     protocol: simpleRestJson
     method: "PUT"
     uri: "/httpPayloadWithDefault"
