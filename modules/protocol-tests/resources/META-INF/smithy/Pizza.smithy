@@ -9,7 +9,7 @@ use alloy#simpleRestJson
 service PizzaAdminService {
     version: "1.0.0",
     errors: [GenericServerError, GenericClientError],
-    operations: [AddMenuItem, GetMenu, Version, Health, HeaderEndpoint, RoundTrip, GetEnum, GetIntEnum, CustomCode]
+    operations: [AddMenuItem, GetMenu, Version, Health, HeaderEndpoint, RoundTrip, GetEnum, GetIntEnum, CustomCode, HttpPayloadWithDefault]
 }
 
 @http(method: "POST", uri: "/restaurant/{restaurant}/menu/item", code: 201)
@@ -302,4 +302,17 @@ structure CustomCodeInput {
 structure CustomCodeOutput {
     @httpResponseCode
     code: Integer
+}
+
+@idempotent
+@http(uri: "/httpPayloadWithDefault", method: "PUT")
+operation HttpPayloadWithDefault {
+    input: HttpPayloadWithDefaultInputOutput,
+    output: HttpPayloadWithDefaultInputOutput
+}
+
+structure HttpPayloadWithDefaultInputOutput {
+    @httpPayload
+    @default("default value")
+    body: String,
 }
