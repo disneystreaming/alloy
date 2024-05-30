@@ -206,8 +206,8 @@ object Deps {
   }
 
   val munit = new {
-    val munit = ivy"org.scalameta::munit::1.0.0-M12"
-    val scalaCheck = ivy"org.scalameta::munit-scalacheck::1.0.0-M12"
+    val munit = ivy"org.scalameta::munit::1.0.0"
+    val scalaCheck = ivy"org.scalameta::munit-scalacheck::1.0.0"
     val all = Agg(munit, scalaCheck)
   }
 }
