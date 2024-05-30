@@ -67,7 +67,7 @@ final public class ProtoIndexTraitValidator extends AbstractValidator {
 
 	private Stream<StructureShape> shapeUsingUnionMembers(Model model, UnionShape union) {
 		return model.getMemberShapes().stream().flatMap(m -> {
-			if (m.getTarget() == union.getId()) {
+			if (m.getTarget().equals(union.getId())) {
 				return OptionHelper.toStream(model.getShape(m.getContainer()).flatMap(Shape::asStructureShape));
 			} else {
 				return Stream.empty();
