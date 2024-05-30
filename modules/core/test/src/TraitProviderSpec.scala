@@ -19,6 +19,7 @@ import munit.Location
 import software.amazon.smithy.model.Model
 import software.amazon.smithy.model.traits.Trait
 import software.amazon.smithy.model.validation.ValidatedResult
+import scala.jdk.CollectionConverters._
 
 import scala.io.Source
 
@@ -37,19 +38,28 @@ final class SanitySpec extends munit.FunSuite {
       )
     }
 
-    val lines = scala.util
-      .Using(
-        Source.fromResource(
-          "META-INF/services/software.amazon.smithy.model.traits.TraitService"
-        )
-      ) {
-        _.getLines().toList
-      }
-      .fold(
-        ex => fail("Failed to load TraitService resource", ex),
-        identity
+    val resources = this
+      .getClass()
+      .getClassLoader()
+      .getResources(
+        "META-INF/services/software.amazon.smithy.model.traits.TraitService"
       )
-    val classesFQN = lines.map(_.split("\\$").head)
+      .asIterator()
+      .asScala
+      .toList
+
+    val lines = resources.flatMap { resource =>
+      scala.util
+        .Using(Source.fromURL(resource)) {
+          _.getLines().toList
+        }
+        .fold(
+          ex => fail("Failed to load TraitService resource", ex),
+          identity
+        )
+    }
+    val classesFQN =
+      lines.map(_.split("\\$").head).filter(_.startsWith("alloy"))
     val classes =
       classesFQN.map(name => this.getClass().getClassLoader().loadClass(name))
     assert(
