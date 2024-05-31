@@ -7,7 +7,7 @@ import $ivy.`io.chris-kipp::mill-ci-release::0.1.10`
 import io.kipp.mill.ci.release.CiReleaseModule
 import io.kipp.mill.ci.release.SonatypeHost
 import io.github.davidgregory084.TpolecatModule
-import $ivy.`com.github.lolgab::mill-mima::0.1.0`
+import $ivy.`com.github.lolgab::mill-mima::0.1.1`
 import com.github.lolgab.mill.mima._
 
 import mill.scalalib.scalafmt.ScalafmtModule
