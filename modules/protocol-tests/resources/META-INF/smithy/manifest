@@ -9,4 +9,5 @@ Pizza.smithy
 RoundTrip.smithy
 Version.smithy
 HttpPayloadWithDefault.smithy
+SparseQueryParameter.smithy
 test-config.json
