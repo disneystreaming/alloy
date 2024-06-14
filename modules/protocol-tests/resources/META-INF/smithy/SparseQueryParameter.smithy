@@ -9,16 +9,18 @@ use smithy.test#httpResponseTests
 apply SparseQueryParam @httpRequestTests([
     {
         id: "SparseQueryParam"
+        documentation: "Tests sparse query param serialization"
         protocol: simpleRestJson
         method: "GET"
-        uri: "/sparse-query-param"
+        uri: "/sparseQueryParam"
         params: {
-            foo: ["bar", null, "baz"]
+            foo: ["bar", null, "baz", ""]
         }
         queryParams: [
             "foo=bar",
             "foo",
-            "foo=baz"
+            "foo=baz",
+            "foo="
         ]
 
     }
