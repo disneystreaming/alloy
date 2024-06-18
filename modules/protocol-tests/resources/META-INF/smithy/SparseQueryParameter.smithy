@@ -15,7 +15,7 @@ apply SparseQueryParam @httpRequestTests([
         uri: "/sparseQueryParam"
         params: {
             foo: ["bar", null, "baz", ""],
-            bar: [1, null, 2]
+            bar: [1, null, 2, null]
         }
         queryParams: [
             "foo=bar",
@@ -24,7 +24,8 @@ apply SparseQueryParam @httpRequestTests([
             "foo=",
             "bar=1",
             "bar",
-            "bar=2"
+            "bar=2",
+            "bar="
         ]
 
     }
