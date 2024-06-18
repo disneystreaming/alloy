@@ -14,13 +14,17 @@ apply SparseQueryParam @httpRequestTests([
         method: "GET"
         uri: "/sparseQueryParam"
         params: {
-            foo: ["bar", null, "baz", ""]
+            foo: ["bar", null, "baz", ""],
+            bar: [1, null, 2]
         }
         queryParams: [
             "foo=bar",
             "foo",
             "foo=baz",
-            "foo="
+            "foo=",
+            "bar=1",
+            "bar",
+            "bar=2"
         ]
 
     }

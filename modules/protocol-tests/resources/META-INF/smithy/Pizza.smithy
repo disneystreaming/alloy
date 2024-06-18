@@ -329,6 +329,10 @@ structure SparseQueryParamInput {
     @httpQuery("foo")
     @required
     foo: FooList
+
+    @httpQuery("bar")
+    @required
+    bar: BarList
 }
 
 structure SparseQueryParamOutput {
@@ -340,4 +344,9 @@ structure SparseQueryParamOutput {
 @sparse
 list FooList {
     member: String
+}
+
+@sparse
+list BarList {
+    member: Integer
 }
