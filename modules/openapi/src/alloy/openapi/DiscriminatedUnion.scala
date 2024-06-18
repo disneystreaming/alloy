@@ -21,12 +21,13 @@ import _root_.software.amazon.smithy.jsonschema.Schema.Builder
 import _root_.software.amazon.smithy.model.shapes.Shape
 import alloy.DiscriminatedUnionTrait
 import software.amazon.smithy.jsonschema.Schema
-import software.amazon.smithy.model.node.ObjectNode
 
 import scala.jdk.CollectionConverters._
+import software.amazon.smithy.model.node.ObjectNode
+import software.amazon.smithy.model.traits.JsonNameTrait
+import alloy.openapi.OptionalExt
 
 class DiscriminatedUnions() extends JsonSchemaMapper {
-  private final val COMPONENTS = "components"
 
   override def updateSchema(
       shape: Shape,
@@ -35,48 +36,40 @@ class DiscriminatedUnions() extends JsonSchemaMapper {
   ): Builder = {
     val maybeDiscriminated = shape.getTrait(classOf[DiscriminatedUnionTrait])
     if (maybeDiscriminated.isPresent()) {
-      val discriminated = maybeDiscriminated.get()
-      val discriminatorField = discriminated.getValue()
-      val unionSchema = schemaBuilder.build()
-
-      val alternatives = unionSchema.getOneOf().asScala
-      val discriminatedAlts =
-        alternatives.flatMap(alt => alt.getProperties().asScala)
-
-      val transformedAlts = discriminatedAlts.map { case (label, altSchema) =>
-        val localDiscriminator = Schema
-          .builder()
-          .`type`("string")
-          .enumValues(List(label).asJava)
-          .build()
-        val discObject = Schema
-          .builder()
-          .`type`("object")
-          .properties(
-            Map(
-              discriminatorField -> localDiscriminator
-            ).asJava
-          )
-          .required(List(discriminatorField).asJava)
-          .build()
-        Schema
-          .builder()
-          .allOf(
-            List(altSchema, discObject).asJava
-          )
-          .build()
-      }.asJava
-
+      val alts = shape
+        .members()
+        .asScala
+        .map { member =>
+          val label = member
+            .getTrait(classOf[JsonNameTrait])
+            .asScala
+            .map(_.getValue())
+            .getOrElse(member.getMemberName())
+          val syntheticMemberId =
+            shape.getId().getName() + member.getMemberName().capitalize
+          val refString = s"#/components/schemas/$syntheticMemberId"
+          val refSchema =
+            Schema.builder.ref(refString).build
+          (label, refString, refSchema)
+        }
+        .toList
+      val schemas = alts.map(_._3).asJava
+      val mapping = ObjectNode.fromStringMap(
+        alts
+          .map { case (label, refString, _) => (label, refString) }
+          .toMap
+          .asJava
+      )
       schemaBuilder
-        .oneOf(transformedAlts)
+        .oneOf(schemas)
         .putExtension(
           "discriminator",
           ObjectNode
             .builder()
-            .withMember("propertyName", discriminated.getValue())
+            .withMember("propertyName", maybeDiscriminated.get().getValue())
+            .withMember("mapping", mapping)
             .build()
         )
-
     } else schemaBuilder
   }
 }
