@@ -9,7 +9,7 @@ use alloy#simpleRestJson
 service PizzaAdminService {
     version: "1.0.0",
     errors: [GenericServerError, GenericClientError],
-    operations: [AddMenuItem, GetMenu, Version, Health, HeaderEndpoint, RoundTrip, GetEnum, GetIntEnum, CustomCode, HttpPayloadWithDefault]
+    operations: [AddMenuItem, GetMenu, Version, Health, HeaderEndpoint, RoundTrip, GetEnum, GetIntEnum, CustomCode, HttpPayloadWithDefault, SparseQueryParam]
 }
 
 @http(method: "POST", uri: "/restaurant/{restaurant}/menu/item", code: 201)
@@ -315,4 +315,38 @@ structure HttpPayloadWithDefaultInputOutput {
     @httpPayload
     @default("default value")
     body: String,
+}
+
+
+@readonly
+@http(uri: "/sparseQueryParam", method: "GET")
+operation SparseQueryParam {
+    input: SparseQueryParamInput,
+    output: SparseQueryParamOutput
+}
+
+structure SparseQueryParamInput {
+    @httpQuery("foo")
+    @required
+    foo: FooList
+
+    @httpQuery("bar")
+    @required
+    bar: BarList
+}
+
+structure SparseQueryParamOutput {
+    @httpPayload
+    @required
+    foo: FooList
+}
+
+@sparse
+list FooList {
+    member: String
+}
+
+@sparse
+list BarList {
+    member: Integer
 }
