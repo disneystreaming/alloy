@@ -54,3 +54,52 @@ apply HttpPayloadWithDefault @httpResponseTests([{
         body: "default value"
     }
 }])
+
+apply HttpPayloadRequiredWithDefault @httpRequestTests([{
+    id: "SimpleRestJsonSomeRequiredHttpPayloadWithDefault"
+    documentation: "Pass JSON string value as is if payload provided"
+    protocol: simpleRestJson
+    method: "PUT"
+    uri: "/httpPayloadRequiredWithDefault"
+    body: "\"custom value\""
+    headers: {
+        "Content-Type": "application/json"
+    }
+    requireHeaders: ["Content-Length"]
+    params: {
+        body: "custom value"
+    }
+    bodyMediaType: "application/json"
+}, {
+    id: "SimpleRestJsonNoneRequiredHttpPayloadWithDefault"
+    documentation: "Use default value when there is no payload"
+    protocol: simpleRestJson
+    method: "PUT"
+    uri: "/httpPayloadRequiredWithDefault"
+    params: {
+        body: "default value"
+    }
+}])
+
+apply HttpPayloadRequiredWithDefault @httpResponseTests([{
+    id: "SimpleRestJsonSomeRequiredHttpPayloadWithDefault"
+    documentation: "Pass JSON string value as is if payload provided"
+    protocol: simpleRestJson
+    code: 200
+    body: "\"custom value\""
+    bodyMediaType: "application/json"
+    headers: {
+        "Content-Type": "application/json"
+    }
+    params: {
+        body: "custom value"
+    }
+}, {
+    id: "SimpleRestJsonNoneRequiredHttpPayloadWithDefault"
+    documentation: "Use default value when there is no payload"
+    protocol: simpleRestJson
+    code: 200
+    params: {
+        body: "default value"
+    }
+}])
