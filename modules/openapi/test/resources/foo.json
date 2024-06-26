@@ -246,46 +246,10 @@
       "CatOrDog": {
         "oneOf": [
           {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/Cat"
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "cat"
-                    ]
-                  }
-                },
-                "required": [
-                  "type"
-                ]
-              }
-            ]
+            "$ref": "#/components/schemas/CatOrDogCat"
           },
           {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/Dog"
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "dog"
-                    ]
-                  }
-                },
-                "required": [
-                  "type"
-                ]
-              }
-            ]
+            "$ref": "#/components/schemas/CatOrDogDog"
           }
         ],
         "externalDocs": {
@@ -293,8 +257,43 @@
           "url": "https://www.example.com/"
         },
         "discriminator": {
-          "propertyName": "type"
+          "propertyName": "type",
+          "mapping": {
+            "cat": "#/components/schemas/CatOrDogCat",
+            "dog": "#/components/schemas/CatOrDogDog"
+          }
         }
+      },
+      "CatOrDogCat": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Cat"
+          },
+          {
+            "$ref": "#/components/schemas/CatOrDogMixin"
+          }
+        ]
+      },
+      "CatOrDogDog": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Dog"
+          },
+          {
+            "$ref": "#/components/schemas/CatOrDogMixin"
+          }
+        ]
+      },
+      "CatOrDogMixin": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type"
+        ]
       },
       "Dog": {
         "type": "object",
