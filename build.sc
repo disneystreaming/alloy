@@ -167,6 +167,10 @@ trait OpenapiModule extends BaseCrossScalaModule {
   )
 
   object test extends ScalaTests with BaseMunitTests
+
+  override def mimaBinaryIssueFilters = super.mimaBinaryIssueFilters() ++ Seq(
+    ProblemFilter.exclude[MissingClassProblem]("alloy.openapi.DiscriminatedUnions")
+  )
 }
 
 object `protocol-tests` extends BaseJavaModule {
