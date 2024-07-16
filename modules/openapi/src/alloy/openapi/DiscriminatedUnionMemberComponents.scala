@@ -92,17 +92,15 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
       }
 
       componentSchemas.get(union.toShapeId).foreach { sch =>
-        if (!sch.getOneOf.isEmpty) {
-          componentBuilder.putSchema(
-            union.toShapeId.getName,
-            updateDiscriminatedUnion(
-              union,
-              sch.toBuilder(),
-              discriminatorField
-            )
-              .build()
+        componentBuilder.putSchema(
+          union.toShapeId.getName,
+          updateDiscriminatedUnion(
+            union,
+            sch.toBuilder(),
+            discriminatorField
           )
-        }
+            .build()
+        )
       }
 
     }
