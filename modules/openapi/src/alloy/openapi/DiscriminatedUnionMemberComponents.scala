@@ -40,11 +40,20 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
       .getModel()
       .getUnionShapesWithTrait(classOf[DiscriminatedUnionTrait])
     val componentBuilder = openapi.getComponents().toBuilder()
-    val componentSchemas: Map[String, Schema] = openapi
+    val componentSchemas: Map[ShapeId, Schema] = openapi
       .getComponents()
       .getSchemas()
       .asScala
       .toMap
+      .flatMap { case (_, schema) =>
+        schema
+          .getExtension(DiscriminatedUnionShapeId.SHAPE_ID_KEY)
+          .asScala
+          .flatMap { node =>
+            node.toNode.asStringNode.asScala
+              .map(s => ShapeId.from(s.getValue) -> schema)
+          }
+      }
     unions.asScala.foreach { union =>
       val unionMixinName = union.getId().getName() + "Mixin"
       val unionMixinId =
@@ -82,19 +91,17 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
         componentBuilder.putSchema(syntheticMemberName, syntheticUnionMember)
       }
 
-      val existingSchemaBuilder = componentSchemas
-        .get(union.toShapeId.getName)
-        .map(_.toBuilder())
-        .getOrElse(Schema.builder())
-      componentBuilder.putSchema(
-        union.toShapeId.getName,
-        updateDiscriminatedUnion(
-          union,
-          existingSchemaBuilder,
-          discriminatorField
+      componentSchemas.get(union.toShapeId).foreach { sch =>
+        componentBuilder.putSchema(
+          union.toShapeId.getName,
+          updateDiscriminatedUnion(
+            union,
+            sch.toBuilder(),
+            discriminatorField
+          )
+            .build()
         )
-          .build()
-      )
+      }
 
     }
     openapi.toBuilder.components(componentBuilder.build()).build()
@@ -130,6 +137,7 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
         .asJava
     )
     schemaBuilder
+      .removeExtension(DiscriminatedUnionShapeId.SHAPE_ID_KEY)
       .oneOf(schemas)
       .putExtension(
         "discriminator",

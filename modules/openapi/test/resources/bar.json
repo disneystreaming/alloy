@@ -1,0 +1,67 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "BarService",
+    "version": ""
+  },
+  "paths": {
+    "/bar": {
+      "get": {
+        "operationId": "BarOp",
+        "responses": {
+          "200": {
+            "description": "BarOp200response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BarOpResponseContent"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BarOpResponseContent": {
+        "type": "object",
+        "properties": {
+          "out": {
+            "$ref": "#/components/schemas/CatOrDog"
+          }
+        }
+      },
+      "CatOrDog": {
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "one",
+            "properties": {
+              "one": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "one"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "two",
+            "properties": {
+              "two": {
+                "type": "integer",
+                "format": "int32"
+              }
+            },
+            "required": [
+              "two"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
