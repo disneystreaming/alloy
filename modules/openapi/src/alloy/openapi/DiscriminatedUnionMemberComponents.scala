@@ -54,56 +54,61 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
               .map(s => ShapeId.from(s.getValue) -> schema)
           }
       }
-    unions.asScala.foreach { union =>
-      val unionMixinName = union.getId().getName() + "Mixin"
-      val unionMixinId =
-        ShapeId.fromParts(union.getId().getNamespace(), unionMixinName)
-      val discriminatorField =
-        union.expectTrait(classOf[DiscriminatedUnionTrait]).getValue()
+    unions.asScala
+      .filter(u => componentSchemas.contains(u.toShapeId))
+      .foreach { union =>
+        val unionMixinName = union.getId().getName() + "Mixin"
+        val unionMixinId =
+          ShapeId.fromParts(union.getId().getNamespace(), unionMixinName)
+        val discriminatorField =
+          union.expectTrait(classOf[DiscriminatedUnionTrait]).getValue()
 
-      val unionMixinSchema = Schema
-        .builder()
-        .`type`("object")
-        .properties(
-          Map(
-            discriminatorField -> Schema
-              .builder()
-              .`type`("string")
-              .build()
-          ).asJava
-        )
-        .required(List(discriminatorField).asJava)
-        .build()
-
-      val unionMixinRef = context.createRef(unionMixinId)
-
-      componentBuilder.putSchema(unionMixinName, unionMixinSchema)
-
-      union.members().asScala.foreach { memberShape =>
-        val syntheticMemberName =
-          union.getId().getName() + memberShape.getMemberName.capitalize
-        context.getPointer(union).split('/').last + memberShape
-          .getMemberName()
-          .capitalize
-        val targetRef = context.createRef(memberShape.getTarget())
-        val syntheticUnionMember =
-          Schema.builder().allOf(List(targetRef, unionMixinRef).asJava).build()
-        componentBuilder.putSchema(syntheticMemberName, syntheticUnionMember)
-      }
-
-      componentSchemas.get(union.toShapeId).foreach { sch =>
-        componentBuilder.putSchema(
-          union.toShapeId.getName,
-          updateDiscriminatedUnion(
-            union,
-            sch.toBuilder(),
-            discriminatorField
+        val unionMixinSchema = Schema
+          .builder()
+          .`type`("object")
+          .properties(
+            Map(
+              discriminatorField -> Schema
+                .builder()
+                .`type`("string")
+                .build()
+            ).asJava
           )
-            .build()
-        )
-      }
+          .required(List(discriminatorField).asJava)
+          .build()
 
-    }
+        val unionMixinRef = context.createRef(unionMixinId)
+
+        componentBuilder.putSchema(unionMixinName, unionMixinSchema)
+
+        union.members().asScala.foreach { memberShape =>
+          val syntheticMemberName =
+            union.getId().getName() + memberShape.getMemberName.capitalize
+          context.getPointer(union).split('/').last + memberShape
+            .getMemberName()
+            .capitalize
+          val targetRef = context.createRef(memberShape.getTarget())
+          val syntheticUnionMember =
+            Schema
+              .builder()
+              .allOf(List(targetRef, unionMixinRef).asJava)
+              .build()
+          componentBuilder.putSchema(syntheticMemberName, syntheticUnionMember)
+        }
+
+        componentSchemas.get(union.toShapeId).foreach { sch =>
+          componentBuilder.putSchema(
+            union.toShapeId.getName,
+            updateDiscriminatedUnion(
+              union,
+              sch.toBuilder(),
+              discriminatorField
+            )
+              .build()
+          )
+        }
+
+      }
     openapi.toBuilder.components(componentBuilder.build()).build()
   }
 
