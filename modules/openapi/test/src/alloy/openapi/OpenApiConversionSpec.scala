@@ -72,6 +72,30 @@ final class OpenApiConversionSpec extends munit.FunSuite {
     assertEquals(result, expected)
   }
 
+  test(
+    "OpenAPI conversion with one namespace excluded and one included"
+  ) {
+    val model = Model
+      .assembler()
+      .addImport(getClass().getClassLoader().getResource("baz.smithy"))
+      .addImport(getClass().getClassLoader().getResource("bar.smithy"))
+      .discoverModels()
+      .assemble()
+      .unwrap()
+
+    val result = convert(model, Some(Set("baz")))
+      .map(_.contents)
+      .mkString
+      .filterNot(_.isWhitespace)
+
+    val expected = Using
+      .resource(Source.fromResource("baz.json"))(
+        _.getLines().mkString.filterNot(_.isWhitespace)
+      )
+
+    assertEquals(result, expected)
+  }
+
   test("OpenAPI conversion from testJson protocol") {
     val model = Model
       .assembler()
