@@ -53,7 +53,7 @@ trait CiReleaseModule extends PublishModule {
 
 // In here for the Discover import
 @nowarn("msg=Unused import")
-object ReleaseModule extends ExternalModule {
+object ReleaseModule extends Module {
 
   /** This is a replacement for the mill.scalalib.PublishModule/publishAll task
     * that should basically work identically _but_ without requiring the user to
