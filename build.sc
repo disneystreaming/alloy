@@ -3,9 +3,8 @@ import de.tobiasroeser.mill.vcs.version.VcsVersion
 import $ivy.`io.github.davidgregory084::mill-tpolecat::0.3.5`
 import $ivy.`com.lewisjkl::header-mill-plugin::0.0.3`
 import header._
-import $ivy.`io.chris-kipp::mill-ci-release::0.1.10`
-import io.kipp.mill.ci.release.CiReleaseModule
-import io.kipp.mill.ci.release.SonatypeHost
+import $file.plugins.ci.CiReleaseModules
+import CiReleaseModules.{CiReleaseModule, SonatypeHost}
 import io.github.davidgregory084.TpolecatModule
 import $ivy.`com.github.lolgab::mill-mima::0.1.1`
 import com.github.lolgab.mill.mima._
@@ -169,7 +168,9 @@ trait OpenapiModule extends BaseCrossScalaModule {
   object test extends ScalaTests with BaseMunitTests
 
   override def mimaBinaryIssueFilters = super.mimaBinaryIssueFilters() ++ Seq(
-    ProblemFilter.exclude[MissingClassProblem]("alloy.openapi.DiscriminatedUnions")
+    ProblemFilter.exclude[MissingClassProblem](
+      "alloy.openapi.DiscriminatedUnions"
+    )
   )
 }
 
