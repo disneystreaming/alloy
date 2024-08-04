@@ -3,9 +3,8 @@ import de.tobiasroeser.mill.vcs.version.VcsVersion
 import $ivy.`io.github.davidgregory084::mill-tpolecat::0.3.5`
 import $ivy.`com.lewisjkl::header-mill-plugin::0.0.3`
 import header._
-import $ivy.`io.chris-kipp::mill-ci-release::0.1.10`
-import io.kipp.mill.ci.release.CiReleaseModule
-import io.kipp.mill.ci.release.SonatypeHost
+import $file.plugins.ci.CiReleaseModules
+import CiReleaseModules.{CiReleaseModule, SonatypeHost, ReleaseModule, Discover}
 import io.github.davidgregory084.TpolecatModule
 import $ivy.`com.github.lolgab::mill-mima::0.1.1`
 import com.github.lolgab.mill.mima._
@@ -15,6 +14,24 @@ import mill._
 import mill.modules.Jvm
 import mill.scalalib._
 import mill.scalalib.publish._
+import mill.define.ExternalModule
+import mill.eval.Evaluator
+
+object InternalReleaseModule extends Module {
+
+  /** This is a replacement for the mill.scalalib.PublishModule/publishAll task
+    * that should basically work identically _but_ without requiring the user to
+    * pass in anything. It also sets up your gpg stuff and grabs the necessary
+    * env variables to publish to sonatype for you.
+    */
+  def publishAll(ev: Evaluator): Command[Unit] = {
+    ReleaseModule.publishAll(ev)
+  }
+
+  import Discover._
+  lazy val millDiscover: mill.define.Discover[this.type] =
+    mill.define.Discover[this.type]
+}
 
 trait BaseModule extends Module with HeaderModule {
   def millSourcePath: os.Path = {
@@ -169,7 +186,9 @@ trait OpenapiModule extends BaseCrossScalaModule {
   object test extends ScalaTests with BaseMunitTests
 
   override def mimaBinaryIssueFilters = super.mimaBinaryIssueFilters() ++ Seq(
-    ProblemFilter.exclude[MissingClassProblem]("alloy.openapi.DiscriminatedUnions")
+    ProblemFilter.exclude[MissingClassProblem](
+      "alloy.openapi.DiscriminatedUnions"
+    )
   )
 }
 
