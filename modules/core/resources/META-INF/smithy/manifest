@@ -8,6 +8,7 @@ presence.smithy
 proto/proto.smithy
 restjson.smithy
 string.smithy
+unknownfieldretention.smithy
 unions.smithy
 urlform.smithy
 uuid.smithy
