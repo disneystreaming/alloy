@@ -11,8 +11,7 @@ use alloy#openEnum
 use alloy#simpleRestJson
 use alloy#structurePattern
 use alloy#uncheckedExamples
-use alloy#unknownDocumentFieldRetention
-use alloy#unknownJsonFieldRetention
+use alloy#jsonUnknown
 use alloy#untagged
 use alloy#urlFormFlattened
 use alloy#urlFormName
@@ -208,10 +207,9 @@ structure TestUrlFormName {
     test: String
 }
 
-structure TestUnknownFieldRetention {
+structure TestJsonUnknown {
    foo: String
    bar: String
-   @unknownDocumentFieldRetention
-   @unknownJsonFieldRetention
+   @jsonUnknown
    bazes: Document
 }

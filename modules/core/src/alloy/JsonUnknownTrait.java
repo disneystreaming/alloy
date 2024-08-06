@@ -19,16 +19,16 @@ import software.amazon.smithy.model.node.Node;
 import software.amazon.smithy.model.shapes.ShapeId;
 import software.amazon.smithy.model.traits.AnnotationTrait;
 
-public final class UnknownJsonFieldRetentionTrait extends AnnotationTrait {
-	public static ShapeId ID = ShapeId.from("alloy#unknownJsonFieldRetention");
+public final class JsonUnknownTrait extends AnnotationTrait {
+	public static ShapeId ID = ShapeId.from("alloy#jsonUnknown");
 
-	public UnknownJsonFieldRetentionTrait() {
+	public JsonUnknownTrait() {
 		super(ID, Node.objectNode());
 	}
 
-	public static final class Provider extends AnnotationTrait.Provider<UnknownJsonFieldRetentionTrait> {
+	public static final class Provider extends AnnotationTrait.Provider<JsonUnknownTrait> {
 		public Provider() {
-			super(ID, (node) -> new UnknownJsonFieldRetentionTrait());
+			super(ID, (node) -> new JsonUnknownTrait());
 		}
 	}
 }

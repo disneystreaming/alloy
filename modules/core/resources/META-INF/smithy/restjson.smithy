@@ -26,11 +26,11 @@ namespace alloy
         smithy.api#range
         smithy.api#required
         smithy.api#timestampFormat
-        smithy.api#unknownJsonFieldRetention
         alloy#uuidFormat
         alloy#discriminated
         alloy#nullable
         alloy#untagged
+        alloy#jsonUnknown
     ]
 )
 @trait(selector: "service")
