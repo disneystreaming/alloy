@@ -45,7 +45,7 @@ final class JsonUnknownTraitProviderSpec extends munit.FunSuite {
       .build()
 
     val model =
-      Model.assembler.disableValidation
+      Model.assembler
         .addShapes(structShape, documentShape)
         .assemble()
         .unwrap()
