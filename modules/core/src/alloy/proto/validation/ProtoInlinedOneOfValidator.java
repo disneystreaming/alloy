@@ -37,7 +37,7 @@ public final class ProtoInlinedOneOfValidator extends AbstractValidator {
 		return model.getUnionShapes().stream().filter(shape -> shape.hasTrait(ProtoInlinedOneOfTrait.class))
 				.flatMap(unionShape -> {
 					final long usageCount = model.getMemberShapes().stream()
-							.filter(s -> s.getTarget() == unionShape.getId()).count();
+							.filter(s -> s.getTarget().equals(unionShape.getId())).count();
 					if (usageCount > 1) {
 						return Stream.of(ValidationEvent.builder().id(USAGE_COUNT_EXCEEDED).message(
 								"Unions annotated with @protoInlinedOneOf can only be used inside of one structure shape.")

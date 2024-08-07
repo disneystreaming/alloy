@@ -35,7 +35,7 @@ class ProtoInlinedOneOfValidatorSuite extends FunSuite {
       .build
     val structure = StructureShape.builder
       .id("com.example#MyStructure")
-      .addMember("myUnion", union.getId())
+      .addMember("myUnion", ShapeId.fromParts("com.example", "MyUnion"))
       .build
 
     val model = Model.builder.addShapes(structure, union).build

@@ -19,8 +19,11 @@ import _root_.software.amazon.smithy.model.Model
 
 import scala.io.Source
 import scala.util.Using
+import software.amazon.smithy.model.node.Node
 import software.amazon.smithy.openapi.OpenApiConfig
 import software.amazon.smithy.openapi.OpenApiVersion
+
+import scala.jdk.CollectionConverters._
 
 final class OpenApiConversionSpec extends munit.FunSuite {
 
@@ -39,6 +42,54 @@ final class OpenApiConversionSpec extends munit.FunSuite {
 
     val expected = Using
       .resource(Source.fromResource("foo.json"))(
+        _.getLines().mkString.filterNot(_.isWhitespace)
+      )
+
+    assertEquals(result, expected)
+  }
+
+  test(
+    "OpenAPI conversion from alloy#simpleRestJson protocol with multiple namespaces"
+  ) {
+    val model = Model
+      .assembler()
+      .addImport(getClass().getClassLoader().getResource("foo.smithy"))
+      .addImport(getClass().getClassLoader().getResource("bar.smithy"))
+      .discoverModels()
+      .assemble()
+      .unwrap()
+
+    val result = convert(model, Some(Set("bar")))
+      .map(_.contents)
+      .mkString
+      .filterNot(_.isWhitespace)
+
+    val expected = Using
+      .resource(Source.fromResource("bar.json"))(
+        _.getLines().mkString.filterNot(_.isWhitespace)
+      )
+
+    assertEquals(result, expected)
+  }
+
+  test(
+    "OpenAPI conversion with one namespace excluded and one included"
+  ) {
+    val model = Model
+      .assembler()
+      .addImport(getClass().getClassLoader().getResource("baz.smithy"))
+      .addImport(getClass().getClassLoader().getResource("bar.smithy"))
+      .discoverModels()
+      .assemble()
+      .unwrap()
+
+    val result = convert(model, Some(Set("baz")))
+      .map(_.contents)
+      .mkString
+      .filterNot(_.isWhitespace)
+
+    val expected = Using
+      .resource(Source.fromResource("baz.json"))(
         _.getLines().mkString.filterNot(_.isWhitespace)
       )
 
@@ -73,16 +124,51 @@ final class OpenApiConversionSpec extends munit.FunSuite {
       .assemble()
       .unwrap()
 
-    val result = convertWithConfig(model, None, _ => {
-      val config = new OpenApiConfig()
-      config.setVersion(OpenApiVersion.VERSION_3_1_0)
-      config
-    })
+    val result = convertWithConfig(
+      model,
+      None,
+      _ => {
+        val config = new OpenApiConfig()
+        config.setVersion(OpenApiVersion.VERSION_3_1_0)
+        config
+      }
+    )
       .map(_.contents)
       .mkString
       .filterNot(_.isWhitespace)
 
     assert(result.contains("\"openapi\":\"3.1.0"))
+  }
+
+  test("OpenAPI conversion with JSON manipulating config") {
+    val model = Model
+      .assembler()
+      .addImport(getClass().getClassLoader().getResource("foo.smithy"))
+      .discoverModels()
+      .assemble()
+      .unwrap()
+
+    val config = new OpenApiConfig()
+    config.setJsonAdd(
+      Map[String, Node](
+        "/info/title" -> Node.from("Customtitlegoeshere")
+      ).asJava
+    )
+    config.setSubstitutions(
+      Map[String, Node]("X-Bamtech-Partner" -> Node.from("X-Foo")).asJava
+    )
+
+    val result = convertWithConfig(
+      model,
+      None,
+      _ => config
+    ).map(_.contents)
+      .mkString
+      .filterNot(_.isWhitespace)
+
+    assert(result.contains("\"title\":\"Customtitlegoeshere\""))
+    assert(!result.contains("X-Bamtech-Partner"))
+    assert(result.contains("\"name\":\"X-Foo\""))
   }
 
 }

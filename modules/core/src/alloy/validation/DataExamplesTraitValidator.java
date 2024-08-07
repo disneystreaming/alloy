@@ -33,7 +33,7 @@ public final class DataExamplesTraitValidator extends AbstractValidator {
 		for (Shape shape : model.getShapesWithTrait(DataExamplesTrait.class)) {
 			DataExamplesTrait trt = shape.getTrait(DataExamplesTrait.class).get();
 			for (DataExamplesTrait.DataExample example : trt.getExamples()) {
-				if (example.getExampleType() == DataExamplesTrait.DataExampleType.SMITHY) {
+				if (example.getExampleType().equals(DataExamplesTrait.DataExampleType.SMITHY)) {
 					NodeValidationVisitor visitor = createVisitor(example.getContent(), model, shape);
 					events.addAll(shape.accept(visitor));
 				}

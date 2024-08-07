@@ -17,6 +17,7 @@ alloy.proto.ProtoIndexTrait$Provider
 alloy.proto.ProtoInlinedOneOfTrait$Provider
 alloy.proto.ProtoNumTypeTrait$Provider
 alloy.proto.ProtoReservedFieldsTrait$Provider
+alloy.proto.ProtoTimestampFormatTrait$Provider
 alloy.proto.ProtoCompactUUIDTrait$Provider
 alloy.proto.ProtoWrappedTrait$Provider
 alloy.SimpleRestJsonTrait$Provider

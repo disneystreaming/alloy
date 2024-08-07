@@ -11,6 +11,11 @@ message TimestampValue {
   google.protobuf.Timestamp value = 1;
 }
 
+message EpochMillisTimestampValue {
+  alloy.protobuf.EpochMillisTimestamp value = 1;
+}
+
+
 message DocumentValue {
   google.protobuf.Value value = 1;
 }

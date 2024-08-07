@@ -3,11 +3,10 @@ import de.tobiasroeser.mill.vcs.version.VcsVersion
 import $ivy.`io.github.davidgregory084::mill-tpolecat::0.3.5`
 import $ivy.`com.lewisjkl::header-mill-plugin::0.0.3`
 import header._
-import $ivy.`io.chris-kipp::mill-ci-release::0.1.9`
-import io.kipp.mill.ci.release.CiReleaseModule
-import io.kipp.mill.ci.release.SonatypeHost
+import $file.plugins.ci.CiReleaseModules
+import CiReleaseModules.{CiReleaseModule, SonatypeHost, ReleaseModule, Discover}
 import io.github.davidgregory084.TpolecatModule
-import $ivy.`com.github.lolgab::mill-mima::0.1.0`
+import $ivy.`com.github.lolgab::mill-mima::0.1.1`
 import com.github.lolgab.mill.mima._
 
 import mill.scalalib.scalafmt.ScalafmtModule
@@ -15,6 +14,24 @@ import mill._
 import mill.modules.Jvm
 import mill.scalalib._
 import mill.scalalib.publish._
+import mill.define.ExternalModule
+import mill.eval.Evaluator
+
+object InternalReleaseModule extends Module {
+
+  /** This is a replacement for the mill.scalalib.PublishModule/publishAll task
+    * that should basically work identically _but_ without requiring the user to
+    * pass in anything. It also sets up your gpg stuff and grabs the necessary
+    * env variables to publish to sonatype for you.
+    */
+  def publishAll(ev: Evaluator): Command[Unit] = {
+    ReleaseModule.publishAll(ev)
+  }
+
+  import Discover._
+  lazy val millDiscover: mill.define.Discover[this.type] =
+    mill.define.Discover[this.type]
+}
 
 trait BaseModule extends Module with HeaderModule {
   def millSourcePath: os.Path = {
@@ -91,7 +108,7 @@ trait BaseScalaNoPublishModule
     extends ScalaModule
     with ScalafmtModule
     with TpolecatModule {
-  def scalaVersion = T.input("2.13.13")
+  def scalaVersion = T.input("2.13.14")
 }
 
 trait BaseMimaModule extends BasePublishModule with Mima {
@@ -167,6 +184,12 @@ trait OpenapiModule extends BaseCrossScalaModule {
   )
 
   object test extends ScalaTests with BaseMunitTests
+
+  override def mimaBinaryIssueFilters = super.mimaBinaryIssueFilters() ++ Seq(
+    ProblemFilter.exclude[MissingClassProblem](
+      "alloy.openapi.DiscriminatedUnions"
+    )
+  )
 }
 
 object `protocol-tests` extends BaseJavaModule {
@@ -187,7 +210,7 @@ object `protocol-tests` extends BaseJavaModule {
 
 object Deps {
   val smithy = new {
-    val smithyVersion = "1.45.0"
+    val smithyVersion = "1.49.0"
     val model = ivy"software.amazon.smithy:smithy-model:$smithyVersion"
     val awsTraits = ivy"software.amazon.smithy:smithy-aws-traits:$smithyVersion"
     val awsProtocolTestTraits =
@@ -198,16 +221,16 @@ object Deps {
   }
 
   val cats = new {
-    val core = ivy"org.typelevel::cats-core:2.9.0"
+    val core = ivy"org.typelevel::cats-core:2.12.0"
   }
 
   val scala = new {
-    val compat = ivy"org.scala-lang.modules::scala-collection-compat:2.11.0"
+    val compat = ivy"org.scala-lang.modules::scala-collection-compat:2.12.0"
   }
 
   val munit = new {
-    val munit = ivy"org.scalameta::munit::1.0.0-M11"
-    val scalaCheck = ivy"org.scalameta::munit-scalacheck::1.0.0-M11"
+    val munit = ivy"org.scalameta::munit::1.0.0"
+    val scalaCheck = ivy"org.scalameta::munit-scalacheck::1.0.0"
     val all = Agg(munit, scalaCheck)
   }
 }

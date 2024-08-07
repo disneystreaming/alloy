@@ -4,12 +4,11 @@ namespace alloy.test
 
 use alloy#simpleRestJson
 
-
 @simpleRestJson
 service PizzaAdminService {
     version: "1.0.0",
     errors: [GenericServerError, GenericClientError],
-    operations: [AddMenuItem, GetMenu, Version, Health, HeaderEndpoint, RoundTrip, GetEnum, GetIntEnum, CustomCode]
+    operations: [AddMenuItem, GetMenu, Version, Health, HeaderEndpoint, RoundTrip, GetEnum, GetIntEnum, CustomCode, HttpPayloadWithDefault, HttpPayloadRequiredWithDefault]
 }
 
 @http(method: "POST", uri: "/restaurant/{restaurant}/menu/item", code: 201)
@@ -302,4 +301,31 @@ structure CustomCodeInput {
 structure CustomCodeOutput {
     @httpResponseCode
     code: Integer
+}
+
+@idempotent
+@http(uri: "/httpPayloadWithDefault", method: "PUT")
+operation HttpPayloadWithDefault {
+    input: HttpPayloadWithDefaultInputOutput,
+    output: HttpPayloadWithDefaultInputOutput
+}
+
+structure HttpPayloadWithDefaultInputOutput {
+    @httpPayload
+    @default("default value")
+    body: String,
+}
+
+@idempotent
+@http(uri: "/httpPayloadRequiredWithDefault", method: "PUT")
+operation HttpPayloadRequiredWithDefault {
+    input: HttpPayloadRequiredWithDefaultInputOutput
+    output: HttpPayloadRequiredWithDefaultInputOutput
+}
+
+structure HttpPayloadRequiredWithDefaultInputOutput {
+    @httpPayload
+    @default("default value")
+    @required
+    body: String
 }
