@@ -15,12 +15,17 @@
 
 package alloy
 
+import software.amazon.smithy.model.Model
+import software.amazon.smithy.model.shapes.DocumentShape
 import software.amazon.smithy.model.shapes.MemberShape
 import software.amazon.smithy.model.shapes.ShapeId
-import software.amazon.smithy.model.shapes.DocumentShape
 import software.amazon.smithy.model.shapes.StructureShape
-import software.amazon.smithy.model.Model
+
 import java.util.Optional
+
+import scala.jdk.CollectionConverters._
+import scala.jdk.OptionConverters._
+import software.amazon.smithy.model.validation.Severity
 
 final class JsonUnknownTraitProviderSpec extends munit.FunSuite {
 
@@ -55,5 +60,47 @@ final class JsonUnknownTraitProviderSpec extends munit.FunSuite {
       .map(shape => shape.hasTrait(classOf[JsonUnknownTrait]))
 
     assertEquals(result, Optional.of(true))
+  }
+
+  test("trait can only be applied to a single member") {
+    val source =
+      """|$version: "2"
+         |
+         |namespace test
+         |
+         |use alloy#jsonUnknown
+         |
+         |structure MyStruct {
+         |  @jsonUnknown
+         |  first: Document
+         |  @jsonUnknown
+         |  second: Document
+         |}
+         |""".stripMargin
+
+    val result =
+      Model.assembler
+        .discoverModels()
+        .addUnparsedModel("/test.smithy", source)
+        .assemble()
+
+    assert(result.isBroken())
+
+    val errors = result
+      .getValidationEvents()
+      .asScala
+      .filter(ev => ev.getSeverity() == Severity.ERROR)
+      .toList
+
+    assertEquals(errors.length, 1)
+
+    val List(theError) = errors
+
+    assertEquals(
+      Some(ShapeId.from("test#MyStruct")),
+      theError.getShapeId().toScala
+    )
+    assertEquals(theError.getId(), "ExclusiveStructureMemberTrait")
+
   }
 }
