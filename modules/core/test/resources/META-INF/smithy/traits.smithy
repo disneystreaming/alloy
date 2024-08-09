@@ -217,5 +217,10 @@ structure TestJsonUnknown {
    foo: String
    bar: String
    @jsonUnknown
-   bazes: Document
+   bazes: UnknownProps
+}
+
+map UnknownProps {
+    key: String
+    value: Document
 }

@@ -33,11 +33,14 @@ final class JsonUnknownTraitProviderSpec extends munit.FunSuite {
          |
          |use alloy#jsonUnknown
          |
-         |document MyDocument
+         |map UnknownProps {
+         |  key: String
+         |  value: Document
+         |}
          |
          |structure MyStruct {
          |  @jsonUnknown
-         |  myMap: MyDocument
+         |  myMap: UnknownProps
          |}
          |""".stripMargin
 
@@ -62,11 +65,16 @@ final class JsonUnknownTraitProviderSpec extends munit.FunSuite {
          |
          |use alloy#jsonUnknown
          |
+         |map UnknownProps {
+         |  key: String
+         |  value: Document
+         |}
+         |
          |structure MyStruct {
          |  @jsonUnknown
-         |  first: Document
+         |  first: UnknownProps
          |  @jsonUnknown
-         |  second: Document
+         |  second: UnknownProps
          |}
          |""".stripMargin
 
