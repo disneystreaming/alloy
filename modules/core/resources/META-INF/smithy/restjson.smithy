@@ -30,6 +30,7 @@ namespace alloy
         alloy#discriminated
         alloy#nullable
         alloy#untagged
+        alloy#jsonUnknown
     ]
 )
 @trait(selector: "service")
