@@ -16,47 +16,39 @@
 package alloy
 
 import software.amazon.smithy.model.Model
-import software.amazon.smithy.model.shapes.DocumentShape
-import software.amazon.smithy.model.shapes.MemberShape
 import software.amazon.smithy.model.shapes.ShapeId
-import software.amazon.smithy.model.shapes.StructureShape
+import software.amazon.smithy.model.validation.Severity
 
 import java.util.Optional
-
-import scala.jdk.CollectionConverters._
-import scala.jdk.OptionConverters._
-import software.amazon.smithy.model.validation.Severity
+import scala.jdk.CollectionConverters.*
+import scala.jdk.OptionConverters.*
 
 final class JsonUnknownTraitProviderSpec extends munit.FunSuite {
 
   test("has trait") {
-    val documentShape = DocumentShape
-      .builder()
-      .id(ShapeId.fromParts("test", "MyDocument"))
-      .build()
-    val structId = ShapeId.fromParts("test", "MyStruct")
-    val targetId = structId.withMember("myMap")
-    val structShape = StructureShape
-      .builder()
-      .id(structId)
-      .addMember(
-        MemberShape
-          .builder()
-          .id(targetId)
-          .target(documentShape.getId)
-          .addTrait(new JsonUnknownTrait)
-          .build()
-      )
-      .build()
+    val source =
+      """|$version: "2"
+         |
+         |namespace test
+         |
+         |use alloy#jsonUnknown
+         |
+         |document MyDocument
+         |
+         |structure MyStruct {
+         |  @jsonUnknown
+         |  myMap: MyDocument
+         |}
+         |""".stripMargin
 
     val model =
-      Model.assembler
-        .addShapes(structShape, documentShape)
+      Model.assembler.discoverModels()
+        .addUnparsedModel("/test.smithy", source)
         .assemble()
         .unwrap()
 
     val result = model
-      .getShape(targetId)
+      .getShape(ShapeId.from("test#MyStruct$myMap"))
       .map(shape => shape.hasTrait(classOf[JsonUnknownTrait]))
 
     assertEquals(result, Optional.of(true))
