@@ -45,7 +45,8 @@ final class JsonUnknownTraitProviderSpec extends munit.FunSuite {
          |""".stripMargin
 
     val model =
-      Model.assembler.discoverModels()
+      Model.assembler
+        .discoverModels()
         .addUnparsedModel("/test.smithy", source)
         .assemble()
         .unwrap()
