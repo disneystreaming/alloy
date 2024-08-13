@@ -7,6 +7,7 @@ alloy.DataExamplesTrait$Provider
 alloy.DateFormatTrait$Provider
 alloy.DefaultValueTrait$Provider
 alloy.DiscriminatedUnionTrait$Provider
+alloy.JsonUnknownTrait$Provider
 alloy.OpenEnumTrait$Provider
 alloy.NullableTrait$Provider
 alloy.openapi.OpenApiExtensionsTrait$Provider
