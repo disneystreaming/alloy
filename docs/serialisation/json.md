@@ -135,7 +135,7 @@ The JSON objects
 {}
 ```
 
-are respectively decoded as follows in Scala (when using [smithy4s](https://disneystreaming.github.io/smithy4s/)):  
+are respectively decoded as follows in Scala (when using [smithy4s](https://disneystreaming.github.io/smithy4s/)):
 
 ```scala
 Foo(Some(Nullable.Null), None)
@@ -152,3 +152,46 @@ or some similar type which preserves the information that an explicit `null` was
 ```
 
 This means that `@nullable` allows round-tripping null values.
+
+
+#### Unknown fields
+
+Retaining JSON fields whose label do not match structure member names is supported via the `@jsonUnknown` smithy trait. This trait can be applied to a single structure member targeting a `map` with `Document` values.
+
+JSON decoders supporting this trait must store unknown properties in the annotated map. Symmetrically, JSON encoders must inline the values from the map in the JSON object produced when serializing the enclosing structure.
+
+Note that if a JSON document contains a field using the same label as the member annotated with the `@jsonUnknown` trait, it will be treated as an unknown field.
+
+For example, given the following smithy definitions
+
+```smithy
+use alloy#jsonUnknown
+
+structure Data {
+  known: String
+  @jsonUnknown
+  unknown: UnknownProperties
+}
+
+map UnknownProperties {
+  key: String
+  value: Document
+}
+```
+
+The JSON objects
+
+```json
+{ "known": "known value" }
+{ "known": "known value", "aField": 1, "anotherField": "another value" }
+{ "known": "known value", "unknown": 1 }
+```
+
+are respectively decoded as follows in Scala (when using [smithy4s](https://disneystreaming.github.io/smithy4s/))
+
+```scala
+Data(known=Some("known value"), unknown=None)
+Data(known=Some("known value"),
+     unknown=Some(Map("aField" -> Document.DNunmber(1), "anotherField" -> Document.DString("another value"))))
+Data(known=Some("known value"), unknown=Some(Map("unknown" -> Document.DNumber(1))))
+```
