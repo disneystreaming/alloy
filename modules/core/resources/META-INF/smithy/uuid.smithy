@@ -8,3 +8,4 @@ structure uuidFormat {}
 
 @uuidFormat
 string UUID
+

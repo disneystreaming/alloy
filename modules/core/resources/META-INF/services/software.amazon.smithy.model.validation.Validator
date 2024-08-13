@@ -11,3 +11,4 @@ alloy.validation.DiscriminatedUnionValidator
 alloy.validation.SimpleRestJsonHttpHeaderValidator
 alloy.validation.SimpleRestJsonValidator
 alloy.validation.StructurePatternTraitValidator
+alloy.validation.HttpPolymorphicResponseValidator
