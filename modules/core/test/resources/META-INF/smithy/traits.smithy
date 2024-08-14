@@ -15,6 +15,8 @@ use alloy#untagged
 use alloy#urlFormFlattened
 use alloy#urlFormName
 use alloy#uuidFormat
+use alloy#httpSuccess
+use alloy#httpPolymorphicResponse
 use alloy.common#countryCodeFormat
 use alloy.common#emailFormat
 use alloy.common#hexColorCodeFormat
@@ -210,4 +212,25 @@ structure TestUrlFormFlattened {
 structure TestUrlFormName {
     @urlFormName("Test")
     test: String
+}
+
+operation TestHttpPolymporhicResponse  {
+    input:= {
+        @httpPolymorphicResponse
+        @required
+        response: PolymporhicResponseUnion
+    }
+}
+
+union PolymporhicResponseUnion{
+    created: TestCreated
+    okay: TestOkay
+}
+
+@httpSuccess(201)
+structure TestCreated {
+}
+
+@httpSuccess(200)
+structure TestOkay {
 }
