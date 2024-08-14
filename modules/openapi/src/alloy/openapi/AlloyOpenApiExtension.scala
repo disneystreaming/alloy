@@ -50,7 +50,8 @@ final class AlloyOpenApiExtension() extends Smithy2OpenApiExtension {
     new DataExamplesMapper(),
     new ExternalDocumentationMapperJsonSchema(),
     new NullableMapper(),
-    new DiscriminatedUnionShapeId()
+    new DiscriminatedUnionShapeId(),
+    new JsonUnknownMapper()
   ).asJava
 
 }

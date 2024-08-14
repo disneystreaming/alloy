@@ -305,6 +305,7 @@
             "type": "string"
           }
         },
+        "additionalProperties": true,
         "example": {
           "name": "Woof"
         }

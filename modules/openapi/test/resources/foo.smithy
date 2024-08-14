@@ -7,6 +7,7 @@ use alloy#discriminated
 use alloy#nullable
 use alloy#untagged
 use alloy#dataExamples
+use alloy#jsonUnknown
 
 @simpleRestJson
 @externalDocumentation(
@@ -164,6 +165,13 @@ structure Cat {
 structure Dog {
   name: String,
   breed: String
+  @jsonUnknown
+  attributes: Attributes
+}
+
+map Attributes {
+  key: String
+  value: Document
 }
 
 @dataExamples([{
