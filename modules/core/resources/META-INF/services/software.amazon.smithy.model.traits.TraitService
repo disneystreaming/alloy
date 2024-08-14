@@ -27,3 +27,5 @@ alloy.UrlFormNameTrait$Provider
 alloy.UncheckedExamplesTrait$Provider
 alloy.UntaggedUnionTrait$Provider
 alloy.UuidFormatTrait$Provider
+alloy.HttpPolymorphicResponseTrait$Provider
+alloy.HttpSuccessTrait$Provider
