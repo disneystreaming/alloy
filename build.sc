@@ -1,4 +1,4 @@
-import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.4.0`
+import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.4.1`
 import de.tobiasroeser.mill.vcs.version.VcsVersion
 import $ivy.`io.github.davidgregory084::mill-tpolecat::0.3.5`
 import $ivy.`com.lewisjkl::header-mill-plugin::0.0.3`
