@@ -9,7 +9,7 @@ For full documentation on what each of these traits does, see the smithy specifi
 Note that for convenience, `alloy` provides a module containing protobuf definitions that used downstream to ensure that the semantics described in this document are respected.
 
 ```
-com.disneystreaming.alloy:alloy-protocol:x.y.z
+com.disneystreaming.alloy:alloy-protobuf:x.y.z
 ```
 
 ### Validation
