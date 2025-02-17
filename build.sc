@@ -221,7 +221,7 @@ object Deps {
   }
 
   val cats = new {
-    val core = ivy"org.typelevel::cats-core:2.12.0"
+    val core = ivy"org.typelevel::cats-core:2.13.0"
   }
 
   val scala = new {
