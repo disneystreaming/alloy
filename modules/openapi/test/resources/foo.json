@@ -144,6 +144,11 @@
                     "in": "testinput"
                   }
                 },
+                "THREE": {
+                  "value": {
+                    "in": "testinputthree"
+                  }
+                },
                 "TWO": {
                   "value": {
                     "in": "testinputtwo"
@@ -177,9 +182,21 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/NotFoundResponseContent"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/NotFoundResponseContent"
+                    },
+                    {
+                      "$ref": "#/components/schemas/NotFoundTwoResponseContent"
+                    }
+                  ]
                 },
                 "examples": {
+                  "THREE": {
+                    "value": {
+                      "messageTwo": "Notfoundmessagetwo"
+                    }
+                  },
                   "TWO": {
                     "value": {
                       "message": "Notfoundmessage"
@@ -422,6 +439,17 @@
         },
         "required": [
           "message"
+        ]
+      },
+      "NotFoundTwoResponseContent": {
+        "type": "object",
+        "properties": {
+          "messageTwo": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "messageTwo"
         ]
       },
       "SomeValue": {
