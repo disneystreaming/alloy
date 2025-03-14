@@ -2,203 +2,215 @@ $version: "2"
 
 namespace foo
 
-use alloy#simpleRestJson
-use alloy#discriminated
-use alloy#nullable
-use alloy#untagged
 use alloy#dataExamples
+use alloy#discriminated
 use alloy#jsonUnknown
+use alloy#nullable
+use alloy#simpleRestJson
+use alloy#untagged
 
 @simpleRestJson
-@externalDocumentation(
-  "API Homepage": "https://www.example.com/",
-  "API Ref": "https://www.example.com/api-ref",
-)
+@externalDocumentation("API Homepage": "https://www.example.com/", "API Ref": "https://www.example.com/api-ref")
 service HelloWorldService {
-  version: "0.0.1",
-  errors: [GeneralServerError],
-  operations: [Greet, GetUnion, GetValues, TestErrorsInExamples]
+    version: "0.0.1"
+    errors: [
+        GeneralServerError
+    ]
+    operations: [
+        Greet
+        GetUnion
+        GetValues
+        TestErrorsInExamples
+    ]
 }
 
-@externalDocumentation(
-  "API Homepage 2": "https://www.example2.com/",
-  "API Ref 2": "https://www.example2.com/api-ref",
-)
+@externalDocumentation("API Homepage 2": "https://www.example2.com/", "API Ref 2": "https://www.example2.com/api-ref")
 @readonly
 @http(method: "GET", uri: "/hello/{name}/{ts}")
 operation Greet {
-  input: Person,
-  output: Greeting
+    input: Person
+    output: Greeting
 }
 
 @error("client")
 @httpError(404)
 structure NotFound {
-  @required
-  message: String
+    @required
+    message: String
+}
+
+@error("client")
+@httpError(404)
+structure NotFoundTwo {
+    @required
+    messageTwo: String
 }
 
 @examples([
-  {
-    title: "ONE"
-    input: {
-        in: "test input"
+    {
+        title: "ONE"
+        input: { in: "test input" }
+        output: { out: "test output" }
     }
-    output: {
-        out: "test output"
-    }
-  }
-  {
-    title: "TWO"
-    input: {
-        in: "test input two"
-    }
-    error: {
-        shapeId: NotFound
-        content: {
-            message: "Not found message"
+    {
+        title: "TWO"
+        input: { in: "test input two" }
+        error: {
+            shapeId: NotFound
+            content: { message: "Not found message" }
         }
     }
-  }
+    {
+        title: "THREE"
+        input: { in: "test input three" }
+        error: {
+            shapeId: NotFoundTwo
+            content: { messageTwo: "Not found message two" }
+        }
+    }
 ])
 @http(method: "POST", uri: "/test_errors")
 operation TestErrorsInExamples {
-  input := {
-    @required
-    in: String
-  }
-  output := {
-    @required
-    out: String
-  }
-  errors: [NotFound]
+    input := {
+        @required
+        in: String
+    }
+
+    output := {
+        @required
+        out: String
+    }
+
+    errors: [
+        NotFound
+        NotFoundTwo
+    ]
 }
 
 @readonly
 @http(method: "GET", uri: "/default")
 operation GetUnion {
-  output: GetUnionResponse
+    output: GetUnionResponse
 }
 
 @readonly
 @http(method: "GET", uri: "/values")
 operation GetValues {
-  output: ValuesResponse
+    output: ValuesResponse
 }
 
 structure Person {
-  @httpLabel
-  @required
-  name: String,
+    @httpLabel
+    @required
+    name: String
 
-  @httpHeader("X-Bamtech-Partner")
-  partner: String,
+    @httpHeader("X-Bamtech-Partner")
+    partner: String
 
-  @httpHeader("when")
-  when: Timestamp,
+    @httpHeader("when")
+    when: Timestamp
 
-  @httpHeader("whenAlso")
-  @timestampFormat("http-date")
-  whenTwo: Timestamp,
+    @httpHeader("whenAlso")
+    @timestampFormat("http-date")
+    whenTwo: Timestamp
 
-  @httpHeader("whenThree")
-  @timestampFormat("date-time")
-  whenThree: Timestamp,
+    @httpHeader("whenThree")
+    @timestampFormat("date-time")
+    whenThree: Timestamp
 
-  @httpHeader("whenFour")
-  @timestampFormat("epoch-seconds")
-  whenFour: Timestamp,
+    @httpHeader("whenFour")
+    @timestampFormat("epoch-seconds")
+    whenFour: Timestamp
 
-  @httpQuery("from")
-  from: Timestamp,
+    @httpQuery("from")
+    from: Timestamp
 
-  @httpLabel
-  @required
-  ts: Timestamp
+    @httpLabel
+    @required
+    ts: Timestamp
 }
 
 structure Greeting {
-  @required
-  @httpPayload
-  message: String
+    @required
+    @httpPayload
+    message: String
 }
 
 @error("server")
 @httpError(500)
 structure GeneralServerError {
-  message: String,
+    message: String
 
-  @nullable
-  count: Integer
+    @nullable
+    count: Integer
 }
 
 structure GetUnionResponse {
-  intOrString: IntOrString,
-  doubleOrFloat: DoubleOrFloat,
-  catOrDog: CatOrDog
+    intOrString: IntOrString
+    doubleOrFloat: DoubleOrFloat
+    catOrDog: CatOrDog
 }
 
 union IntOrString {
-  int: Integer,
-  string: String
+    int: Integer
+    string: String
 }
 
 union DoubleOrFloat {
-  float: Float,
-  double: Double
+    float: Float
+    double: Double
 }
 
-@dataExamples([{
-  smithy: {
-    name: "Meow"
-  }
-}])
+@dataExamples([
+    {
+        smithy: { name: "Meow" }
+    }
+])
 structure Cat {
-  name: String
+    name: String
 }
 
-@dataExamples([{
-  json: {
-    name: "Woof"
-  }
-}])
+@dataExamples([
+    {
+        json: { name: "Woof" }
+    }
+])
 structure Dog {
-  name: String,
-  breed: String
-  @jsonUnknown
-  attributes: Attributes
+    name: String
+
+    breed: String
+
+    @jsonUnknown
+    attributes: Attributes
 }
 
 map Attributes {
-  key: String
-  value: Document
+    key: String
+    value: Document
 }
 
-@dataExamples([{
-  string: "{\"values\": []}"
-}])
+@dataExamples([
+    {
+        string: "{\"values\": []}"
+    }
+])
 structure ValuesResponse {
-  values: Values
+    values: Values
 }
 
 list Values {
-  member: SomeValue
+    member: SomeValue
 }
 
 @untagged
 union SomeValue {
-  message: String,
-  value: Integer
+    message: String
+    value: Integer
 }
 
 @discriminated("type")
-@externalDocumentation(
-  "Homepage": "https://www.example.com/",
-  "API Reference": "https://www.example.com/api-ref",
-)
+@externalDocumentation(Homepage: "https://www.example.com/", "API Reference": "https://www.example.com/api-ref")
 union CatOrDog {
-  cat: Cat,
-  dog: Dog
+    cat: Cat
+    dog: Dog
 }
-
-
