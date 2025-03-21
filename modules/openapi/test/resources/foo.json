@@ -178,7 +178,7 @@
             }
           },
           "404": {
-            "description": "NotFound404response",
+            "description": "404Response",
             "content": {
               "application/json": {
                 "schema": {

@@ -121,7 +121,7 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
           .foreach(builder.requestBody)
         createResponses(context, bindingIndex, operation)
           .foreach { case (k, values) =>
-            combineResponseContent(values).foreach(v =>
+            combineResponseContent(values, k).foreach(v =>
               builder.putResponse(k, v)
             )
           }
@@ -130,7 +130,8 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
       .asJava
 
   def combineResponseContent(
-      responses: List[ResponseObject]
+      responses: List[ResponseObject],
+      statusCode: String
   ): Option[ResponseObject] = {
     responses match {
       case Nil         => None
@@ -158,7 +159,13 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
         // This is why we can just use the content from `head` here
         val newContent =
           head.getContent().asScala.map { case (k, _) => k -> media }
-        Some(head.toBuilder().content(newContent.asJava).build())
+        Some(
+          head
+            .toBuilder()
+            .content(newContent.asJava)
+            .description(s"$statusCode Response")
+            .build()
+        )
     }
   }
 
