@@ -37,7 +37,7 @@ string MyString
 
 structure Foo {
  @required
- @nullable
+ @defaultValue("N/A")
  bar: String
 }
 ```
