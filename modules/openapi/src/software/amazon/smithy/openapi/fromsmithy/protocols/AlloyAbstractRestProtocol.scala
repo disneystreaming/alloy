@@ -159,10 +159,25 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
         // This is why we can just use the content from `head` here
         val newContent =
           head.getContent().asScala.map { case (k, _) => k -> media }
+        val newHeaders =
+          responses.map(_.getHeaders().asScala).reduce(_ ++ _)
+        // if all headers are the same, no need to make them all optional
+        // but if headers differ between error responses, we have to make
+        // them all optional as they won't all be used in every case
+        val shouldMakeHeadersOptional: Boolean =
+          responses.map(_.getHeaders().asScala.toSet).distinct.length != 1
+        val responseBuilder = head.toBuilder()
+
+        if (shouldMakeHeadersOptional) {
+          responseBuilder.putExtension(
+            ExtensionKeys.shouldMakeHeadersOptional,
+            true
+          )
+        }
         Some(
-          head
-            .toBuilder()
+          responseBuilder
             .content(newContent.asJava)
+            .headers(newHeaders.asJava)
             .description(s"$statusCode Response")
             .build()
         )

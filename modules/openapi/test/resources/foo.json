@@ -116,6 +116,17 @@
               }
             }
           },
+          "404": {
+            "description": "404Response",
+            "headers": {
+              "x-error-one": {
+                "schema": {
+                  "type": "string"
+                },
+                "required": true
+              }
+            }
+          },
           "500": {
             "description": "GeneralServerError500response",
             "content": {
@@ -179,6 +190,23 @@
           },
           "404": {
             "description": "404Response",
+            "headers": {
+              "x-one": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "x-three": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "x-two": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {

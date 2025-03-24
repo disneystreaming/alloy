@@ -30,11 +30,34 @@ service HelloWorldService {
 operation Greet {
     input: Person
     output: Greeting
+    errors: [
+        GreetErrorOne
+        GreetErrorTwo
+    ]
+}
+
+@error("client")
+@httpError(404)
+structure GreetErrorOne {
+    @httpHeader("x-error-one")
+    @required
+    headerOneA: String
+}
+
+@error("client")
+@httpError(404)
+structure GreetErrorTwo {
+    @httpHeader("x-error-one")
+    @required
+    headerOneB: String
 }
 
 @error("client")
 @httpError(404)
 structure NotFound {
+    @httpHeader("x-one")
+    headerOne: String
+
     @required
     message: String
 }
@@ -42,6 +65,13 @@ structure NotFound {
 @error("client")
 @httpError(404)
 structure NotFoundTwo {
+    @httpHeader("x-two")
+    headerTwo: String
+
+    @httpHeader("x-three")
+    @required
+    headerThree: String
+
     @required
     messageTwo: String
 }
@@ -65,7 +95,7 @@ structure NotFoundTwo {
         input: { in: "test input three" }
         error: {
             shapeId: NotFoundTwo
-            content: { messageTwo: "Not found message two" }
+            content: { messageTwo: "Not found message two", headerThree: "test" }
         }
     }
 ])
