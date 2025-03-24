@@ -38,7 +38,7 @@ string MyString
 structure Foo {
  @required
  @defaultValue("N/A")
- bar: String
+ bar: MyString
 }
 ```
 
