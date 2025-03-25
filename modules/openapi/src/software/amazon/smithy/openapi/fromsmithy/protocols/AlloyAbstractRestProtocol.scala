@@ -120,10 +120,69 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
         createRequestBody(context, bindingIndex, operation)
           .foreach(builder.requestBody)
         createResponses(context, bindingIndex, operation)
-          .foreach { case (k, v) => builder.putResponse(k, v) }
+          .foreach { case (k, values) =>
+            combineResponseContent(values, k).foreach(v =>
+              builder.putResponse(k, v)
+            )
+          }
         Operation.create(method, uri, builder)
       })
       .asJava
+
+  def combineResponseContent(
+      responses: List[ResponseObject],
+      statusCode: String
+  ): Option[ResponseObject] = {
+    responses match {
+      case Nil         => None
+      case head :: Nil => Some(head)
+      case head :: tail =>
+        val all = head +: tail
+        val mediaTypeObjects: List[MediaTypeObject] =
+          all.flatMap(_.getContent().asScala.toList.map {
+            case (_, mediaTypeObject) => mediaTypeObject
+          })
+        val schemas =
+          mediaTypeObjects.flatMap(_.getSchema().asScala)
+        val newSchema = Schema.builder().oneOf(schemas.asJava).build()
+        val newExamples = mediaTypeObjects
+          .flatMap(_.getExamples().asScala.toList)
+          .toMap
+          .map { case (k, exampleObj) => k -> exampleObj.toNode() }
+        val media = MediaTypeObject.builder
+          .examples(
+            newExamples.asJava
+          )
+          .schema(newSchema)
+          .build()
+        // `AlloyAbstractRestProtocol` only supports a single content-type, application/json
+        // This is why we can just use the content from `head` here
+        val newContent =
+          head.getContent().asScala.map { case (k, _) => k -> media }
+        val newHeaders =
+          responses.map(_.getHeaders().asScala).reduce(_ ++ _)
+        // if all headers are the same, no need to make them all optional
+        // but if headers differ between error responses, we have to make
+        // them all optional as they won't all be used in every case
+        val shouldMakeHeadersOptional: Boolean =
+          responses.map(_.getHeaders().asScala.toSet).distinct.length != 1
+        val responseBuilder = head.toBuilder()
+
+        if (shouldMakeHeadersOptional) {
+          responseBuilder.putExtension(
+            ExtensionKeys.shouldMakeHeadersOptional,
+            true
+          )
+        }
+        Some(
+          responseBuilder
+            .content(newContent.asJava)
+            .headers(newHeaders.asJava)
+            .description(s"$statusCode Response")
+            .build()
+        )
+    }
+  }
 
   def createPathParameters(
       context: Context[T],
@@ -401,7 +460,7 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
     // operation shape.
     val updatedModel =
       context.getModel().toBuilder().addShape(operation).build()
-    val result = new util.TreeMap[String, ResponseObject]
+    val result = new util.TreeMap[String, List[ResponseObject]]
     val operationIndex = OperationIndex.of(updatedModel)
     operationIndex
       .getOutputShape(operation)
@@ -467,7 +526,7 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
       bindingIndex: HttpBindingIndex,
       operation: OperationShape,
       shape: StructureShape,
-      responses: util.Map[String, ResponseObject]
+      responses: util.Map[String, List[ResponseObject]]
   ) = {
     val operationOrError = reorganizeExampleTraits(operation, shape)
     val statusCode = context.getOpenApiProtocol.getOperationResponseStatusCode(
@@ -480,7 +539,14 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
       statusCode,
       operationOrError
     )
-    responses.put(statusCode, response)
+    val currentResponses: Option[List[ResponseObject]] = Option(
+      responses.get(statusCode)
+    )
+    val updatedResponses = currentResponses match {
+      case Some(current) => current :+ response
+      case None          => List(response)
+    }
+    responses.put(statusCode, updatedResponses)
   }
 
   private def createResponse(

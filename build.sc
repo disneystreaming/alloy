@@ -161,7 +161,7 @@ object core extends BaseJavaModule {
 object protobuf extends BaseJavaModule {}
 
 val scalaVersionsMap =
-  Map("2.13" -> "2.13.7", "2.12" -> "2.12.17", "3" -> "3.3.0")
+  Map("2.13" -> "2.13.15", "2.12" -> "2.12.17", "3" -> "3.3.0")
 object openapi extends Cross[OpenapiModule](scalaVersionsMap.keys.toList)
 trait OpenapiModule extends BaseCrossScalaModule {
   val crossVersion = crossValue
@@ -229,7 +229,7 @@ object Deps {
   }
 
   val munit = new {
-    val munit = ivy"org.scalameta::munit::1.0.4"
+    val munit = ivy"org.scalameta::munit::1.1.0"
     val scalaCheck = ivy"org.scalameta::munit-scalacheck::1.1.0"
     val all = Agg(munit, scalaCheck)
   }
