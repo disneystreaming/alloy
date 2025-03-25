@@ -116,6 +116,17 @@
               }
             }
           },
+          "404": {
+            "description": "404Response",
+            "headers": {
+              "x-error-one": {
+                "schema": {
+                  "type": "string"
+                },
+                "required": true
+              }
+            }
+          },
           "500": {
             "description": "GeneralServerError500response",
             "content": {
@@ -142,6 +153,11 @@
                 "ONE": {
                   "value": {
                     "in": "testinput"
+                  }
+                },
+                "THREE": {
+                  "value": {
+                    "in": "testinputthree"
                   }
                 },
                 "TWO": {
@@ -173,13 +189,42 @@
             }
           },
           "404": {
-            "description": "NotFound404response",
+            "description": "404Response",
+            "headers": {
+              "x-one": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "x-three": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "x-two": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/NotFoundResponseContent"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/NotFoundResponseContent"
+                    },
+                    {
+                      "$ref": "#/components/schemas/NotFoundTwoResponseContent"
+                    }
+                  ]
                 },
                 "examples": {
+                  "THREE": {
+                    "value": {
+                      "messageTwo": "Notfoundmessagetwo"
+                    }
+                  },
                   "TWO": {
                     "value": {
                       "message": "Notfoundmessage"
@@ -422,6 +467,17 @@
         },
         "required": [
           "message"
+        ]
+      },
+      "NotFoundTwoResponseContent": {
+        "type": "object",
+        "properties": {
+          "messageTwo": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "messageTwo"
         ]
       },
       "SomeValue": {
