@@ -147,7 +147,7 @@ object core extends BaseJavaModule {
   }
 
   object test
-      extends JavaModuleTests
+      extends JavaTests
       with BaseScalaNoPublishModule
       with BaseMunitTests {
     def ivyDeps = {
@@ -161,7 +161,7 @@ object core extends BaseJavaModule {
 object protobuf extends BaseJavaModule {}
 
 val scalaVersionsMap =
-  Map("2.13" -> "2.13.15", "2.12" -> "2.12.17", "3" -> "3.3.0")
+  Map("2.13" -> "2.13.16", "2.12" -> "2.12.20", "3" -> "3.3.5")
 object openapi extends Cross[OpenapiModule](scalaVersionsMap.keys.toList)
 trait OpenapiModule extends BaseCrossScalaModule {
   val crossVersion = crossValue
@@ -202,7 +202,7 @@ object `protocol-tests` extends BaseJavaModule {
 
   object sanity
       extends BaseScalaNoPublishModule
-      with JavaModuleTests
+      with JavaTests
       with TestModule.Munit {
     def ivyDeps = Agg(Deps.munit.munit)
   }
@@ -210,7 +210,7 @@ object `protocol-tests` extends BaseJavaModule {
 
 object Deps {
   val smithy = new {
-    val smithyVersion = "1.49.0"
+    val smithyVersion = "1.56.0"
     val model = ivy"software.amazon.smithy:smithy-model:$smithyVersion"
     val awsTraits = ivy"software.amazon.smithy:smithy-aws-traits:$smithyVersion"
     val awsProtocolTestTraits =
