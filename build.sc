@@ -147,7 +147,7 @@ object core extends BaseJavaModule {
   }
 
   object test
-      extends JavaModuleTests
+      extends JavaTests
       with BaseScalaNoPublishModule
       with BaseMunitTests {
     def ivyDeps = {
@@ -202,7 +202,7 @@ object `protocol-tests` extends BaseJavaModule {
 
   object sanity
       extends BaseScalaNoPublishModule
-      with JavaModuleTests
+      with JavaTests
       with TestModule.Munit {
     def ivyDeps = Agg(Deps.munit.munit)
   }
