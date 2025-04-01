@@ -104,4 +104,103 @@ final class JsonUnknownTraitProviderSpec extends munit.FunSuite {
     assertEquals(theError.getId(), "ExclusiveStructureMemberTrait")
 
   }
+
+  test("the trait can be applied to a union member document") {
+    val source =
+      """|$version: "2"
+         |
+         |namespace test
+         |
+         |use alloy#jsonUnknown
+         |
+         |union MyOpenUnion {
+         |  first: String
+         |  @jsonUnknown
+         |  second: Document
+         |}
+         |""".stripMargin
+
+    val result =
+      Model.assembler
+        .discoverModels()
+        .addUnparsedModel("/test.smithy", source)
+        .assemble()
+
+    assert(!result.isBroken())
+  }
+
+  test("the trait cannot be applied to multiple union members") {
+    val source =
+      """|$version: "2"
+         |
+         |namespace test
+         |
+         |use alloy#jsonUnknown
+         |
+         |union MyOpenUnion {
+         |  @jsonUnknown
+         |  first: Document
+         |  @jsonUnknown
+         |  second: Document
+         |}
+         |""".stripMargin
+
+    val result =
+      Model.assembler
+        .discoverModels()
+        .addUnparsedModel("/test.smithy", source)
+        .assemble()
+
+    assert(result.isBroken())
+
+    val eventIds = result
+      .getValidationEvents()
+      .asScala
+      .map(_.getId())
+      .toList
+
+    assert(
+      eventIds
+        .contains("JsonUnknownTrait.ConflictingUnionMember"),
+      s"validation events should contain one with ID: JsonUnknownTrait.ConflictingUnionMember. Found: $eventIds"
+    )
+  }
+
+  test(
+    "the trait cannot be applied to union members that don't target a document shape"
+  ) {
+    val source =
+      """|$version: "2"
+         |
+         |namespace test
+         |
+         |use alloy#jsonUnknown
+         |
+         |union MyOpenUnion {
+         |  first: Document
+         |  @jsonUnknown
+         |  second: String
+         |}
+         |""".stripMargin
+
+    val result =
+      Model.assembler
+        .discoverModels()
+        .addUnparsedModel("/test.smithy", source)
+        .assemble()
+
+    assert(result.isBroken())
+
+    val eventIds = result
+      .getValidationEvents()
+      .asScala
+      .map(_.getId())
+      .toList
+
+    assert(
+      eventIds
+        .contains("TraitTarget"),
+      s"validation events should contain one with ID: TraitTarget. Found: $eventIds"
+    )
+  }
 }
