@@ -110,7 +110,7 @@ trait BaseScalaNoPublishModule
     extends ScalaModule
     with ScalafmtModule
     with TpolecatModule {
-  def scalaVersion = T.input("2.13.16")
+  def scalaVersion = T.input(scala213)
 }
 
 trait BaseMimaModule extends BasePublishModule with Mima {
@@ -162,8 +162,9 @@ object core extends BaseJavaModule {
 
 object protobuf extends BaseJavaModule {}
 
+val scala213 = "2.13.16"
 val scalaVersionsMap =
-  Map("2.13" -> "2.13.16", "2.12" -> "2.12.20", "3" -> "3.3.5")
+  Map("2.13" -> scala213, "2.12" -> "2.12.20", "3" -> "3.3.5")
 object openapi extends Cross[OpenapiModule](scalaVersionsMap.keys.toList)
 trait OpenapiModule extends BaseCrossScalaModule {
   val crossVersion = crossValue
