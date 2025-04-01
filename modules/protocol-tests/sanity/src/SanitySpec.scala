@@ -33,7 +33,7 @@ final class SanitySpec extends munit.FunSuite {
     val root =
       s"${sys.env("MILL_WORKSPACE_ROOT")}/modules/protocol-tests/resources/META-INF/smithy/"
     val manifest = Files
-      .readAllLines(Paths.get(s"${root}manifest").toAbsolutePath())
+      .readAllLines(Paths.get(s"${root}manifest"))
       .asScala
       .toList
       .toSet
