@@ -17,6 +17,8 @@ import mill.scalalib.publish._
 import mill.define.ExternalModule
 import mill.eval.Evaluator
 
+object release extends ReleaseModule
+
 object InternalReleaseModule extends Module {
 
   /** This is a replacement for the mill.scalalib.PublishModule/publishAll task
@@ -25,11 +27,11 @@ object InternalReleaseModule extends Module {
     * env variables to publish to sonatype for you.
     */
   def publishAll(ev: Evaluator): Command[Unit] = {
-    ReleaseModule.publishAll(ev)
+    release.publishAll(ev)
   }
 
   import Discover._
-  lazy val millDiscover: mill.define.Discover[this.type] =
+  lazy val millDiscover: mill.define.Discover =
     mill.define.Discover[this.type]
 }
 
