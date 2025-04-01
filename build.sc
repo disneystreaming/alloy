@@ -208,6 +208,8 @@ object `protocol-tests` extends BaseJavaModule {
   }
 }
 
+object docs extends BasePublishModule
+
 object Deps {
   val smithy = new {
     val smithyVersion = "1.56.0"
