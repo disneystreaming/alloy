@@ -30,23 +30,25 @@ final class SanitySpec extends munit.FunSuite {
     Model.assembler().discoverModels().assemble()
 
   test("the manifest file and the Smithy files are in sync") {
-    val root = "modules/protocol-tests/resources/META-INF/smithy/"
+    val root =
+      s"${sys.env("MILL_WORKSPACE_ROOT")}/modules/protocol-tests/resources/META-INF/smithy/"
     val manifest = Files
-      .readAllLines(Paths.get(s"${root}manifest"))
+      .readAllLines(Paths.get(s"${root}manifest").toAbsolutePath())
       .asScala
       .toList
-      .map(a => a.replace(".smithy", "").replace(".json", ""))
       .toSet
     val path = Paths.get(root)
     val smithyFiles = Files
       .walk(path)
       .toScala(Set)
       .collect {
-        case p if p.toString.endsWith(".smithy") =>
-          p.toString.replace(root, "").replace(".smithy", "")
-        case p if p.toString.endsWith(".json") =>
-          p.toString.replace(root, "").replace(".json", "")
+        case p
+            if p.toString
+              .endsWith(".smithy") || p.toString().endsWith(".json") =>
+          p.toString.replace(root, "")
       }
+      .toSet
+
     assertEquals(manifest, smithyFiles)
   }
 

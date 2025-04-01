@@ -145,7 +145,7 @@ trait ReleaseModule extends Module {
         readTimeout = 60000,
         connectTimeout = 60000,
         log,
-        workspace = os.pwd,
+        workspace = Task.workspace,
         env = sys.env,
         awaitTimeout = 600000,
         stagingRelease = stagingRelease
