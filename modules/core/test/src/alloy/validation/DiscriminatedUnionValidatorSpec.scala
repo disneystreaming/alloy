@@ -86,7 +86,6 @@ final class DiscriminatedUnionValidatorSpec extends munit.FunSuite {
         .addUnparsedModel("/test.smithy", source)
         .assemble()
 
-    result.getValidationEvents().asScala.foreach(println)
     assert(!result.isBroken())
   }
 
