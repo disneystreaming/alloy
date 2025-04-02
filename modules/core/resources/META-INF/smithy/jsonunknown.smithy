@@ -14,5 +14,6 @@ namespace alloy
         )
     "
     structurallyExclusive: "member"
+    conflicts: [jsonName]
 )
 structure jsonUnknown {}
