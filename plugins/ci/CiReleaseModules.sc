@@ -53,7 +53,7 @@ trait CiReleaseModule extends PublishModule {
 
 // In here for the Discover import
 @nowarn("msg=Unused import")
-object ReleaseModule extends Module {
+trait ReleaseModule extends Module {
 
   /** This is a replacement for the mill.scalalib.PublishModule/publishAll task
     * that should basically work identically _but_ without requiring the user to
@@ -145,7 +145,7 @@ object ReleaseModule extends Module {
         readTimeout = 60000,
         connectTimeout = 60000,
         log,
-        workspace = os.pwd,
+        workspace = Task.workspace,
         env = sys.env,
         awaitTimeout = 600000,
         stagingRelease = stagingRelease
@@ -234,7 +234,7 @@ object ReleaseModule extends Module {
     ev.rootModule.millInternal.modules.collect { case m: CiReleaseModule => m }
 
   import Discover._
-  lazy val millDiscover: mill.define.Discover[this.type] =
+  lazy val millDiscover: mill.define.Discover =
     mill.define.Discover[this.type]
 }
 

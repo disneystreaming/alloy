@@ -17,6 +17,8 @@ import mill.scalalib.publish._
 import mill.define.ExternalModule
 import mill.eval.Evaluator
 
+object release extends ReleaseModule
+
 object InternalReleaseModule extends Module {
 
   /** This is a replacement for the mill.scalalib.PublishModule/publishAll task
@@ -25,18 +27,18 @@ object InternalReleaseModule extends Module {
     * env variables to publish to sonatype for you.
     */
   def publishAll(ev: Evaluator): Command[Unit] = {
-    ReleaseModule.publishAll(ev)
+    release.publishAll(ev)
   }
 
   import Discover._
-  lazy val millDiscover: mill.define.Discover[this.type] =
+  lazy val millDiscover: mill.define.Discover =
     mill.define.Discover[this.type]
 }
 
 trait BaseModule extends Module with HeaderModule {
   def millSourcePath: os.Path = {
-    val originalRelativePath = super.millSourcePath.relativeTo(os.pwd)
-    os.pwd / "modules" / originalRelativePath
+    val originalPath = super.millSourcePath
+    (originalPath / os.up) / "modules" / originalPath.last
   }
 
   def includeFileExtensions: List[String] = List("scala", "java")
@@ -108,7 +110,7 @@ trait BaseScalaNoPublishModule
     extends ScalaModule
     with ScalafmtModule
     with TpolecatModule {
-  def scalaVersion = T.input("2.13.15")
+  def scalaVersion = T.input(scala213)
 }
 
 trait BaseMimaModule extends BasePublishModule with Mima {
@@ -160,8 +162,9 @@ object core extends BaseJavaModule {
 
 object protobuf extends BaseJavaModule {}
 
+val scala213 = "2.13.16"
 val scalaVersionsMap =
-  Map("2.13" -> "2.13.16", "2.12" -> "2.12.20", "3" -> "3.3.5")
+  Map("2.13" -> scala213, "2.12" -> "2.12.20", "3" -> "3.3.5")
 object openapi extends Cross[OpenapiModule](scalaVersionsMap.keys.toList)
 trait OpenapiModule extends BaseCrossScalaModule {
   val crossVersion = crossValue
