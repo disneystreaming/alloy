@@ -66,10 +66,7 @@ trait BasePublishModule extends BaseModule with CiReleaseModule {
 
   override def publishVersion: T[String] = T {
     if (isCI()) super.publishVersion()
-    else
-      // "dev-SNAPSHOT"
-      // todo
-      "0.13.17-SNAPSHOT"
+    else "dev-SNAPSHOT"
   }
 
   def isCI = T.input(T.ctx().env.contains("CI"))
