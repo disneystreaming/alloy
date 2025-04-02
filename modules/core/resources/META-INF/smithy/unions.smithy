@@ -13,7 +13,7 @@ namespace alloy
 /// }
 /// union Test {
 ///   one: One
-///   two: Two  
+///   two: Two
 /// }
 /// would normally be encoded in JSON as:
 /// { "one": { "a": 123 } }
@@ -24,7 +24,10 @@ namespace alloy
 /// but less efficient than using the default tagged union
 /// encoding. Therefore, it should only be used when necessary.
 /// Tagged union encodings should be used wherever possible.
-@trait(selector: "union :not([trait|alloy#untagged])")
+@trait(
+    selector: "union"
+    conflicts: [untagged]
+)
 string discriminated
 
 /// Implies a different encoding for unions where
@@ -41,7 +44,7 @@ string discriminated
 /// }
 /// union Test {
 ///   one: One
-///   two: Two  
+///   two: Two
 /// }
 /// would normally be encoded in JSON as
 /// { "one": { "a": 123 } }
@@ -50,5 +53,8 @@ string discriminated
 /// { "a": 123 }. Therefore the parser will need to try
 /// each different alternative in the union before it can
 /// determine which one is appropriate.
-@trait(selector: "union :not([trait|alloy#discriminated])")
+@trait(
+    selector: "union"
+    conflicts: [discriminated]
+)
 structure untagged {}
