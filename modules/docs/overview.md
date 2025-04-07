@@ -1,9 +1,8 @@
-<!-- Using `yzhang.markdown-all-in-one` VS Code extension to create the table of contents -->
-# Alloy <!-- omit in toc -->
+# Alloy
 
 A collection of commonly used Smithy shapes.
 
-## Table of Contents <!-- omit in toc -->
+## Table of Contents 
 
 - [Why Alloy?](#why-alloy)
 - [Core alloy library](#core-alloy-library)
@@ -11,10 +10,6 @@ A collection of commonly used Smithy shapes.
   - [Serialisation](#serialisation)
   - [Protocols](#protocols)
 - [Protocol Compliance Module](#protocol-compliance-module)
-- [Working on Alloy](#working-on-alloy)
-  - [Publish Local](#publish-local)
-  - [Run Tests](#run-tests)
-
 
 ## Why Alloy?
 
@@ -37,22 +32,22 @@ It contains, in particular, traits and validators associated to the following as
 
 ### Constraints and behavioural traits
 
-Alloy provides a number of [constraint and behavioural](./modules/docs/misc/constraints.md) traits that may be leverage by tooling and protocols.
+Alloy provides a number of [constraint and behavioural](./misc/constraints.md) traits that may be leverage by tooling and protocols.
 
 ### Serialisation
 
 Alloy defines a number of behavioural traits that can be leveraged by protocols to tweak serialisation. In particular for the following formats :
 
-- [JSON](./modules/docs/serialisation/json.md)
-- [Protobuf](./modules/docs/serialisation/protobuf.md)
-- [URL Form Data](./modules/docs/serialisation/urlform.md)
+- [JSON](./serialisation/json.md)
+- [Protobuf](./serialisation/protobuf.md)
+- [URL Form Data](./serialisation/urlform.md)
 
 ### Protocols
 
 Alloy defines two protocols :
 
-- [`alloy#simpleRestJson`](./modules/docs/protocols/SimpleRestJson.md)
-- [`alloy#grpc`](./modules/docs/protocols/gRPC.md)
+- [`alloy#simpleRestJson`](./protocols/SimpleRestJson.md)
+- [`alloy#grpc`](./protocols/gRPC.md)
 
 
 ## Protocol Compliance Module
@@ -63,18 +58,4 @@ These tests are available on maven central at the following coordinates :
 
 ```
 com.disneystreaming.alloy:alloy-protocol-tests:x.y.z
-```
-
-## Working on Alloy
-
-### Publish Local
-
-```console
-> ./mill __.publishLocal
-```
-
-### Run Tests
-
-```console
-> ./mill __.test
 ```

@@ -211,6 +211,10 @@ object `protocol-tests` extends BaseJavaModule {
   }
 }
 
+object docs extends BasePublishModule {
+  override def resources = T.sources(millSourcePath)
+}
+
 object Deps {
   val smithy = new {
     val smithyVersion = "1.56.0"
