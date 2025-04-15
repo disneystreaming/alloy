@@ -23,6 +23,8 @@ import alloy.JsonUnknownTrait
 import scala.jdk.CollectionConverters._
 import scala.jdk.OptionConverters.*
 import software.amazon.smithy.jsonschema.JsonSchemaMapperContext
+import alloy.DiscriminatedUnionTrait
+import software.amazon.smithy.jsonschema.Schema
 
 class JsonUnknownMapper() extends JsonSchemaMapper {
   private final val ADDITIONAL_PROPERTIES = "additionalProperties"
@@ -47,8 +49,11 @@ class JsonUnknownMapper() extends JsonSchemaMapper {
       if (shape.isStructureShape()) {
         schemaBuilder
           .removeProperty(unknownMember.getMemberName)
-          .putExtension(ADDITIONAL_PROPERTIES, Node.from(true))
-      } else if (shape.isUnionShape()) {
+          .additionalProperties(Schema.fromNode(Node.objectNode()))
+      } else if (
+        shape
+          .isUnionShape() && !shape.hasTrait(classOf[DiscriminatedUnionTrait])
+      ) {
         val b = schemaBuilder.build()
         schemaBuilder.oneOf(
           b.getOneOf()
@@ -63,15 +68,14 @@ class JsonUnknownMapper() extends JsonSchemaMapper {
                   .toBuilder()
                   .required(Nil.asJava)
                   .properties(Map.empty.asJava)
+                  .additionalProperties(Schema.fromNode(Node.objectNode()))
                   .build()
               case other => other
             }
             .asJava
         )
       } else
-        sys.error(
-          "not a struct, not an union. What sort of jsonUnknown-enabled shape is this? " + shape
-        )
+        schemaBuilder
     }
   }
 }

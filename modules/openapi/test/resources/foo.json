@@ -368,6 +368,7 @@
           },
           {
             "type": "object",
+            "additionalProperties": {},
             "title": "other"
           }
         ]
@@ -392,7 +393,14 @@
             }
           },
           {
-            "$ref": "#/components/schemas/CatOrDogOpenDiscriminatedMixin"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CatOrDogOpenDiscriminatedMixin"
+              },
+              {
+                "additionalProperties": {}
+              }
+            ]
           }
         ]
       },
@@ -429,6 +437,7 @@
       },
       "Dog": {
         "type": "object",
+        "additionalProperties": {},
         "properties": {
           "name": {
             "type": "string"
@@ -437,7 +446,6 @@
             "type": "string"
           }
         },
-        "additionalProperties": true,
         "example": {
           "name": "Woof"
         }

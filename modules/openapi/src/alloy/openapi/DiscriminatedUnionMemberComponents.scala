@@ -174,7 +174,18 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
       base.oneOf(
         List(
           createKnownPart(Schema.builder()).build(),
-          unionMixinRef
+          Schema
+            .builder()
+            .allOf(
+              List(
+                unionMixinRef,
+                Schema
+                  .builder()
+                  .additionalProperties(Schema.builder().build())
+                  .build()
+              ).asJava
+            )
+            .build
         ).asJava
       )
     else
