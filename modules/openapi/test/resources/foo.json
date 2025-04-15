@@ -368,7 +368,7 @@
           },
           {
             "type": "object",
-            "additionalProperties": {},
+            "additionalProperties": true,
             "title": "other"
           }
         ]
@@ -398,7 +398,7 @@
                 "$ref": "#/components/schemas/CatOrDogOpenDiscriminatedMixin"
               },
               {
-                "additionalProperties": {}
+                "additionalProperties": true
               }
             ]
           }
@@ -437,7 +437,7 @@
       },
       "Dog": {
         "type": "object",
-        "additionalProperties": {},
+        "additionalProperties": true,
         "properties": {
           "name": {
             "type": "string"

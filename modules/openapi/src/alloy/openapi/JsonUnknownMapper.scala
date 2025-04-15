@@ -49,7 +49,7 @@ class JsonUnknownMapper() extends JsonSchemaMapper {
       if (shape.isStructureShape()) {
         schemaBuilder
           .removeProperty(unknownMember.getMemberName)
-          .additionalProperties(Schema.fromNode(Node.objectNode()))
+          .additionalProperties(Schema.fromNode(Node.from(true)))
       } else if (
         shape
           .isUnionShape() && !shape.hasTrait(classOf[DiscriminatedUnionTrait])
@@ -68,7 +68,7 @@ class JsonUnknownMapper() extends JsonSchemaMapper {
                   .toBuilder()
                   .required(Nil.asJava)
                   .properties(Map.empty.asJava)
-                  .additionalProperties(Schema.fromNode(Node.objectNode()))
+                  .additionalProperties(Schema.fromNode(Node.from(true)))
                   .build()
               case other => other
             }

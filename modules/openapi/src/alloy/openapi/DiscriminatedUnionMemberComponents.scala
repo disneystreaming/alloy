@@ -28,6 +28,7 @@ import software.amazon.smithy.model.traits.JsonNameTrait
 import software.amazon.smithy.model.node.ObjectNode
 import software.amazon.smithy.jsonschema.Schema.Builder
 import alloy.JsonUnknownTrait
+import software.amazon.smithy.model.node.Node
 
 /** Creates components for the discriminated union
   */
@@ -181,7 +182,7 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
                 unionMixinRef,
                 Schema
                   .builder()
-                  .additionalProperties(Schema.builder().build())
+                  .additionalProperties(Schema.fromNode(Node.from(true)))
                   .build()
               ).asJava
             )
