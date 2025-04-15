@@ -340,6 +340,106 @@
           "type"
         ]
       },
+      "CatOrDogOpen": {
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "cat",
+            "properties": {
+              "cat": {
+                "$ref": "#/components/schemas/Cat"
+              }
+            },
+            "required": [
+              "cat"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "dog",
+            "properties": {
+              "dog": {
+                "$ref": "#/components/schemas/Dog"
+              }
+            },
+            "required": [
+              "dog"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "other",
+            "properties": {
+              "other": {}
+            },
+            "required": [
+              "other"
+            ]
+          }
+        ]
+      },
+      "CatOrDogOpenDiscriminated": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CatOrDogOpenDiscriminatedCat"
+          },
+          {
+            "$ref": "#/components/schemas/CatOrDogOpenDiscriminatedDog"
+          },
+          {
+            "$ref": "#/components/schemas/CatOrDogOpenDiscriminatedOther"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "cat": "#/components/schemas/CatOrDogOpenDiscriminatedCat",
+            "dog": "#/components/schemas/CatOrDogOpenDiscriminatedDog",
+            "other": "#/components/schemas/CatOrDogOpenDiscriminatedOther"
+          }
+        }
+      },
+      "CatOrDogOpenDiscriminatedCat": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Cat"
+          },
+          {
+            "$ref": "#/components/schemas/CatOrDogOpenDiscriminatedMixin"
+          }
+        ]
+      },
+      "CatOrDogOpenDiscriminatedDog": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Dog"
+          },
+          {
+            "$ref": "#/components/schemas/CatOrDogOpenDiscriminatedMixin"
+          }
+        ]
+      },
+      "CatOrDogOpenDiscriminatedMixin": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "CatOrDogOpenDiscriminatedOther": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Document"
+          },
+          {
+            "$ref": "#/components/schemas/CatOrDogOpenDiscriminatedMixin"
+          }
+        ]
+      },
       "Dog": {
         "type": "object",
         "properties": {
@@ -409,6 +509,12 @@
           },
           "catOrDog": {
             "$ref": "#/components/schemas/CatOrDog"
+          },
+          "catOrDogOpen": {
+            "$ref": "#/components/schemas/CatOrDogOpen"
+          },
+          "catOrDogOpenDiscriminated": {
+            "$ref": "#/components/schemas/CatOrDogOpenDiscriminated"
           }
         }
       },

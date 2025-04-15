@@ -179,6 +179,8 @@ structure GetUnionResponse {
     intOrString: IntOrString
     doubleOrFloat: DoubleOrFloat
     catOrDog: CatOrDog
+    catOrDogOpen: CatOrDogOpen
+    catOrDogOpenDiscriminated: CatOrDogOpenDiscriminated
 }
 
 union IntOrString {
@@ -243,4 +245,23 @@ union SomeValue {
 union CatOrDog {
     cat: Cat
     dog: Dog
+}
+
+union CatOrDogOpen {
+    cat: Cat
+
+    dog: Dog
+
+    @jsonUnknown
+    other: Document
+}
+
+@discriminated("type")
+union CatOrDogOpenDiscriminated {
+    cat: Cat
+
+    dog: Dog
+
+    @jsonUnknown
+    other: Document
 }

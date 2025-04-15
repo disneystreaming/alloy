@@ -32,19 +32,21 @@ class JsonUnknownMapper() extends JsonSchemaMapper {
       schemaBuilder: Builder,
       config: JsonSchemaConfig
   ): Builder = {
-    val jsonUnknownMemberName = shape
-      .getAllMembers()
-      .asScala
-      .collect {
-        case (name, member) if member.hasTrait(classOf[JsonUnknownTrait]) =>
-          name
-      }
-      .headOption
+    if (shape.isStructureShape()) {
+      val jsonUnknownMemberName = shape
+        .getAllMembers()
+        .asScala
+        .collect {
+          case (name, member) if member.hasTrait(classOf[JsonUnknownTrait]) =>
+            name
+        }
+        .headOption
 
-    jsonUnknownMemberName.fold(schemaBuilder) { name =>
-      schemaBuilder
-        .removeProperty(name)
-        .putExtension(ADDITIONAL_PROPERTIES, Node.from(true))
-    }
+      jsonUnknownMemberName.fold(schemaBuilder) { name =>
+        schemaBuilder
+          .removeProperty(name)
+          .putExtension(ADDITIONAL_PROPERTIES, Node.from(true))
+      }
+    } else schemaBuilder
   }
 }
