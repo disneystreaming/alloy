@@ -16,37 +16,62 @@
 package alloy.openapi
 
 import software.amazon.smithy.jsonschema.JsonSchemaMapper
-import software.amazon.smithy.jsonschema.JsonSchemaConfig
 import software.amazon.smithy.jsonschema.Schema.Builder
 import software.amazon.smithy.model.node.Node
-import software.amazon.smithy.model.shapes.Shape
 import alloy.JsonUnknownTrait
 
 import scala.jdk.CollectionConverters._
+import scala.jdk.OptionConverters.*
+import software.amazon.smithy.jsonschema.JsonSchemaMapperContext
 
 class JsonUnknownMapper() extends JsonSchemaMapper {
   private final val ADDITIONAL_PROPERTIES = "additionalProperties"
 
   override def updateSchema(
-      shape: Shape,
-      schemaBuilder: Builder,
-      config: JsonSchemaConfig
+      context: JsonSchemaMapperContext,
+      schemaBuilder: Builder
   ): Builder = {
-    if (shape.isStructureShape()) {
-      val jsonUnknownMemberName = shape
-        .getAllMembers()
-        .asScala
-        .collect {
-          case (name, member) if member.hasTrait(classOf[JsonUnknownTrait]) =>
-            name
-        }
-        .headOption
+    val shape = context.getShape()
 
-      jsonUnknownMemberName.fold(schemaBuilder) { name =>
+    if (!shape.members.asScala.exists(_.hasTrait(classOf[JsonUnknownTrait])))
+      schemaBuilder
+    else {
+      val unknownMember = shape
+        .members()
+        .asScala
+        .find(_.hasTrait(classOf[JsonUnknownTrait]))
+        .getOrElse(
+          sys.error("Didn't find an unknown member, even though we just did")
+        )
+
+      if (shape.isStructureShape()) {
         schemaBuilder
-          .removeProperty(name)
+          .removeProperty(unknownMember.getMemberName)
           .putExtension(ADDITIONAL_PROPERTIES, Node.from(true))
-      }
-    } else schemaBuilder
+      } else if (shape.isUnionShape()) {
+        val b = schemaBuilder.build()
+        schemaBuilder.oneOf(
+          b.getOneOf()
+            .asScala
+            .map {
+              case member
+                  if member
+                    .getTitle()
+                    .toScala
+                    .contains(unknownMember.getMemberName()) =>
+                member
+                  .toBuilder()
+                  .required(Nil.asJava)
+                  .properties(Map.empty.asJava)
+                  .build()
+              case other => other
+            }
+            .asJava
+        )
+      } else
+        sys.error(
+          "not a struct, not an union. What sort of jsonUnknown-enabled shape is this? " + shape
+        )
+    }
   }
 }

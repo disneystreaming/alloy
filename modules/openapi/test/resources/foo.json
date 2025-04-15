@@ -368,13 +368,7 @@
           },
           {
             "type": "object",
-            "title": "other",
-            "properties": {
-              "other": {}
-            },
-            "required": [
-              "other"
-            ]
+            "title": "other"
           }
         ]
       },
