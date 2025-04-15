@@ -65,8 +65,7 @@ trait BaseMunitTests extends TestModule.Munit {
 trait BasePublishModule extends BaseModule with CiReleaseModule {
 
   override def publishVersion: T[String] = T {
-    if (isCI()) super.publishVersion()
-    else "dev-SNAPSHOT"
+    if (isCI()) super.publishVersion() else "dev-SNAPSHOT"
   }
 
   def isCI = T.input(T.ctx().env.contains("CI"))
