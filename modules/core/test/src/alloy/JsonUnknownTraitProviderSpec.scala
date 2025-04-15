@@ -242,4 +242,42 @@ final class JsonUnknownTraitProviderSpec extends munit.FunSuite {
       s"validation events should contain one with ID: TraitTarget. Found: $eventIds"
     )
   }
+
+  test(
+    "the trait cannot be applied with jsonName"
+  ) {
+    val source =
+      """|$version: "2"
+         |
+         |namespace test
+         |
+         |use alloy#jsonUnknown
+         |
+         |union MyOpenUnion {
+         |  @jsonUnknown
+         |  @jsonName("other")
+         |  unknown: Document
+         |}
+         |""".stripMargin
+
+    val result =
+      Model.assembler
+        .discoverModels()
+        .addUnparsedModel("/test.smithy", source)
+        .assemble()
+
+    assert(result.isBroken())
+
+    val eventIds = result
+      .getValidationEvents()
+      .asScala
+      .map(_.getId())
+      .toList
+
+    assert(
+      eventIds
+        .contains("TraitConflict"),
+      s"validation events should contain one with ID: TraitConflict. Found: $eventIds"
+    )
+  }
 }
