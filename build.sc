@@ -187,7 +187,10 @@ trait OpenapiModule extends BaseCrossScalaModule {
     Deps.cats.core
   )
 
-  object test extends ScalaTests with BaseMunitTests
+  object test extends ScalaTests with BaseMunitTests {
+    override def ivyDeps: Target[Agg[Dep]] =
+      super.ivyDeps() ++ Seq(Deps.oslib)
+  }
 
   override def mimaBinaryIssueFilters = super.mimaBinaryIssueFilters() ++ Seq(
     ProblemFilter.exclude[MissingClassProblem](
@@ -241,4 +244,6 @@ object Deps {
     val scalaCheck = ivy"org.scalameta::munit-scalacheck::1.1.0"
     val all = Agg(munit, scalaCheck)
   }
+
+  val oslib = ivy"com.lihaoyi::os-lib:0.11.4"
 }

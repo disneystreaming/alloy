@@ -40,12 +40,20 @@ final class OpenApiConversionSpec extends munit.FunSuite {
       .mkString
       .filterNot(_.isWhitespace)
 
-    val expected = Using
-      .resource(Source.fromResource("foo.json"))(
-        _.getLines().mkString.filterNot(_.isWhitespace)
-      )
+    val expected = os.read(os.resource / "foo.json").filterNot(_.isWhitespace)
 
-    assertEquals(result, expected)
+    if (result != expected) {
+      val tmp = os.pwd / "actual" / "foo.json"
+
+      os.write.over(
+        tmp,
+        Node.prettyPrintJson(Node.parse(result)),
+        createFolders = true
+      )
+      fail(
+        s"Values are not the same. Wrote current output to $tmp for easier debugging."
+      )
+    }
   }
 
   test(
