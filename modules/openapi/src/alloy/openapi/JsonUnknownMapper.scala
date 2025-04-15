@@ -48,32 +48,34 @@ class JsonUnknownMapper() extends JsonSchemaMapper {
 
       if (shape.isStructureShape()) {
         schemaBuilder
+          // N.B. this is safe because jsonName is not allowed on jsonUnknown members
           .removeProperty(unknownMember.getMemberName)
           .additionalProperties(Schema.fromNode(Node.from(true)))
       } else if (
         shape
           .isUnionShape() && !shape.hasTrait(classOf[DiscriminatedUnionTrait])
       ) {
-        val b = schemaBuilder.build()
-        schemaBuilder.oneOf(
-          b.getOneOf()
-            .asScala
-            .map {
-              case member
-                  if member
-                    .getTitle()
-                    .toScala
-                    .contains(unknownMember.getMemberName()) =>
-                member
-                  .toBuilder()
-                  .required(Nil.asJava)
-                  .properties(Map.empty.asJava)
-                  .additionalProperties(Schema.fromNode(Node.from(true)))
-                  .build()
-              case other => other
-            }
-            .asJava
-        )
+        val schema = schemaBuilder.build()
+        val cases = schema
+          .getOneOf()
+          .asScala
+          .map {
+            case member
+                if member
+                  .getTitle()
+                  .toScala
+                  .contains(unknownMember.getMemberName()) =>
+              member
+                .toBuilder()
+                .required(Nil.asJava)
+                .properties(Map.empty.asJava)
+                .additionalProperties(Schema.fromNode(Node.from(true)))
+                .build()
+            case other => other
+          }
+
+        schema.toBuilder
+          .oneOf(cases.asJava)
       } else
         schemaBuilder
     }
