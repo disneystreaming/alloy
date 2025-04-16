@@ -8,7 +8,6 @@ namespace alloy
 /// See Alloy documentation for more information.
 @protocolDefinition(
     traits: [
-
         smithy.api#default
         smithy.api#error
         smithy.api#http
@@ -31,6 +30,7 @@ namespace alloy
         alloy#nullable
         alloy#untagged
         alloy#jsonUnknown
+        alloy#openEnum
     ]
 )
 @trait(selector: "service")
