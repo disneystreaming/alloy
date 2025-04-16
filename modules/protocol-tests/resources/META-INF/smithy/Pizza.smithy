@@ -3,12 +3,14 @@ $version: "2"
 namespace alloy.test
 
 use alloy#simpleRestJson
+use alloy#jsonUnknown
+use alloy#discriminated
 
 @simpleRestJson
 service PizzaAdminService {
     version: "1.0.0",
     errors: [GenericServerError, GenericClientError],
-    operations: [AddMenuItem, GetMenu, Version, Health, HeaderEndpoint, RoundTrip, GetEnum, GetIntEnum, CustomCode, HttpPayloadWithDefault, HttpPayloadRequiredWithDefault]
+    operations: [AddMenuItem, GetMenu, Version, Health, HeaderEndpoint, RoundTrip, GetEnum, GetIntEnum, CustomCode, HttpPayloadWithDefault, HttpPayloadRequiredWithDefault, OpenUnions]
 }
 
 @http(method: "POST", uri: "/restaurant/{restaurant}/menu/item", code: 201)
@@ -328,4 +330,35 @@ structure HttpPayloadRequiredWithDefaultInputOutput {
     @default("default value")
     @required
     body: String
+}
+
+@idempotent
+@http(uri: "/openUnions", method: "PUT")
+operation OpenUnions {
+    input := {
+      @required @httpPayload data: OpenUnionsPayload
+    }
+    output := {
+        @required @httpPayload data: OpenUnionsPayload
+    }
+}
+
+union OpenUnionsPayload {
+    tagged: OpenTaggedUnion
+    discriminated: OpenDiscriminatedUnion
+}
+
+union OpenTaggedUnion {
+    str: String
+    @jsonUnknown other: Document
+}
+
+@discriminated("key")
+union OpenDiscriminatedUnion {
+    smol: SmallStruct
+    @jsonUnknown other: Document
+}
+
+structure SmallStruct {
+    @required content: String
 }
