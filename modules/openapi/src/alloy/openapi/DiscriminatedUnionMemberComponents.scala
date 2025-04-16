@@ -168,6 +168,19 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
             .build()
         )
 
+    val unknownPart = Schema
+      .builder()
+      .allOf(
+        List(
+          unionMixinRef,
+          Schema
+            .builder()
+            .additionalProperties(Schema.fromNode(Node.from(true)))
+            .build()
+        ).asJava
+      )
+      .build
+
     val base =
       schemaBuilder.removeExtension(DiscriminatedUnionShapeId.SHAPE_ID_KEY)
 
@@ -175,18 +188,7 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
       base.oneOf(
         List(
           createKnownPart(Schema.builder()).build(),
-          Schema
-            .builder()
-            .allOf(
-              List(
-                unionMixinRef,
-                Schema
-                  .builder()
-                  .additionalProperties(Schema.fromNode(Node.from(true)))
-                  .build()
-              ).asJava
-            )
-            .build
+          unknownPart
         ).asJava
       )
     else
