@@ -27,6 +27,8 @@ import software.amazon.smithy.model.shapes.Shape
 import software.amazon.smithy.model.traits.JsonNameTrait
 import software.amazon.smithy.model.node.ObjectNode
 import software.amazon.smithy.jsonschema.Schema.Builder
+import alloy.JsonUnknownTrait
+import software.amazon.smithy.model.node.Node
 
 /** Creates components for the discriminated union
   */
@@ -55,7 +57,7 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
           }
       }
     unions.asScala
-      .filter(u => componentSchemas.contains(u.toShapeId))
+      .filter(u => componentSchemas.contains(u.getId()))
       .foreach { union =>
         val unionMixinName = union.getId().getName() + "Mixin"
         val unionMixinId =
@@ -81,20 +83,25 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
 
         componentBuilder.putSchema(unionMixinName, unionMixinSchema)
 
-        union.members().asScala.foreach { memberShape =>
-          val syntheticMemberName =
-            union.getId().getName() + memberShape.getMemberName.capitalize
-          context.getPointer(union).split('/').last + memberShape
-            .getMemberName()
-            .capitalize
-          val targetRef = context.createRef(memberShape.getTarget())
-          val syntheticUnionMember =
-            Schema
-              .builder()
-              .allOf(List(targetRef, unionMixinRef).asJava)
-              .build()
-          componentBuilder.putSchema(syntheticMemberName, syntheticUnionMember)
-        }
+        union
+          .members()
+          .asScala
+          .filterNot(m => m.hasTrait(classOf[JsonUnknownTrait]))
+          .foreach { memberShape =>
+            val syntheticMemberName =
+              union.getId().getName() + memberShape.getMemberName.capitalize
+            context.getPointer(union).split('/').last + memberShape
+              .getMemberName()
+              .capitalize
+            val targetRef = context.createRef(memberShape.getTarget())
+            val syntheticUnionMember =
+              Schema
+                .builder()
+                .allOf(List(targetRef, unionMixinRef).asJava)
+                .build()
+            componentBuilder
+              .putSchema(syntheticMemberName, syntheticUnionMember)
+          }
 
         componentSchemas.get(union.toShapeId).foreach { sch =>
           componentBuilder.putSchema(
@@ -102,7 +109,8 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
             updateDiscriminatedUnion(
               union,
               sch.toBuilder(),
-              discriminatorField
+              discriminatorField,
+              unionMixinRef
             )
               .build()
           )
@@ -115,25 +123,29 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
   private def updateDiscriminatedUnion(
       shape: Shape,
       schemaBuilder: Builder,
-      discriminatorField: String
+      discriminatorField: String,
+      unionMixinRef: Schema
   ): Builder = {
-    val alts = shape
+    val (unknownMember, knownMembers) = shape
       .members()
       .asScala
-      .map { member =>
-        val label = member
-          .getTrait(classOf[JsonNameTrait])
-          .asScala
-          .map(_.getValue())
-          .getOrElse(member.getMemberName())
-        val syntheticMemberId =
-          shape.getId().getName() + member.getMemberName().capitalize
-        val refString = s"#/components/schemas/$syntheticMemberId"
-        val refSchema =
-          Schema.builder.ref(refString).build
-        (label, refString, refSchema)
-      }
       .toList
+      .partition(_.hasTrait(classOf[JsonUnknownTrait]))
+
+    val alts = knownMembers.map { member =>
+      val label = member
+        .getTrait(classOf[JsonNameTrait])
+        .asScala
+        .map(_.getValue())
+        .getOrElse(member.getMemberName())
+      val syntheticMemberId =
+        shape.getId().getName() + member.getMemberName().capitalize
+      val refString = s"#/components/schemas/$syntheticMemberId"
+      val refSchema =
+        Schema.builder.ref(refString).build
+      (label, refString, refSchema)
+    }.toList
+
     val schemas = alts.map(_._3).asJava
     val mapping = ObjectNode.fromStringMap(
       alts
@@ -141,17 +153,46 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
         .toMap
         .asJava
     )
-    schemaBuilder
-      .removeExtension(DiscriminatedUnionShapeId.SHAPE_ID_KEY)
-      .oneOf(schemas)
-      .putExtension(
-        "discriminator",
-        ObjectNode
-          .builder()
-          .withMember("propertyName", discriminatorField)
-          .withMember("mapping", mapping)
-          .build()
+
+    val isOpen =
+      unknownMember.nonEmpty
+
+    def createKnownPart(b: Schema.Builder): Schema.Builder =
+      b.oneOf(schemas)
+        .putExtension(
+          "discriminator",
+          ObjectNode
+            .builder()
+            .withMember("propertyName", discriminatorField)
+            .withMember("mapping", mapping)
+            .build()
+        )
+
+    val unknownPart = Schema
+      .builder()
+      .allOf(
+        List(
+          unionMixinRef,
+          Schema
+            .builder()
+            .additionalProperties(Schema.fromNode(Node.from(true)))
+            .build()
+        ).asJava
       )
+      .build
+
+    val base =
+      schemaBuilder.removeExtension(DiscriminatedUnionShapeId.SHAPE_ID_KEY)
+
+    if (isOpen)
+      base.oneOf(
+        List(
+          createKnownPart(Schema.builder()).build(),
+          unknownPart
+        ).asJava
+      )
+    else
+      createKnownPart(base)
   }
 
 }

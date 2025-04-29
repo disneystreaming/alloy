@@ -21,6 +21,7 @@ import software.amazon.smithy.model.shapes.Shape;
 import software.amazon.smithy.model.validation.AbstractValidator;
 import software.amazon.smithy.model.validation.ValidationEvent;
 import alloy.DiscriminatedUnionTrait;
+import alloy.JsonUnknownTrait;
 
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,9 @@ public final class DiscriminatedUnionValidator extends AbstractValidator {
 					} else {
 						return Stream.empty();
 					}
+				} else if(entry.getValue().hasTrait(JsonUnknownTrait.ID)) {
+					// @jsonUnknown is an exception to "only structs"
+					return Stream.empty();
 				} else {
 					return Stream.of(error(entry.getValue(),
 							String.format("Target of member '%s' is not a structure shape", entry.getKey())));

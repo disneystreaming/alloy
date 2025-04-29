@@ -16,35 +16,68 @@
 package alloy.openapi
 
 import software.amazon.smithy.jsonschema.JsonSchemaMapper
-import software.amazon.smithy.jsonschema.JsonSchemaConfig
 import software.amazon.smithy.jsonschema.Schema.Builder
 import software.amazon.smithy.model.node.Node
-import software.amazon.smithy.model.shapes.Shape
 import alloy.JsonUnknownTrait
 
 import scala.jdk.CollectionConverters._
+import scala.jdk.OptionConverters.*
+import software.amazon.smithy.jsonschema.JsonSchemaMapperContext
+import alloy.DiscriminatedUnionTrait
+import software.amazon.smithy.jsonschema.Schema
 
 class JsonUnknownMapper() extends JsonSchemaMapper {
   private final val ADDITIONAL_PROPERTIES = "additionalProperties"
 
   override def updateSchema(
-      shape: Shape,
-      schemaBuilder: Builder,
-      config: JsonSchemaConfig
+      context: JsonSchemaMapperContext,
+      schemaBuilder: Builder
   ): Builder = {
-    val jsonUnknownMemberName = shape
-      .getAllMembers()
-      .asScala
-      .collect {
-        case (name, member) if member.hasTrait(classOf[JsonUnknownTrait]) =>
-          name
-      }
-      .headOption
+    val shape = context.getShape()
 
-    jsonUnknownMemberName.fold(schemaBuilder) { name =>
+    if (!shape.members.asScala.exists(_.hasTrait(classOf[JsonUnknownTrait])))
       schemaBuilder
-        .removeProperty(name)
-        .putExtension(ADDITIONAL_PROPERTIES, Node.from(true))
+    else {
+      val unknownMember = shape
+        .members()
+        .asScala
+        .find(_.hasTrait(classOf[JsonUnknownTrait]))
+        .getOrElse(
+          sys.error("Didn't find an unknown member, even though we just did")
+        )
+
+      if (shape.isStructureShape()) {
+        schemaBuilder
+          // N.B. this is safe because jsonName is not allowed on jsonUnknown members
+          .removeProperty(unknownMember.getMemberName)
+          .additionalProperties(Schema.fromNode(Node.from(true)))
+      } else if (
+        shape
+          .isUnionShape() && !shape.hasTrait(classOf[DiscriminatedUnionTrait])
+      ) {
+        val schema = schemaBuilder.build()
+        val cases = schema
+          .getOneOf()
+          .asScala
+          .map {
+            case member
+                if member
+                  .getTitle()
+                  .toScala
+                  .contains(unknownMember.getMemberName()) =>
+              member
+                .toBuilder()
+                .required(Nil.asJava)
+                .properties(Map.empty.asJava)
+                .additionalProperties(Schema.fromNode(Node.from(true)))
+                .build()
+            case other => other
+          }
+
+        schema.toBuilder
+          .oneOf(cases.asJava)
+      } else
+        schemaBuilder
     }
   }
 }

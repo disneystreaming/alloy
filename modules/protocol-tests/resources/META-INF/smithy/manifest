@@ -10,3 +10,4 @@ RoundTrip.smithy
 Version.smithy
 HttpPayloadWithDefault.smithy
 test-config.json
+OpenUnions.smithy

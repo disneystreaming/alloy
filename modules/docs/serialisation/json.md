@@ -135,7 +135,7 @@ The JSON objects
 {}
 ```
 
-are respectively decoded as follows in Scala (when using [smithy4s](https://disneystreaming.github.io/smithy4s/)):
+are respectively decoded as follows in Scala (when using [smithy4s][smithy4s]):
 
 ```scala
 Foo(Some(Nullable.Null), None)
@@ -156,7 +156,7 @@ This means that `@nullable` allows round-tripping null values.
 
 #### Unknown fields
 
-Retaining JSON fields whose label do not match structure member names is supported via the `@jsonUnknown` smithy trait. This trait can be applied to a single structure member targeting a `map` with `Document` values.
+Retaining JSON fields whose label do not match structure member names is supported via the `@jsonUnknown` Smithy trait. This trait can be applied to a single structure member targeting a `map` with `document` values.
 
 JSON decoders supporting this trait must store unknown properties in the annotated map. Symmetrically, JSON encoders must inline the values from the map in the JSON object produced when serializing the enclosing structure.
 
@@ -187,11 +187,78 @@ The JSON objects
 { "known": "known value", "unknown": 1 }
 ```
 
-are respectively decoded as follows in Scala (when using [smithy4s](https://disneystreaming.github.io/smithy4s/))
+are respectively decoded as follows in Scala (when using [smithy4s][smithy4s])
 
 ```scala
 Data(known=Some("known value"), unknown=None)
 Data(known=Some("known value"),
-     unknown=Some(Map("aField" -> Document.DNunmber(1), "anotherField" -> Document.DString("another value"))))
+     unknown=Some(Map("aField" -> Document.DNumber(1), "anotherField" -> Document.DString("another value"))))
 Data(known=Some("known value"), unknown=Some(Map("unknown" -> Document.DNumber(1))))
 ```
+
+#### Open unions
+
+It is also possible to retain union members whose tag/discriminator doesn't match any of the known ones. This is also done by applying the `@jsonUnknown` Smithy trait, to a union member targetting a `document` shape.
+
+JSON decoders supporting this trait must store the entire union payload in the annotated document. Likewise, JSON encoders must write back the entire content of the document when re-serializing the unknown payload.
+
+If the union fails to decode for other reasons, such as a missing tag (in case of the default, tagged unions) or missing discriminator key (in case of `@discriminated` unions), that will still be considered a decoding failure. The catch-all member only gets filled in if the tag/discriminator exists, but doesn't match any known alternative.
+
+Note that if the JSON document contains a tag/discriminator matching the name of the member annotated with `@jsonUnknown`, it'll still be treated as an unknown tag.
+
+For example, given the following Smithy definitions:
+
+```smithy
+use alloy#jsonUnknown
+
+union Data {
+  string: String
+  @jsonUnknown other: Document
+}
+```
+
+The JSON objects
+
+```json
+{"string": "known value"}
+{"unknown": 42}
+{"other": {"string": "some string"}}
+```
+
+are respectively decoded as follows in Scala (using [smithy4s][smithy4s])
+
+```scala
+Data.string("known value")
+Data.other(Document.obj("unknown" -> Document.fromInt(42)))
+Data.other(Document.obj("other" -> Document.obj("string" -> Document.fromString("some string"))))
+```
+
+In case of discriminated unions:
+
+```smithy
+use alloy#jsonUnknown
+
+@discriminated("type")
+union Data {
+  struct: Unit
+  @jsonUnknown other: Document
+}
+```
+
+The JSON objects
+
+```json
+{"type": "struct"}
+{"type": "other"}
+{"type": "other", "k": 42}
+```
+
+are respectively decoded as follows:
+
+```scala
+Data.struct
+Data.other(Document.obj("type" -> Document.fromString("other")))
+Data.other(Document.obj("type" -> Document.fromString("other"), "k" -> Document.fromInt(42)))
+```
+
+[smithy4s]: https://disneystreaming.github.io/smithy4s/

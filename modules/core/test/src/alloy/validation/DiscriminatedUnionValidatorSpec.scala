@@ -63,6 +63,32 @@ final class DiscriminatedUnionValidatorSpec extends munit.FunSuite {
     assertEquals(result, expected)
   }
 
+  test("allow unions with non-structure members if they're @jsonUnknown") {
+    val source =
+      """|$version: "2"
+         |
+         |namespace test
+         |
+         |use alloy#discriminated
+         |use alloy#jsonUnknown
+         |
+         |@discriminated("type")
+         |union MyOpenUnion {
+         |  first: Unit
+         |  @jsonUnknown
+         |  second: Document
+         |}
+         |""".stripMargin
+
+    val result =
+      Model.assembler
+        .discoverModels()
+        .addUnparsedModel("/test.smithy", source)
+        .assemble()
+
+    assert(!result.isBroken())
+  }
+
   test("return error when target structures contain discriminator") {
     val struct = StructureShape
       .builder()
