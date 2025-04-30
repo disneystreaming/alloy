@@ -23,7 +23,6 @@ import software.amazon.smithy.model.traits.Trait
 import alloy.DiscriminatedUnionTrait
 import software.amazon.smithy.jsonschema.Schema
 import software.amazon.smithy.model.shapes.ShapeId
-import software.amazon.smithy.model.shapes.Shape
 import software.amazon.smithy.model.shapes.UnionShape
 import software.amazon.smithy.model.shapes.MemberShape
 import software.amazon.smithy.model.traits.JsonNameTrait
@@ -99,7 +98,7 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
               .map(_.getValue())
               .getOrElse(memberShape.getMemberName())
 
-            val syntheticMemberName =
+            val syntheticComponentName =
               calculateUnionMemberName(union, memberShape, componentNames)
             val targetRef = context.createRef(memberShape.getTarget())
             val syntheticUnionMember =
@@ -108,13 +107,13 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
                 .allOf(List(targetRef, unionMixinRef).asJava)
                 .build()
 
-            val refString = s"#/components/schemas/$syntheticMemberName"
+            val refString = s"#/components/schemas/$syntheticComponentName"
             val refSchema =
               Schema.builder.ref(refString).build
 
             componentBuilder
-              .putSchema(syntheticMemberName, syntheticUnionMember)
-            (memberShape.getMemberName(), syntheticMemberName)
+              .putSchema(syntheticComponentName, syntheticUnionMember)
+            (memberShape.getMemberName(), syntheticComponentName)
 
             (label, refString, refSchema)
           }
@@ -138,6 +137,10 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
     openapi.toBuilder.components(componentBuilder.build()).build()
   }
 
+  /*
+   * Given a union and a member of that union calculate a unique name to be used as a componenet in the OpenAPI
+   * spec that doesn't conflict with existing components
+   */
   private def calculateUnionMemberName(
       unionShape: UnionShape,
       memberShape: MemberShape,
@@ -157,21 +160,22 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
   }
 
   private def updateDiscriminatedUnion(
-      shape: Shape,
+      unionShape: UnionShape,
       schemaBuilder: Builder,
       discriminatorField: String,
       unionMixinRef: Schema,
-      alts: List[(String, String, Schema)]
+      // A list of components on the union as a triple of (name, schemaRef, schema)
+      unionMemberComponents: List[(String, String, Schema)]
   ): Builder = {
-    val schemas = alts.map(_._3).asJava
+    val schemas = unionMemberComponents.map(_._3).asJava
     val mapping = ObjectNode.fromStringMap(
-      alts
+      unionMemberComponents
         .map { case (label, refString, _) => (label, refString) }
         .toMap
         .asJava
     )
 
-    val isOpen = shape
+    val isOpen = unionShape
       .members()
       .asScala
       .toList
