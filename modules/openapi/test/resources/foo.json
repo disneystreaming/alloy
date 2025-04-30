@@ -291,10 +291,10 @@
       "CatOrDog": {
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CatOrDogCat"
+            "$ref": "#/components/schemas/SyntheticCatOrDogCat"
           },
           {
-            "$ref": "#/components/schemas/CatOrDogDog"
+            "$ref": "#/components/schemas/SyntheticCatOrDogDog"
           }
         ],
         "externalDocs": {
@@ -304,30 +304,10 @@
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "cat": "#/components/schemas/CatOrDogCat",
-            "dog": "#/components/schemas/CatOrDogDog"
+            "cat": "#/components/schemas/SyntheticCatOrDogCat",
+            "dog": "#/components/schemas/SyntheticCatOrDogDog"
           }
         }
-      },
-      "CatOrDogCat": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Cat"
-          },
-          {
-            "$ref": "#/components/schemas/CatOrDogMixin"
-          }
-        ]
-      },
-      "CatOrDogDog": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Dog"
-          },
-          {
-            "$ref": "#/components/schemas/CatOrDogMixin"
-          }
-        ]
       },
       "CatOrDogMixin": {
         "type": "object",
@@ -378,17 +358,17 @@
           {
             "oneOf": [
               {
-                "$ref": "#/components/schemas/CatOrDogOpenDiscriminatedCat"
+                "$ref": "#/components/schemas/SyntheticCatOrDogOpenDiscriminatedCat"
               },
               {
-                "$ref": "#/components/schemas/CatOrDogOpenDiscriminatedDog"
+                "$ref": "#/components/schemas/SyntheticCatOrDogOpenDiscriminatedDog"
               }
             ],
             "discriminator": {
               "propertyName": "type",
               "mapping": {
-                "cat": "#/components/schemas/CatOrDogOpenDiscriminatedCat",
-                "dog": "#/components/schemas/CatOrDogOpenDiscriminatedDog"
+                "cat": "#/components/schemas/SyntheticCatOrDogOpenDiscriminatedCat",
+                "dog": "#/components/schemas/SyntheticCatOrDogOpenDiscriminatedDog"
               }
             }
           },
@@ -401,26 +381,6 @@
                 "additionalProperties": true
               }
             ]
-          }
-        ]
-      },
-      "CatOrDogOpenDiscriminatedCat": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Cat"
-          },
-          {
-            "$ref": "#/components/schemas/CatOrDogOpenDiscriminatedMixin"
-          }
-        ]
-      },
-      "CatOrDogOpenDiscriminatedDog": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Dog"
-          },
-          {
-            "$ref": "#/components/schemas/CatOrDogOpenDiscriminatedMixin"
           }
         ]
       },
@@ -510,6 +470,9 @@
           },
           "catOrDogOpenDiscriminated": {
             "$ref": "#/components/schemas/CatOrDogOpenDiscriminated"
+          },
+          "vehicle": {
+            "$ref": "#/components/schemas/Vehicle"
           }
         }
       },
@@ -594,6 +557,66 @@
           }
         ]
       },
+      "SyntheticCatOrDogCat": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Cat"
+          },
+          {
+            "$ref": "#/components/schemas/CatOrDogMixin"
+          }
+        ]
+      },
+      "SyntheticCatOrDogDog": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Dog"
+          },
+          {
+            "$ref": "#/components/schemas/CatOrDogMixin"
+          }
+        ]
+      },
+      "SyntheticCatOrDogOpenDiscriminatedCat": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Cat"
+          },
+          {
+            "$ref": "#/components/schemas/CatOrDogOpenDiscriminatedMixin"
+          }
+        ]
+      },
+      "SyntheticCatOrDogOpenDiscriminatedDog": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Dog"
+          },
+          {
+            "$ref": "#/components/schemas/CatOrDogOpenDiscriminatedMixin"
+          }
+        ]
+      },
+      "SyntheticVehicleCar": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/VehicleCar"
+          },
+          {
+            "$ref": "#/components/schemas/VehicleMixin"
+          }
+        ]
+      },
+      "SyntheticVehiclePlane": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/VehiclePlane"
+          },
+          {
+            "$ref": "#/components/schemas/VehicleMixin"
+          }
+        ]
+      },
       "TestErrorsInExamplesRequestContent": {
         "type": "object",
         "properties": {
@@ -615,6 +638,57 @@
         "required": [
           "out"
         ]
+      },
+      "Vehicle": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/SyntheticVehicleCar"
+          },
+          {
+            "$ref": "#/components/schemas/SyntheticVehiclePlane"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "car": "#/components/schemas/SyntheticVehicleCar",
+            "plane": "#/components/schemas/SyntheticVehiclePlane"
+          }
+        }
+      },
+      "VehicleCar": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "model": {
+            "type": "string"
+          },
+          "make": {
+            "type": "string"
+          }
+        }
+      },
+      "VehicleMixin": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "VehiclePlane": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string"
+          }
+        }
       }
     }
   },
