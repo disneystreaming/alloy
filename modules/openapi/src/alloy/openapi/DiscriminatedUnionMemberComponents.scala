@@ -89,7 +89,7 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
           .filterNot(m => m.hasTrait(classOf[JsonUnknownTrait]))
           .foreach { memberShape =>
             val syntheticMemberName =
-              union.getId().getName() + memberShape.getMemberName.capitalize
+              "Synthetic" + union.getId().getName().capitalize + memberShape.getMemberName.capitalize
             context.getPointer(union).split('/').last + memberShape
               .getMemberName()
               .capitalize
@@ -139,7 +139,7 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
         .map(_.getValue())
         .getOrElse(member.getMemberName())
       val syntheticMemberId =
-        shape.getId().getName() + member.getMemberName().capitalize
+        "Synthetic" + shape.getId().getName().capitalize + member.getMemberName().capitalize
       val refString = s"#/components/schemas/$syntheticMemberId"
       val refSchema =
         Schema.builder.ref(refString).build
