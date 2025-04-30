@@ -24,7 +24,6 @@ import alloy.DiscriminatedUnionTrait
 import software.amazon.smithy.jsonschema.Schema
 import software.amazon.smithy.model.shapes.ShapeId
 import software.amazon.smithy.model.shapes.UnionShape
-import software.amazon.smithy.model.shapes.MemberShape
 import software.amazon.smithy.model.traits.JsonNameTrait
 import software.amazon.smithy.model.node.ObjectNode
 import software.amazon.smithy.jsonschema.Schema.Builder
@@ -63,7 +62,8 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
     unions.asScala
       .filter(u => componentSchemas.contains(u.getId()))
       .foreach { union =>
-        val unionMixinName = union.getId().getName() + "Mixin"
+        val unionMixinName =
+          calculateCompontName(union.getId().getName(), "Mixin", componentNames)
         val unionMixinId =
           ShapeId.fromParts(union.getId().getNamespace(), unionMixinName)
         val discriminatorField =
@@ -99,7 +99,13 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
               .getOrElse(memberShape.getMemberName())
 
             val syntheticComponentName =
-              calculateUnionMemberName(union, memberShape, componentNames)
+              calculateCompontName(
+                union.getId().getName() + memberShape
+                  .getMemberName()
+                  .capitalize,
+                "Case",
+                componentNames
+              )
             val targetRef = context.createRef(memberShape.getTarget())
             val syntheticUnionMember =
               Schema
@@ -138,25 +144,21 @@ class DiscriminatedUnionMemberComponents() extends OpenApiMapper {
   }
 
   /*
-   * Given a union and a member of that union calculate a unique name to be used as a componenet in the OpenAPI
-   * spec that doesn't conflict with existing components
+   * This will generate an incrementing baseName+suffix component name that doesn't conflict with an exisiting component name
    */
-  private def calculateUnionMemberName(
-      unionShape: UnionShape,
-      memberShape: MemberShape,
+  private def calculateCompontName(
+      baseName: String,
+      suffix: String,
       existingComponentNames: Set[String]
   ): String = {
-    val testMemberName =
-      unionShape.getId().getName() + memberShape.getMemberName.capitalize
-
     val candidateNames = List(
-      testMemberName,
-      testMemberName + "Case"
-    ) ++ (1 to 10).map(i => testMemberName + "Case" + i)
+      baseName,
+      baseName + suffix
+    ) ++ (1 to 10).map(i => baseName + suffix + i)
 
     candidateNames
       .find(x => !existingComponentNames.contains(x))
-      .fold(testMemberName + testMemberName.hashCode())(identity)
+      .fold(baseName + baseName.hashCode())(identity)
   }
 
   private def updateDiscriminatedUnion(
