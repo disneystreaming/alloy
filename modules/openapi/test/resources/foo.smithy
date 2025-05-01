@@ -181,6 +181,7 @@ structure GetUnionResponse {
     catOrDog: CatOrDog
     catOrDogOpen: CatOrDogOpen
     catOrDogOpenDiscriminated: CatOrDogOpenDiscriminated
+    vehicle: Vehicle
 }
 
 union IntOrString {
@@ -264,4 +265,20 @@ union CatOrDogOpenDiscriminated {
 
     @jsonUnknown
     other: Document
+}
+
+structure VehicleCar {
+    year: Integer
+    model: String
+    make: String
+}
+
+structure VehiclePlane {
+    model: String
+}
+
+@discriminated("type")
+union Vehicle {
+    car: VehicleCar
+    plane: VehiclePlane
 }

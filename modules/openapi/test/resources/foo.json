@@ -510,6 +510,9 @@
           },
           "catOrDogOpenDiscriminated": {
             "$ref": "#/components/schemas/CatOrDogOpenDiscriminated"
+          },
+          "vehicle": {
+            "$ref": "#/components/schemas/Vehicle"
           }
         }
       },
@@ -614,6 +617,77 @@
         },
         "required": [
           "out"
+        ]
+      },
+      "Vehicle": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/VehicleCarCase"
+          },
+          {
+            "$ref": "#/components/schemas/VehiclePlaneCase"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "car": "#/components/schemas/VehicleCarCase",
+            "plane": "#/components/schemas/VehiclePlaneCase"
+          }
+        }
+      },
+      "VehicleCar": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "model": {
+            "type": "string"
+          },
+          "make": {
+            "type": "string"
+          }
+        }
+      },
+      "VehicleCarCase": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/VehicleCar"
+          },
+          {
+            "$ref": "#/components/schemas/VehicleMixin"
+          }
+        ]
+      },
+      "VehicleMixin": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "VehiclePlane": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string"
+          }
+        }
+      },
+      "VehiclePlaneCase": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/VehiclePlane"
+          },
+          {
+            "$ref": "#/components/schemas/VehicleMixin"
+          }
         ]
       }
     }
