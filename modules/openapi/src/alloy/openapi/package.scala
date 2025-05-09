@@ -29,7 +29,6 @@ import scala.jdk.CollectionConverters._
 
 package object openapi {
 
-
   def convertWithConfig(
       model: Model,
       services: Set[Shape],
