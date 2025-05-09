@@ -31,7 +31,7 @@ package object openapi {
 
   def convertWithConfig(
       model: Model,
-      services: Set[Shape],
+      service: Shape,
       buildConfig: Unit => OpenApiConfig,
       classLoader: ClassLoader
   ): List[OpenApiConversionResult] = {
@@ -56,20 +56,19 @@ package object openapi {
       .flatMap(_.getProtocols().asScala.map(p => TraitKey(p.getProtocolType())))
       .toSet
 
-    services.flatMap { service =>
-      val protocols: Set[ShapeId] =
-        openapiAwareTraits.flatMap(_.getIdIfApplied(service))
-      protocols.map { protocol =>
-        val serviceId = service.getId()
-        val config = buildConfig(())
-        config.setService(serviceId)
-        config.setProtocol(protocol)
-        config.setIgnoreUnsupportedTraits(true)
-        val openapi =
-          OpenApiConverter.create().config(config).convertToNode(model)
-        val jsonString = Node.prettyPrintJson(openapi)
-        OpenApiConversionResult(protocol, serviceId, jsonString)
-      }
+    val protocols: Set[ShapeId] =
+      openapiAwareTraits.flatMap(_.getIdIfApplied(service))
+
+    protocols.map { protocol =>
+      val serviceId = service.getId()
+      val config = buildConfig(())
+      config.setService(serviceId)
+      config.setProtocol(protocol)
+      config.setIgnoreUnsupportedTraits(true)
+      val openapi =
+        OpenApiConverter.create().config(config).convertToNode(model)
+      val jsonString = Node.prettyPrintJson(openapi)
+      OpenApiConversionResult(protocol, serviceId, jsonString)
     }.toList
   }
 
@@ -88,12 +87,14 @@ package object openapi {
         serviceShapes.filter(s => namespaces.contains(s.getId.getNamespace()))
     }
 
-    convertWithConfig(
-      model = model,
-      services = filteredServices,
-      buildConfig = buildConfig,
-      classLoader = classLoader
-    )
+    filteredServices.flatMap { service =>
+      convertWithConfig(
+        model = model,
+        service = service,
+        buildConfig = buildConfig,
+        classLoader = classLoader
+      )
+    }.toList
   }
 
   def convertWithConfig(
