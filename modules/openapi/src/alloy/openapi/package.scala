@@ -17,7 +17,6 @@ package alloy
 
 import software.amazon.smithy.model.Model
 import software.amazon.smithy.model.node.Node
-import software.amazon.smithy.model.shapes.ServiceShape
 import software.amazon.smithy.model.shapes.Shape
 import software.amazon.smithy.model.shapes.ShapeId
 import software.amazon.smithy.model.traits.Trait
@@ -30,26 +29,13 @@ import scala.jdk.CollectionConverters._
 
 package object openapi {
 
+
   def convertWithConfig(
       model: Model,
-      allowedNS: Option[Set[String]],
+      services: Set[Shape],
       buildConfig: Unit => OpenApiConfig,
       classLoader: ClassLoader
   ): List[OpenApiConversionResult] = {
-    val services = model
-      .shapes()
-      .iterator()
-      .asScala
-      .collect {
-        case s if s.isServiceShape() => s.asServiceShape().get()
-      }
-      .toList
-
-    val filteredServices: List[ServiceShape] = allowedNS match {
-      case Some(allowed) =>
-        services.filter(s => allowed(s.getId().getNamespace()))
-      case None => services
-    }
 
     import scala.jdk.CollectionConverters._
 
@@ -66,13 +52,12 @@ package object openapi {
         classOf[Smithy2OpenApiExtension],
         classLoader
       )
-      .iterator()
       .asScala
       .toVector
       .flatMap(_.getProtocols().asScala.map(p => TraitKey(p.getProtocolType())))
       .toSet
 
-    filteredServices.flatMap { service =>
+    services.flatMap { service =>
       val protocols: Set[ShapeId] =
         openapiAwareTraits.flatMap(_.getIdIfApplied(service))
       protocols.map { protocol =>
@@ -86,7 +71,30 @@ package object openapi {
         val jsonString = Node.prettyPrintJson(openapi)
         OpenApiConversionResult(protocol, serviceId, jsonString)
       }
+    }.toList
+  }
+
+  def convertWithConfig(
+      model: Model,
+      allowedNS: Option[Set[String]],
+      buildConfig: Unit => OpenApiConfig,
+      classLoader: ClassLoader
+  ): List[OpenApiConversionResult] = {
+    val serviceShapes =
+      model.getServiceShapes().asScala.toSet[Shape]
+
+    val filteredServices = allowedNS match {
+      case None => serviceShapes
+      case Some(namespaces) =>
+        serviceShapes.filter(s => namespaces.contains(s.getId.getNamespace()))
     }
+
+    convertWithConfig(
+      model = model,
+      services = filteredServices,
+      buildConfig = buildConfig,
+      classLoader = classLoader
+    )
   }
 
   def convertWithConfig(
