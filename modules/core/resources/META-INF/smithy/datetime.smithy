@@ -21,9 +21,12 @@ structure dateFormat { }
 string Date
 
 
-/// This trait indicates that a Timestamp should retain the time offset information.
-/// Must be combined with the @timestampFormat("date-time") trait as only this format
-/// provides offset information.
+/// This trait indicates that a Timestamp should retain the time offset
+/// information as defined in RFC3339 Section 5.6.
+/// See: https://www.rfc-editor.org/rfc/rfc3339#section-5.6
+///
+/// Must be combined with the @timestampFormat("date-time") trait as only this
+/// format provides offset information.
 @trait(selector: ":test(timestamp, member > timestamp) [trait|timestampFormat = 'date-time']")
 structure withTimeOffset { }
 
