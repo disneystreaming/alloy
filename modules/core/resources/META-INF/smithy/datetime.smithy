@@ -16,3 +16,17 @@ namespace alloy
 /// If a time component is required, you can use smithy.api#Timestamp
 @trait(selector: ":test(string, member > string)")
 structure dateFormat { }
+
+@dateFormat
+string Date
+
+
+/// This trait indicates that a Timestamp should retain the time offset information.
+/// Must be combined with the @timestampFormat("date-time") trait as only this format
+/// provides offset information.
+@trait(selector: ":test(timestamp, member > timestamp) [trait|timestampFormat = 'date-time']")
+structure withTimeOffset { }
+
+@withTimeOffset
+@timestampFormat("date-time")
+timestamp OffsetTimestamp
