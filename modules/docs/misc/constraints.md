@@ -15,6 +15,24 @@ structure Test {
 }
 ```
 
+For convenience alloy provides the type `alloy#Date` which is equivalent to a `String` annotated with the `dateFormat` trait.
+
+#### alloy#withTimeOffset
+
+This trait is used to indicates that `Timestamp` should retain time offset information as defined in the [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339#section-5.6).
+
+This trait must be combined with `smithy.api#timestampFormat("date-time")`.
+
+```smithy
+structure Test {
+  @withTimeOffset
+  @timestampFormat("date-time")
+  ts: Timestamp
+}
+```
+
+For convenience alloy provides the type `alloy#OffsetTimestamp` which is equivalent to a `Timestamp` annotated with the `withTimeOffset` trait.
+
 #### alloy#nullable
 
 Out of the box, Smithy does not make a distinction between a missing value and a value set to `null`. Some other Interface Definition Languages (IDL) allow for this distinction. This trait can be used to express this distinction.
