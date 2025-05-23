@@ -16,7 +16,7 @@ use alloy#untagged
 use alloy#urlFormFlattened
 use alloy#urlFormName
 use alloy#uuidFormat
-use alloy#withTimeOffset
+use alloy#offsetDateTimeFormat
 use alloy.common#countryCodeFormat
 use alloy.common#emailFormat
 use alloy.common#hexColorCodeFormat
@@ -36,7 +36,7 @@ use alloy.proto#protoReservedFields
 @dateFormat
 string MyDate
 
-@withTimeOffset
+@offsetDateTimeFormat
 @timestampFormat("date-time")
 timestamp MyOffsetTimestamp
 

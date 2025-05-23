@@ -19,16 +19,16 @@ import software.amazon.smithy.model.node.Node;
 import software.amazon.smithy.model.shapes.ShapeId;
 import software.amazon.smithy.model.traits.AnnotationTrait;
 
-public final class WithTimeOffsetTrait extends AnnotationTrait {
-	public static ShapeId ID = ShapeId.from("alloy#withTimeOffset");
+public final class OffsetDateTimeFormatTrait extends AnnotationTrait {
+	public static ShapeId ID = ShapeId.from("alloy#offsetDateTimeFormat");
 
-	public WithTimeOffsetTrait() {
+	public OffsetDateTimeFormatTrait() {
 		super(ID, Node.objectNode());
 	}
 
-	public static final class Provider extends AnnotationTrait.Provider<WithTimeOffsetTrait> {
+	public static final class Provider extends AnnotationTrait.Provider<OffsetDateTimeFormatTrait> {
 		public Provider() {
-			super(ID, node -> new WithTimeOffsetTrait());
+			super(ID, node -> new OffsetDateTimeFormatTrait());
 		}
 	}
 

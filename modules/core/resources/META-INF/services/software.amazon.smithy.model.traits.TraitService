@@ -8,9 +8,9 @@ alloy.DateFormatTrait$Provider
 alloy.DefaultValueTrait$Provider
 alloy.DiscriminatedUnionTrait$Provider
 alloy.JsonUnknownTrait$Provider
+alloy.OffsetDateTimeFormatTrait$Provider
 alloy.OpenEnumTrait$Provider
 alloy.NullableTrait$Provider
-alloy.WithTimeOffsetTrait$Provider
 alloy.openapi.OpenApiExtensionsTrait$Provider
 alloy.proto.GrpcTrait$Provider
 alloy.proto.ProtoEnabledTrait$Provider
