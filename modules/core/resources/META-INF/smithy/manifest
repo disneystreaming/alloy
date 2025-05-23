@@ -1,8 +1,8 @@
 common/common.smithy
+datetime.smithy
 documentation.smithy
 enums.smithy
 examples.smithy
-formats.smithy
 openapi/openapi.smithy
 presence.smithy
 proto/proto.smithy
