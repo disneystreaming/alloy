@@ -35,6 +35,6 @@ object DateTimeFormatMapper {
     classOf[ZonedDateTimeFormatTrait] -> "zoned-date-time",
     classOf[YearFormatTrait] -> "year",
     classOf[YearMonthFormatTrait] -> "year-month",
-    classOf[MonthDayFormatTrait] -> "month-day",
+    classOf[MonthDayFormatTrait] -> "month-day"
   )
 }

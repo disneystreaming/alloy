@@ -190,16 +190,22 @@ final class OpenApiConversionSpec extends munit.FunSuite {
     val result =
       convert(model, None).map(_.contents).mkString.filterNot(_.isWhitespace)
 
-    assert(result.contains(""""localDate":{"type":"string","x-format":"local-date"}"""))
-    assert(result.contains(""""localTime":{"type":"string","x-format":"local-time"}"""))
-    assert(result.contains(""""localDateTime":{"type":"string","x-format":"local-date-time"}"""))
-    assert(result.contains(""""offsetDateTime":{"type":"string","format":"date-time","x-format":"offset-date-time"}"""))
-    assert(result.contains(""""offsetTime":{"type":"string","x-format":"offset-time"}"""))
-    assert(result.contains(""""zoneId":{"type":"string","x-format":"zone-id"}"""))
-    assert(result.contains(""""zoneOffset":{"type":"string","x-format":"zone-offset"}"""))
-    assert(result.contains(""""zonedDateTime":{"type":"string","x-format":"zoned-date-time"}"""))
-    assert(result.contains(""""year":{"type":"integer","format":"int32","x-format":"year"}"""))
-    assert(result.contains(""""yearMonth":{"type":"string","x-format":"year-month"}"""))
-    assert(result.contains(""""monthDay":{"type":"string","x-format":"month-day"}"""))
+    val expected = List(
+      """"localDate":{"type":"string","x-format":"local-date"}""",
+      """"localTime":{"type":"string","x-format":"local-time"}""",
+      """"localDateTime":{"type":"string","x-format":"local-date-time"}""",
+      """"offsetDateTime":{"type":"string","format":"date-time","x-format":"offset-date-time"}""",
+      """"offsetTime":{"type":"string","x-format":"offset-time"}""",
+      """"zoneId":{"type":"string","x-format":"zone-id"}""",
+      """"zoneOffset":{"type":"string","x-format":"zone-offset"}""",
+      """"zonedDateTime":{"type":"string","x-format":"zoned-date-time"}""",
+      """"year":{"type":"integer","format":"int32","x-format":"year"}""",
+      """"yearMonth":{"type":"string","x-format":"year-month"}""",
+      """"monthDay":{"type":"string","x-format":"month-day"}"""
+    )
+
+    expected.foreach { expected =>
+      assert(result.contains(expected))
+    }
   }
 }
