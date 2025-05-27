@@ -32,13 +32,18 @@ use alloy.proto#protoTimestampFormat
 use alloy.proto#protoCompactUUID
 use alloy.proto#protoWrapped
 use alloy.proto#protoReservedFields
+use alloy#localTimeFormat
+use alloy#localDateTimeFormat
+use alloy#offsetTimeFormat
+use alloy#zoneIdFormat
+use alloy#zoneOffsetFormat
+use alloy#zonedDateTimeFormat
+use alloy#yearFormat
+use alloy#yearMonthFormat
+use alloy#monthDayFormat
 
 @dateFormat
 string MyDate
-
-@offsetDateTimeFormat
-@timestampFormat("date-time")
-timestamp MyOffsetTimestamp
 
 @emailFormat
 @protoWrapped
@@ -229,3 +234,34 @@ map UnknownProps {
     key: String
     value: Document
 }
+
+@localTimeFormat
+string MyLocalTime
+
+@localDateTimeFormat
+string MyLocalDateTime
+
+@offsetDateTimeFormat
+@timestampFormat("date-time")
+timestamp MyOffestDateTime
+
+@offsetTimeFormat
+string MyOffestTime
+
+@zoneIdFormat
+string MyZoneId
+
+@zoneOffsetFormat
+string MyZoneOffset
+
+@zonedDateTimeFormat
+string MyZonedDateTime
+
+@yearFormat
+integer MyYear
+
+@yearMonthFormat
+string MyYearMonth
+
+@monthDayFormat
+string MyMonthDay
