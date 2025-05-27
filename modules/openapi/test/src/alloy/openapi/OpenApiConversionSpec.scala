@@ -179,7 +179,7 @@ final class OpenApiConversionSpec extends munit.FunSuite {
     assert(result.contains("\"name\":\"X-Foo\""))
   }
 
-  test("OpenAPI conversion of date time types".only) {
+  test("OpenAPI conversion of date time types") {
     val model = Model
       .assembler()
       .addImport(getClass().getClassLoader().getResource("datetime.smithy"))
