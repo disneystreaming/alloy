@@ -74,7 +74,7 @@ structure zoneIdFormat { }
 string ZoneId
 
 
-/// This triat indicates that a String contains a timezone offset from UTC
+/// This trait indicates that a String contains a timezone offset from UTC
 /// such as +01:00
 @trait(selector: ":test(string, member > string)")
 structure zoneOffsetFormat { }
