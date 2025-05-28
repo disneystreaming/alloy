@@ -243,10 +243,10 @@ string MyLocalDateTime
 
 @offsetDateTimeFormat
 @timestampFormat("date-time")
-timestamp MyOffestDateTime
+timestamp MyOffsetDateTime
 
 @offsetTimeFormat
-string MyOffestTime
+string MyOffsetTime
 
 @zoneIdFormat
 string MyZoneId

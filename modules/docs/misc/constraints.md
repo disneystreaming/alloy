@@ -167,7 +167,7 @@ structure Test {
 }
 ```
 
-For convenience alloy provides the type `alloy#OffestTime` which is equivalent to a `String` annotated with the `offsetTimeFormat` trait.
+For convenience alloy provides the type `alloy#OffsetTime` which is equivalent to a `String` annotated with the `offsetTimeFormat` trait.
 
 
 #### alloy#zoneIdFormat
