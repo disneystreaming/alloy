@@ -55,7 +55,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v') ||
           (github.event_name == 'workflow_dispatch' && github.event.inputs.publishSnapshot == 'true')
         run: |
-              mill -i \
+              ./mill -i \
               mill.contrib.sonatypecentral.SonatypeCentralPublishModule/publishAll \
               --username $SONATYPE_USERNAME \
               --password $SONATYPE_PASSWORD \
