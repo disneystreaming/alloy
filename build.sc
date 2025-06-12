@@ -3,8 +3,8 @@ import de.tobiasroeser.mill.vcs.version.VcsVersion
 import $ivy.`io.github.davidgregory084::mill-tpolecat::0.3.5`
 import $ivy.`com.lewisjkl::header-mill-plugin::0.0.4`
 import header._
-import $file.plugins.ci.CiReleaseModules
-import CiReleaseModules.{CiReleaseModule, SonatypeHost, ReleaseModule, Discover}
+import $ivy.`com.lihaoyi::mill-contrib-sonatypecentral:`
+import mill.contrib.sonatypecentral.SonatypeCentralPublishModule
 import io.github.davidgregory084.TpolecatModule
 import $ivy.`com.github.lolgab::mill-mima::0.1.1`
 import com.github.lolgab.mill.mima._
@@ -18,22 +18,6 @@ import mill.define.ExternalModule
 import mill.eval.Evaluator
 
 object release extends ReleaseModule
-
-object InternalReleaseModule extends Module {
-
-  /** This is a replacement for the mill.scalalib.PublishModule/publishAll task
-    * that should basically work identically _but_ without requiring the user to
-    * pass in anything. It also sets up your gpg stuff and grabs the necessary
-    * env variables to publish to sonatype for you.
-    */
-  def publishAll(ev: Evaluator): Command[Unit] = {
-    release.publishAll(ev)
-  }
-
-  import Discover._
-  lazy val millDiscover: mill.define.Discover =
-    mill.define.Discover[this.type]
-}
 
 trait BaseModule extends Module with HeaderModule {
   def millSourcePath: os.Path = {
@@ -62,7 +46,7 @@ trait BaseMunitTests extends TestModule.Munit {
   def ivyDeps = Deps.munit.all
 }
 
-trait BasePublishModule extends BaseModule with CiReleaseModule {
+trait BasePublishModule extends BaseModule with SonatypeCentralPublishModule {
 
   override def publishVersion: T[String] = T {
     if (isCI()) super.publishVersion() else "dev-SNAPSHOT"
@@ -72,8 +56,6 @@ trait BasePublishModule extends BaseModule with CiReleaseModule {
 
   def artifactName =
     s"alloy-${millModuleSegments.parts.mkString("-")}"
-
-  override def sonatypeHost = Some(SonatypeHost.s01)
 
   def pomSettings = PomSettings(
     description = "Common Smithy Shapes",
