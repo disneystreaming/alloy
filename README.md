@@ -30,7 +30,7 @@ The goals of alloy are :
 The core alloy library, containing shapes and validators, is published to Maven Central at the following coordinates.
 
 ```
-com.disneystreaming.alloy:alloy-core:x.y.z
+io.github.disneystreaming.alloy:alloy-core:x.y.z
 ```
 
 It contains, in particular, traits and validators associated to the following aspects :
@@ -62,7 +62,7 @@ Alloy provides a suite of protocol tests that utilise the [AWS HTTP Protocol Com
 These tests are available on maven central at the following coordinates :
 
 ```
-com.disneystreaming.alloy:alloy-protocol-tests:x.y.z
+io.github.disneystreaming.alloy:alloy-protocol-tests:x.y.z
 ```
 
 ## Working on Alloy
