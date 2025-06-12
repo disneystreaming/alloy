@@ -97,6 +97,29 @@ trait BaseScalaNoPublishModule
 
 trait BaseMimaModule extends BasePublishModule with Mima {
   def mimaPreviousVersions = Seq("0.2.0")
+
+  override def mimaPreviousArtifacts: Target[Agg[Dep]] = {
+    super.mimaPreviousArtifacts().map { dep =>
+      val versionParts = dep.version.split('.').toList.lift
+      val maybeMajor = versionParts(0).flatMap(_.toIntOption)
+      val maybeMinor = versionParts(1).flatMap(_.toIntOption)
+      val maybePatch = versionParts(2).flatMap(_.toIntOption)
+
+      // For versions 0.3.21 and prior, use old organization of com.disneystreaming.alloy rather than new one
+      (maybeMajor, maybeMinor, maybePatch) match {
+        case (Some(major), Some(minor), Some(patch))
+            if (major == 0 && minor <= 3 && patch <= 21) =>
+          Dep.apply(
+            org = "com.disneystreaming.alloy",
+            name = dep.name,
+            version = dep.version,
+            cross = dep.cross,
+            force = dep.force
+          )
+        case _ => dep
+      }
+    }
+  }
 }
 
 trait BaseScalaModule extends BaseScalaNoPublishModule with BaseMimaModule
