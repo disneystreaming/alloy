@@ -16,8 +16,8 @@ import mill.scalalib._
 import mill.scalalib.publish._
 import mill.define.ExternalModule
 import mill.eval.Evaluator
-
-object release extends ReleaseModule
+import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.4.1`
+import de.tobiasroeser.mill.vcs.version.VcsVersion
 
 trait BaseModule extends Module with HeaderModule {
   def millSourcePath: os.Path = {
@@ -49,7 +49,7 @@ trait BaseMunitTests extends TestModule.Munit {
 trait BasePublishModule extends BaseModule with SonatypeCentralPublishModule {
 
   override def publishVersion: T[String] = T {
-    if (isCI()) super.publishVersion() else "dev-SNAPSHOT"
+    if (isCI()) VcsVersion.vcsState().format() else "dev-SNAPSHOT"
   }
 
   def isCI = T.input(T.ctx().env.contains("CI"))
