@@ -24,6 +24,7 @@ import scala.jdk.CollectionConverters._
 import alloy.DataExamplesTrait
 import software.amazon.smithy.model.node.ObjectNode
 import software.amazon.smithy.model.node.Node
+import software.amazon.smithy.model.node.ArrayNode
 
 class DataExamplesMapper() extends JsonSchemaMapper {
 
@@ -32,25 +33,29 @@ class DataExamplesMapper() extends JsonSchemaMapper {
       schemaBuilder: Builder,
       config: JsonSchemaConfig
   ): Builder = if (shape.hasTrait(classOf[DataExamplesTrait])) {
-    shape
+    val examples = shape
       .getTrait(classOf[DataExamplesTrait])
       .get
       .getExamples()
       .asScala
-      .headOption match {
-      case Some(example)
-          if example.getExampleType != DataExamplesTrait.DataExampleType.STRING =>
-        schemaBuilder.putExtension("example", example.getContent())
-      case Some(example)
-          if example.getExampleType == DataExamplesTrait.DataExampleType.STRING =>
-        val maybeStrNode = example.getContent().asStringNode()
-        val res = if (maybeStrNode.isPresent) {
-          Node.parse(maybeStrNode.get.getValue)
+      .toList
+      .foldLeft(ArrayNode.builder()) { case (array, example) =>
+        if (
+          example.getExampleType == DataExamplesTrait.DataExampleType.STRING
+        ) {
+          val maybeStrNode = example.getContent().asStringNode()
+          val res = if (maybeStrNode.isPresent) {
+            Node.parse(maybeStrNode.get.getValue)
+          } else {
+            ObjectNode.builder().build()
+          }
+          array.withValue(res)
         } else {
-          ObjectNode.builder().build()
+          array.withValue(example.getContent())
         }
-        schemaBuilder.putExtension("example", res)
-      case _ => schemaBuilder
-    }
+      }
+      .build()
+    if (examples.isEmpty()) schemaBuilder
+    else schemaBuilder.putExtension("examples", examples)
   } else schemaBuilder
 }

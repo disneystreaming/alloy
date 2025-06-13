@@ -26,6 +26,7 @@ import software.amazon.smithy.openapi.fromsmithy.Smithy2OpenApiExtension
 
 import java.util.ServiceLoader
 import scala.jdk.CollectionConverters._
+import software.amazon.smithy.openapi.OpenApiVersion
 
 package object openapi {
 
@@ -118,7 +119,9 @@ package object openapi {
       classLoader: ClassLoader
   ): List[OpenApiConversionResult] = {
     val configBuilder: Unit => OpenApiConfig = { _ =>
-      new OpenApiConfig()
+      val config = new OpenApiConfig()
+      config.setVersion(OpenApiVersion.VERSION_3_1_0)
+      config
     }
     convertWithConfig(model, allowedNS, configBuilder, classLoader)
   }

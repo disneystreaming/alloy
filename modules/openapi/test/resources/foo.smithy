@@ -197,6 +197,9 @@ union DoubleOrFloat {
 @dataExamples([
     {
         smithy: { name: "Meow" }
+    },
+        {
+        smithy: { name: "Miau" }
     }
 ])
 structure Cat {
@@ -206,6 +209,9 @@ structure Cat {
 @dataExamples([
     {
         json: { name: "Woof" }
+    },
+    {
+        json: { name: "Hau hau" }
     }
 ])
 structure Dog {
