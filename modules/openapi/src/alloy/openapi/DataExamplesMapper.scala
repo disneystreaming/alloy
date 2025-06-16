@@ -25,6 +25,8 @@ import alloy.DataExamplesTrait
 import software.amazon.smithy.model.node.ObjectNode
 import software.amazon.smithy.model.node.Node
 import software.amazon.smithy.model.node.ArrayNode
+import software.amazon.smithy.openapi.OpenApiConfig
+import software.amazon.smithy.openapi.OpenApiVersion
 
 class DataExamplesMapper() extends JsonSchemaMapper {
 
@@ -39,23 +41,52 @@ class DataExamplesMapper() extends JsonSchemaMapper {
       .getExamples()
       .asScala
       .toList
+    if (examples.isEmpty)
+      schemaBuilder
+    else
+      config match {
+        case openApiConfig: OpenApiConfig
+            if openApiConfig.getVersion.compareTo(
+              OpenApiVersion.VERSION_3_1_0
+            ) >= 0 =>
+          convertMultipleExamples(examples, schemaBuilder)
+        case _ =>
+          examples.headOption.fold(schemaBuilder)(
+            convertSingleExample(_, schemaBuilder)
+          )
+      }
+  } else schemaBuilder
+
+  private def convertExample(example: DataExamplesTrait.DataExample) = {
+    if (example.getExampleType == DataExamplesTrait.DataExampleType.STRING) {
+      val maybeStrNode = example.getContent().asStringNode()
+      if (maybeStrNode.isPresent) {
+        Node.parse(maybeStrNode.get.getValue)
+      } else {
+        ObjectNode.builder().build()
+      }
+    } else {
+      example.getContent()
+    }
+  }
+
+  private def convertSingleExample(
+      example: DataExamplesTrait.DataExample,
+      schemaBuilder: Builder
+  ) =
+    schemaBuilder.putExtension("example", convertExample(example))
+
+  private def convertMultipleExamples(
+      examples: List[DataExamplesTrait.DataExample],
+      schemaBuilder: Builder
+  ) = {
+    val array = examples
       .foldLeft(ArrayNode.builder()) { case (array, example) =>
-        if (
-          example.getExampleType == DataExamplesTrait.DataExampleType.STRING
-        ) {
-          val maybeStrNode = example.getContent().asStringNode()
-          val res = if (maybeStrNode.isPresent) {
-            Node.parse(maybeStrNode.get.getValue)
-          } else {
-            ObjectNode.builder().build()
-          }
-          array.withValue(res)
-        } else {
-          array.withValue(example.getContent())
-        }
+        array.withValue(convertExample(example))
       }
       .build()
-    if (examples.isEmpty()) schemaBuilder
-    else schemaBuilder.putExtension("examples", examples)
-  } else schemaBuilder
+    if (array.isEmpty()) schemaBuilder
+    else schemaBuilder.putExtension("examples", array)
+  }
+
 }

@@ -1,5 +1,5 @@
 {
-    "openapi": "3.0.2",
+    "openapi": "3.1.0",
     "info": {
         "title": "HelloWorldService",
         "version": "0.0.1"
@@ -284,9 +284,14 @@
                         "type": "string"
                     }
                 },
-                "example": {
-                    "name": "Meow"
-                }
+                "examples": [
+                    {
+                        "name": "Meow"
+                    },
+                    {
+                        "name": "Miau"
+                    }
+                ]
             },
             "CatOrDog": {
                 "oneOf": [
@@ -446,9 +451,14 @@
                         "type": "string"
                     }
                 },
-                "example": {
-                    "name": "Woof"
-                }
+                "examples": [
+                    {
+                        "name": "Woof"
+                    },
+                    {
+                        "name": "Hauhau"
+                    }
+                ]
             },
             "DoubleOrFloat": {
                 "oneOf": [
@@ -526,9 +536,11 @@
                         }
                     }
                 },
-                "example": {
-                    "values": []
-                }
+                "examples": [
+                    {
+                        "values": []
+                    }
+                ]
             },
             "GreetOutputPayload": {
                 "type": "string"
