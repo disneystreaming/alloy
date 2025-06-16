@@ -3,8 +3,8 @@ import de.tobiasroeser.mill.vcs.version.VcsVersion
 import $ivy.`io.github.davidgregory084::mill-tpolecat::0.3.5`
 import $ivy.`com.lewisjkl::header-mill-plugin::0.0.4`
 import header._
-import $file.plugins.ci.CiReleaseModules
-import CiReleaseModules.{CiReleaseModule, SonatypeHost, ReleaseModule, Discover}
+import $ivy.`com.lihaoyi::mill-contrib-sonatypecentral:`
+import mill.contrib.sonatypecentral.SonatypeCentralPublishModule
 import io.github.davidgregory084.TpolecatModule
 import $ivy.`com.github.lolgab::mill-mima::0.1.1`
 import com.github.lolgab.mill.mima._
@@ -16,24 +16,8 @@ import mill.scalalib._
 import mill.scalalib.publish._
 import mill.define.ExternalModule
 import mill.eval.Evaluator
-
-object release extends ReleaseModule
-
-object InternalReleaseModule extends Module {
-
-  /** This is a replacement for the mill.scalalib.PublishModule/publishAll task
-    * that should basically work identically _but_ without requiring the user to
-    * pass in anything. It also sets up your gpg stuff and grabs the necessary
-    * env variables to publish to sonatype for you.
-    */
-  def publishAll(ev: Evaluator): Command[Unit] = {
-    release.publishAll(ev)
-  }
-
-  import Discover._
-  lazy val millDiscover: mill.define.Discover =
-    mill.define.Discover[this.type]
-}
+import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.4.1`
+import de.tobiasroeser.mill.vcs.version.VcsVersion
 
 trait BaseModule extends Module with HeaderModule {
   def millSourcePath: os.Path = {
@@ -62,10 +46,10 @@ trait BaseMunitTests extends TestModule.Munit {
   def ivyDeps = Deps.munit.all
 }
 
-trait BasePublishModule extends BaseModule with CiReleaseModule {
+trait BasePublishModule extends BaseModule with SonatypeCentralPublishModule {
 
   override def publishVersion: T[String] = T {
-    if (isCI()) super.publishVersion() else "dev-SNAPSHOT"
+    if (isCI()) VcsVersion.vcsState().format() else "dev-SNAPSHOT"
   }
 
   def isCI = T.input(T.ctx().env.contains("CI"))
@@ -73,11 +57,9 @@ trait BasePublishModule extends BaseModule with CiReleaseModule {
   def artifactName =
     s"alloy-${millModuleSegments.parts.mkString("-")}"
 
-  override def sonatypeHost = Some(SonatypeHost.s01)
-
   def pomSettings = PomSettings(
     description = "Common Smithy Shapes",
-    organization = "com.disneystreaming.alloy",
+    organization = "io.github.disneystreaming.alloy",
     url = "https://github.com/disneystreaming/alloy",
     licenses = Seq(
       License(
@@ -115,6 +97,29 @@ trait BaseScalaNoPublishModule
 
 trait BaseMimaModule extends BasePublishModule with Mima {
   def mimaPreviousVersions = Seq("0.2.0")
+
+  override def mimaPreviousArtifacts: Target[Agg[Dep]] = {
+    super.mimaPreviousArtifacts().map { dep =>
+      val versionParts = dep.version.split('.').toList.lift
+      val maybeMajor = versionParts(0).flatMap(_.toIntOption)
+      val maybeMinor = versionParts(1).flatMap(_.toIntOption)
+      val maybePatch = versionParts(2).flatMap(_.toIntOption)
+
+      // For versions 0.3.21 and prior, use old organization of com.disneystreaming.alloy rather than new one
+      (maybeMajor, maybeMinor, maybePatch) match {
+        case (Some(major), Some(minor), Some(patch))
+            if (major == 0 && minor <= 3 && patch <= 21) =>
+          Dep.apply(
+            org = "com.disneystreaming.alloy",
+            name = dep.name,
+            version = dep.version,
+            cross = dep.cross,
+            force = dep.force
+          )
+        case _ => dep
+      }
+    }
+  }
 }
 
 trait BaseScalaModule extends BaseScalaNoPublishModule with BaseMimaModule
@@ -164,7 +169,7 @@ object protobuf extends BaseJavaModule {}
 
 val scala213 = "2.13.16"
 val scalaVersionsMap =
-  Map("2.13" -> scala213, "2.12" -> "2.12.20", "3" -> "3.3.5")
+  Map("2.13" -> scala213, "2.12" -> "2.12.20", "3" -> "3.3.6")
 object openapi extends Cross[OpenapiModule](scalaVersionsMap.keys.toList)
 trait OpenapiModule extends BaseCrossScalaModule {
   val crossVersion = crossValue
@@ -220,7 +225,7 @@ object docs extends BasePublishModule {
 
 object Deps {
   val smithy = new {
-    val smithyVersion = "1.57.1"
+    val smithyVersion = "1.58.0"
     val model = ivy"software.amazon.smithy:smithy-model:$smithyVersion"
     val awsTraits = ivy"software.amazon.smithy:smithy-aws-traits:$smithyVersion"
     val awsProtocolTestTraits =

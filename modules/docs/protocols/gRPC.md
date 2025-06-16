@@ -56,7 +56,7 @@ lazy val `proto-hints` = (project in file("proto-hints"))
   .settings(
     name := "proto-hints",
     libraryDependencies ++= Seq(
-      "com.disneystreaming.alloy" % "alloy-core" % "0.2.8" % Smithy4s,
+      "io.github.disneystreaming.alloy" % "alloy-core" % "0.2.8" % Smithy4s,
       "com.disneystreaming.smithy4s" %% "smithy4s-core" % smithy4sVersion.value
     ),
     Compile / smithy4sAllowedNamespaces := List("alloy.proto")

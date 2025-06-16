@@ -16,6 +16,7 @@ use alloy#untagged
 use alloy#urlFormFlattened
 use alloy#urlFormName
 use alloy#uuidFormat
+use alloy#offsetDateTimeFormat
 use alloy.common#countryCodeFormat
 use alloy.common#emailFormat
 use alloy.common#hexColorCodeFormat
@@ -31,6 +32,15 @@ use alloy.proto#protoTimestampFormat
 use alloy.proto#protoCompactUUID
 use alloy.proto#protoWrapped
 use alloy.proto#protoReservedFields
+use alloy#localTimeFormat
+use alloy#localDateTimeFormat
+use alloy#offsetTimeFormat
+use alloy#zoneIdFormat
+use alloy#zoneOffsetFormat
+use alloy#zonedDateTimeFormat
+use alloy#yearFormat
+use alloy#yearMonthFormat
+use alloy#monthDayFormat
 
 @dateFormat
 string MyDate
@@ -224,3 +234,34 @@ map UnknownProps {
     key: String
     value: Document
 }
+
+@localTimeFormat
+string MyLocalTime
+
+@localDateTimeFormat
+string MyLocalDateTime
+
+@offsetDateTimeFormat
+@timestampFormat("date-time")
+timestamp MyOffsetDateTime
+
+@offsetTimeFormat
+string MyOffsetTime
+
+@zoneIdFormat
+string MyZoneId
+
+@zoneOffsetFormat
+string MyZoneOffset
+
+@zonedDateTimeFormat
+string MyZonedDateTime
+
+@yearFormat
+integer MyYear
+
+@yearMonthFormat
+string MyYearMonth
+
+@monthDayFormat
+string MyMonthDay

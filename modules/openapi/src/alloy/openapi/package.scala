@@ -17,7 +17,6 @@ package alloy
 
 import software.amazon.smithy.model.Model
 import software.amazon.smithy.model.node.Node
-import software.amazon.smithy.model.shapes.ServiceShape
 import software.amazon.smithy.model.shapes.Shape
 import software.amazon.smithy.model.shapes.ShapeId
 import software.amazon.smithy.model.traits.Trait
@@ -32,24 +31,10 @@ package object openapi {
 
   def convertWithConfig(
       model: Model,
-      allowedNS: Option[Set[String]],
+      service: Shape,
       buildConfig: Unit => OpenApiConfig,
       classLoader: ClassLoader
   ): List[OpenApiConversionResult] = {
-    val services = model
-      .shapes()
-      .iterator()
-      .asScala
-      .collect {
-        case s if s.isServiceShape() => s.asServiceShape().get()
-      }
-      .toList
-
-    val filteredServices: List[ServiceShape] = allowedNS match {
-      case Some(allowed) =>
-        services.filter(s => allowed(s.getId().getNamespace()))
-      case None => services
-    }
 
     import scala.jdk.CollectionConverters._
 
@@ -66,31 +51,54 @@ package object openapi {
         classOf[Smithy2OpenApiExtension],
         classLoader
       )
-      .iterator()
       .asScala
       .toVector
       .flatMap(_.getProtocols().asScala.map(p => TraitKey(p.getProtocolType())))
       .toSet
 
-    filteredServices.flatMap { service =>
-      val protocols: Set[ShapeId] =
-        openapiAwareTraits.flatMap(_.getIdIfApplied(service))
-      protocols.map { protocol =>
-        val serviceId = service.getId()
-        val config = buildConfig(())
-        config.setService(serviceId)
-        config.setProtocol(protocol)
-        config.setIgnoreUnsupportedTraits(true)
-        val openapi =
-          OpenApiConverter
-            .create()
-            .classLoader(classLoader)
-            .config(config)
-            .convertToNode(model)
-        val jsonString = Node.prettyPrintJson(openapi)
-        OpenApiConversionResult(protocol, serviceId, jsonString)
-      }
+    val protocols: Set[ShapeId] =
+      openapiAwareTraits.flatMap(_.getIdIfApplied(service))
+
+    protocols.map { protocol =>
+      val serviceId = service.getId()
+      val config = buildConfig(())
+      config.setService(serviceId)
+      config.setProtocol(protocol)
+      config.setIgnoreUnsupportedTraits(true)
+      val openapi =
+        OpenApiConverter
+          .create()
+          .config(config)
+          .classLoader(classLoader)
+          .convertToNode(model)
+      val jsonString = Node.prettyPrintJson(openapi)
+      OpenApiConversionResult(protocol, serviceId, jsonString)
+    }.toList
+  }
+
+  def convertWithConfig(
+      model: Model,
+      allowedNS: Option[Set[String]],
+      buildConfig: Unit => OpenApiConfig,
+      classLoader: ClassLoader
+  ): List[OpenApiConversionResult] = {
+    val serviceShapes =
+      model.getServiceShapes().asScala.toSet[Shape]
+
+    val filteredServices = allowedNS match {
+      case None => serviceShapes
+      case Some(namespaces) =>
+        serviceShapes.filter(s => namespaces.contains(s.getId.getNamespace()))
     }
+
+    filteredServices.flatMap { service =>
+      convertWithConfig(
+        model = model,
+        service = service,
+        buildConfig = buildConfig,
+        classLoader = classLoader
+      )
+    }.toList
   }
 
   def convertWithConfig(
