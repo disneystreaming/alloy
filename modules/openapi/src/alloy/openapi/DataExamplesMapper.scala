@@ -49,10 +49,10 @@ class DataExamplesMapper() extends JsonSchemaMapper {
             if openApiConfig.getVersion.compareTo(
               OpenApiVersion.VERSION_3_1_0
             ) >= 0 =>
-          convertMultipleExamples(examples, schemaBuilder)
+          putMultipleExamples(examples, schemaBuilder)
         case _ =>
           examples.headOption.fold(schemaBuilder)(
-            convertSingleExample(_, schemaBuilder)
+            putSingleExample(_, schemaBuilder)
           )
       }
   } else schemaBuilder
@@ -70,13 +70,13 @@ class DataExamplesMapper() extends JsonSchemaMapper {
     }
   }
 
-  private def convertSingleExample(
+  private def putSingleExample(
       example: DataExamplesTrait.DataExample,
       schemaBuilder: Builder
   ) =
     schemaBuilder.putExtension("example", convertExample(example))
 
-  private def convertMultipleExamples(
+  private def putMultipleExamples(
       examples: List[DataExamplesTrait.DataExample],
       schemaBuilder: Builder
   ) = {
