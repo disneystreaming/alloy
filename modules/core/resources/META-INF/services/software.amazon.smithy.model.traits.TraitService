@@ -28,6 +28,7 @@ alloy.common.HexColorCodeFormatTrait$Provider
 alloy.common.LanguageCodeFormatTrait$Provider
 alloy.common.LanguageTagFormatTrait$Provider
 alloy.openapi.OpenApiExtensionsTrait$Provider
+alloy.openapi.SummaryTrait$Provider
 alloy.proto.GrpcTrait$Provider
 alloy.proto.ProtoCompactUUIDTrait$Provider
 alloy.proto.ProtoEnabledTrait$Provider

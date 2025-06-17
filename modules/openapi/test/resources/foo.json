@@ -34,6 +34,7 @@
     },
     "/hello/{name}/{ts}": {
       "get": {
+        "summary": "A simple greeting operation",
         "externalDocs": {
           "description": "APIHomepage2",
           "url": "https://www.example2.com/"

@@ -8,6 +8,7 @@ use alloy#jsonUnknown
 use alloy#nullable
 use alloy#simpleRestJson
 use alloy#untagged
+use alloy.openapi#summary
 
 @simpleRestJson
 @externalDocumentation("API Homepage": "https://www.example.com/", "API Ref": "https://www.example.com/api-ref")
@@ -25,6 +26,7 @@ service HelloWorldService {
 }
 
 @externalDocumentation("API Homepage 2": "https://www.example2.com/", "API Ref 2": "https://www.example2.com/api-ref")
+@summary("A simple greeting operation")
 @readonly
 @http(method: "GET", uri: "/hello/{name}/{ts}")
 operation Greet {
