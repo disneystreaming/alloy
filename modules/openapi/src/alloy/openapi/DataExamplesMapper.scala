@@ -24,9 +24,9 @@ import scala.jdk.CollectionConverters._
 import alloy.DataExamplesTrait
 import software.amazon.smithy.model.node.ObjectNode
 import software.amazon.smithy.model.node.Node
-import software.amazon.smithy.model.node.ArrayNode
 import software.amazon.smithy.openapi.OpenApiConfig
 import software.amazon.smithy.openapi.OpenApiVersion
+import scala.math.Ordering.Implicits._
 
 class DataExamplesMapper() extends JsonSchemaMapper {
 
@@ -41,19 +41,17 @@ class DataExamplesMapper() extends JsonSchemaMapper {
       .getExamples()
       .asScala
       .toList
+    implicit val ordering: Ordering[OpenApiVersion] =
+      Ordering.fromLessThan[OpenApiVersion]((a, b) => a.compareTo(b) < 0)
     if (examples.isEmpty)
       schemaBuilder
     else
       config match {
         case openApiConfig: OpenApiConfig
-            if openApiConfig.getVersion.compareTo(
-              OpenApiVersion.VERSION_3_1_0
-            ) >= 0 =>
+            if openApiConfig.getVersion >= OpenApiVersion.VERSION_3_1_0 =>
           putMultipleExamples(examples, schemaBuilder)
         case _ =>
-          examples.headOption.fold(schemaBuilder)(
-            putSingleExample(_, schemaBuilder)
-          )
+          putSingleExample(examples.head, schemaBuilder)
       }
   } else schemaBuilder
 
@@ -80,13 +78,8 @@ class DataExamplesMapper() extends JsonSchemaMapper {
       examples: List[DataExamplesTrait.DataExample],
       schemaBuilder: Builder
   ) = {
-    val array = examples
-      .foldLeft(ArrayNode.builder()) { case (array, example) =>
-        array.withValue(convertExample(example))
-      }
-      .build()
-    if (array.isEmpty()) schemaBuilder
-    else schemaBuilder.putExtension("examples", array)
+    val array = Node.arrayNode(examples.map(convertExample) *)
+    schemaBuilder.putExtension("examples", array)
   }
 
 }
