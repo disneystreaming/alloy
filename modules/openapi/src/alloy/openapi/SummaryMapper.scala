@@ -11,15 +11,16 @@ import software.amazon.smithy.openapi.model.OperationObject
 class SummaryMapper() extends OpenApiMapper {
 
   override def updateOperation(
-                                context: Context[_ <: Trait],
-                                shape: OperationShape,
-                                operation: OperationObject,
-                                httpMethodName: String,
-                                path: String
-                              ): OperationObject ={
+      context: Context[_ <: Trait],
+      shape: OperationShape,
+      operation: OperationObject,
+      httpMethodName: String,
+      path: String
+  ): OperationObject = {
     if (shape.hasTrait(classOf[SummaryTrait])) {
-     val summary = shape.expectTrait(classOf[SummaryTrait]).getSummary
-      operation.toBuilder.summary(summary)
+      val summary = shape.expectTrait(classOf[SummaryTrait]).getSummary
+      operation.toBuilder
+        .summary(summary)
         .build()
     } else {
       operation
