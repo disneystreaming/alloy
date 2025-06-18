@@ -49,3 +49,16 @@ list StringList {
   member: String
 }
 ```
+
+#### alloy.openapi#summary
+
+Openapi has a `summary` field for operations that provides a short description of what the operation does.
+The `alloy.openapi#summary` trait allows you to provide a short summary of an operation.
+
+```smithy
+@summary("This operation retrieves the current weather for a given city.")
+operation GetCurrentWeather {
+    input: GetCurrentWeatherInput,
+    output: GetCurrentWeatherOutput
+}
+```
