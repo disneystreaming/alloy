@@ -23,6 +23,7 @@ use alloy.common#hexColorCodeFormat
 use alloy.common#languageCodeFormat
 use alloy.common#languageTagFormat
 use alloy.openapi#openapiExtensions
+use alloy.openapi#summary
 use alloy.proto#grpc
 use alloy.proto#protoEnabled
 use alloy.proto#protoIndex
@@ -102,6 +103,7 @@ service MyGrpcService {
         name: "john"
     }
 }])
+@summary("Get the age of a person")
 @http(method: "GET", uri: "/age")
 operation GetAge {
     input := {
@@ -265,3 +267,4 @@ string MyYearMonth
 
 @monthDayFormat
 string MyMonthDay
+

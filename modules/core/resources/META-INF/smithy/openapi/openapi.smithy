@@ -6,6 +6,10 @@ namespace alloy.openapi
 /// as defined in https://swagger.io/docs/specification/openapi-extensions/.
 @trait
 map openapiExtensions {
-  key: String,
-  value: Document
+    key: String
+    value: Document
 }
+
+@trait(selector: "operation")
+@length(min: 1)
+string summary
