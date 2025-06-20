@@ -131,7 +131,7 @@ trait BaseCrossScalaModule
     with CrossScalaModule
     with BaseMimaModule
 
-object core extends BaseJavaModule {
+object core extends BaseJavaModule with BaseMimaModule {
   def ivyDeps = Agg(
     Deps.smithy.model
   )
