@@ -15,7 +15,6 @@ message EpochMillisTimestampValue {
   alloy.protobuf.EpochMillisTimestamp value = 1;
 }
 
-
 message DocumentValue {
   google.protobuf.Value value = 1;
 }
@@ -62,4 +61,48 @@ message SInt32Value {
 
 message SInt64Value {
   sint64 value = 1;
+}
+
+message LocalDateValue {
+  string value = 1;
+}
+
+message LocalTimeValue {
+  string value = 1;
+}
+
+message LocalDateTimeValue {
+  string value = 1;
+}
+
+message OffsetDateTimeValue {
+  string value = 1;
+}
+
+message OffsetTimeValue {
+  string value = 1;
+}
+
+message ZoneIdValue {
+  string value = 1;
+}
+
+message ZoneOffsetValue {
+  string value = 1;
+}
+
+message ZonedDateTimeValue {
+  string value = 1;
+}
+
+message YearValue {
+  uint32 value = 1;
+}
+
+message YearMonth {
+  string value = 1;
+}
+
+message MonthDay {
+  string value = 1;
 }

@@ -114,3 +114,31 @@ structure protoWrapped {}
     selector: ":test(string [trait|alloy#uuidFormat], member > string [trait|alloy#uuidFormat])"
 )
 structure protoCompactUUID {}
+
+// indicate that strings that have the @alloy#dateFormat applied or
+// referencing @alloy#LocalDate should use a proto message containing 3 ints for the year, month, day
+@trait(
+    selector: ":test(string [trait|alloy#dateFormat], member > string [trait|alloy#dateFormat])"
+)
+structure protoCompactLocalDate {}
+
+// indicate that strings that have the @alloy#yearMonthFormat applied or
+// referencing @alloy#YearMonth should use a proto message containing 2 ints for the year and month
+@trait(
+    selector: ":test(string [trait|alloy#yearMonthFormat], member > string [trait|alloy#yearMonthFormat])"
+)
+structure protoCompactYearMonth {}
+
+// indicate that strings that have the @alloy#monthDayFormat applied or
+// referencing @alloy#MonthDay should use a proto message containing 2 ints for the month and day
+@trait(
+    selector: ":test(string [trait|alloy#monthDayFormat], member > string [trait|alloy#monthDayFormat])"
+)
+structure protoCompactMonthDay {}
+
+// indicate that strings that have the @alloy#offsetDateTimeFormat applied or
+// referencing @alloy#OffsetDateTime should use a proto message containing 3 fields
+@trait(
+    selector: ":test(timestamp [trait|alloy#offsetDateTimeFormat], member > timestamp [trait|alloy#offsetDateTimeFormat])"
+)
+structure protoCompactOffsetDateTime {}

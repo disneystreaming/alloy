@@ -10,3 +10,52 @@ message CompactUUID {
 message EpochMillisTimestamp {
   int64 milliseconds = 1;
 }
+
+enum DayOfWeek {
+  DayOfWeek_UNSPECIFIED = 0;
+  DayOfWeek_MONDAY = 1;
+  DayOfWeek_TUESDAY = 2;
+  DayOfWeek_WEDNESDAY = 3;
+  DayOfWeek_THURSDAY = 4;
+  DayOfWeek_FRIDAY = 5;
+  DayOfWeek_SATURDAY = 6;
+  DayOfWeek_SUNDAY = 7;
+}
+
+enum Month {
+  Month_UNSPECIFIED = 0;
+  Month_JANUARY = 1;
+  Month_FEBRUARY = 2;
+  Month_MARCH = 3;
+  Month_APRIL = 4;
+  Month_MAY = 5;
+  Month_JUNE = 6;
+  Month_JULY = 7;
+  Month_AUGUST = 8;
+  Month_SEPTEMBER = 9;
+  Month_OCTOBER = 10;
+  Month_NOVEMBER = 11;
+  Month_DECEMBER = 12;
+}
+
+message CompactLocalDate {
+  uint32 year = 1;
+  uint32 month = 2;
+  uint32 day = 3;
+}
+
+message CompactYearMonth {
+  uint32 year = 1;
+  uint32 month = 2;
+}
+
+message CompactMonthDay {
+  uint32 month = 1;
+  uint32 day = 2;
+}
+
+message CompactOffsetDateTime {
+  int64 seconds = 1;
+  int32 nanos = 2;
+  string zone_offset = 3;
+}
