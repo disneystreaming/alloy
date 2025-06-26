@@ -131,7 +131,11 @@ structure ProtoStructTwo {
     @protoTimestampFormat("EPOCH_MILLIS")
     test: Timestamp
     @protoEnumFormat("STRING_VALUE")
-    enum: TestOpenEnum
+    enum: TestEnum
+}
+
+enum TestEnum {
+    A
 }
 
 @untagged

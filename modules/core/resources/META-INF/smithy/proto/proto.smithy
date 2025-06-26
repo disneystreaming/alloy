@@ -4,6 +4,7 @@ namespace alloy.proto
 
 use alloy#uncheckedExamples
 use alloy#uuidFormat
+use alloy#openEnum
 /// GRPC protocol as defined by https://grpc.io/
 
 @protocolDefinition(
@@ -61,7 +62,7 @@ enum protoTimestampFormat {
 /// ORDINAL indicates that the enum value should be encoded as an integer.
 /// STRING_VALUE indicates that the enum value should be encoded as the
 /// string value.
-@trait(selector: ":test(enum, member > enum)")
+@trait(selector: ":test(enum :not([trait|alloy#openEnum]), member > enum :not([trait|alloy#openEnum]))")
 enum protoEnumFormat {
   ORDINAL
   STRING_VALUE
