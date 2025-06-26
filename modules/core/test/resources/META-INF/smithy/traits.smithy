@@ -309,4 +309,11 @@ structure ProtoCompactStruct {
 
     @protoCompactOffsetDateTime
     offsetDateTime: OffsetDateTime
+
+    @protoCompactYearMonth
+    @yearMonthFormat 
+    yearMonth2: String
+
+    @protoCompactYearMonth
+    yearMonth3: MyYearMonth
 }
