@@ -32,6 +32,7 @@ alloy.openapi.SummaryTrait$Provider
 alloy.proto.GrpcTrait$Provider
 alloy.proto.ProtoCompactUUIDTrait$Provider
 alloy.proto.ProtoEnabledTrait$Provider
+alloy.proto.ProtoEnumFormatTrait$Provider
 alloy.proto.ProtoIndexTrait$Provider
 alloy.proto.ProtoInlinedOneOfTrait$Provider
 alloy.proto.ProtoNumTypeTrait$Provider

@@ -26,6 +26,7 @@ use alloy.openapi#openapiExtensions
 use alloy.openapi#summary
 use alloy.proto#grpc
 use alloy.proto#protoEnabled
+use alloy.proto#protoEnumFormat
 use alloy.proto#protoIndex
 use alloy.proto#protoInlinedOneOf
 use alloy.proto#protoNumType
@@ -129,6 +130,8 @@ structure ProtoStruct {
 structure ProtoStructTwo {
     @protoTimestampFormat("EPOCH_MILLIS")
     test: Timestamp
+    @protoEnumFormat("STRING_VALUE")
+    enum: TestOpenEnum
 }
 
 @untagged

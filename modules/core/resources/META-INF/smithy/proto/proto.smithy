@@ -13,6 +13,7 @@ use alloy#uuidFormat
         protoIndex
         protoNumType
         protoTimestampFormat
+        protoEnumFormat
         protoEnabled
         uncheckedExamples
     ]
@@ -47,10 +48,23 @@ enum protoNumType {
 /// PROTOBUF indicates that the default encoding should be used
 /// EPOCH_MILLIS indicates that an int64 should be used instead of the
 /// default encoding.
+/// RFC3339_STRING indicates that the timestamp should be encoded as a string
+/// using the format described in RFC3339 section 5.6.
 @trait(selector: ":test(timestamp, member > timestamp)")
 enum protoTimestampFormat {
   PROTOBUF
   EPOCH_MILLIS
+  RFC3339_STRING
+}
+
+/// Specifies how enumeration value should be encodeds in protobuf.
+/// ORDINAL indicates that the enum value should be encoded as an integer.
+/// STRING_VALUE indicates that the enum value should be encoded as the
+/// string value.
+@trait(selector: ":test(enum, member > enum)")
+enum protoEnumFormat {
+  ORDINAL
+  STRING_VALUE
 }
 
 /// Marks certain field indexes as unusable by the smithy
