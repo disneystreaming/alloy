@@ -22,7 +22,6 @@ import software.amazon.smithy.model.traits.StringTrait;
 public final class ProtoEnumFormatTrait extends StringTrait {
 	public static final String ORDINAL = "ORDINAL";
 	public static final String STRING_VALUE = "STRING_VALUE";
-	public static final String UNKNOWN = "UNKNOWN";
 
 	public static final ShapeId ID = ShapeId.from("alloy.proto#protoEnumFormat");
 
@@ -45,7 +44,7 @@ public final class ProtoEnumFormatTrait extends StringTrait {
 	}
 
 	public enum EnumFormat {
-		ORDINAL, STRING_VALUE, UNKNOWN;
+		ORDINAL, STRING_VALUE;
 
 		public static EnumFormat fromString(String value) {
 			for (EnumFormat format : values()) {
@@ -54,7 +53,7 @@ public final class ProtoEnumFormatTrait extends StringTrait {
 				}
 			}
 
-			return UNKNOWN;
+			throw new IllegalArgumentException("Unknown protoEnumFormat: " + value);
 		}
 	}
 }
