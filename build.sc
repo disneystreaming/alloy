@@ -131,7 +131,7 @@ trait BaseCrossScalaModule
     with CrossScalaModule
     with BaseMimaModule
 
-object core extends BaseJavaModule {
+object core extends BaseJavaModule with BaseMimaModule {
   def ivyDeps = Agg(
     Deps.smithy.model
   )
@@ -240,7 +240,7 @@ object Deps {
   }
 
   val scala = new {
-    val compat = ivy"org.scala-lang.modules::scala-collection-compat:2.12.0"
+    val compat = ivy"org.scala-lang.modules::scala-collection-compat:2.13.0"
   }
 
   val munit = new {
