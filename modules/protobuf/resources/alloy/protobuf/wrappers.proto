@@ -23,6 +23,22 @@ message CompactUUIDValue {
   alloy.protobuf.CompactUUID value = 1;
 }
 
+message CompactLocalDateValue {
+  alloy.protobuf.CompactLocalDate value = 1;
+}
+
+message CompactYearMonthValue {
+  alloy.protobuf.CompactYearMonth value = 1;
+}
+
+message CompactMonthDayValue {
+  alloy.protobuf.CompactMonthDay value = 1;
+}
+
+message CompactOffsetDateTimeValue {
+  alloy.protobuf.CompactOffsetDateTime value = 1;
+}
+
 message BigIntegerValue {
   string value = 1;
 }
