@@ -115,10 +115,10 @@ message YearValue {
   uint32 value = 1;
 }
 
-message YearMonth {
+message YearMonthValue {
   string value = 1;
 }
 
-message MonthDay {
+message MonthDayValue {
   string value = 1;
 }
