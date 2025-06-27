@@ -31,6 +31,10 @@ use alloy.proto#protoInlinedOneOf
 use alloy.proto#protoNumType
 use alloy.proto#protoTimestampFormat
 use alloy.proto#protoCompactUUID
+use alloy.proto#protoCompactLocalDate
+use alloy.proto#protoCompactYearMonth
+use alloy.proto#protoCompactMonthDay
+use alloy.proto#protoCompactOffsetDateTime
 use alloy.proto#protoWrapped
 use alloy.proto#protoReservedFields
 use alloy#localTimeFormat
@@ -42,9 +46,18 @@ use alloy#zonedDateTimeFormat
 use alloy#yearFormat
 use alloy#yearMonthFormat
 use alloy#monthDayFormat
+use alloy#UUID
+use alloy#LocalDate
+use alloy#YearMonth
+use alloy#MonthDay
+use alloy#OffsetDateTime
 
 @dateFormat
 string MyDate
+
+@dateFormat
+@protoCompactLocalDate
+string MyCompactDate
 
 @emailFormat
 @protoWrapped
@@ -64,7 +77,7 @@ string HexColorCode
 
 @uuidFormat
 @protoCompactUUID
-string ID
+string MyUUID
 
 structure SomeStruct {
     @defaultValue("a")
@@ -247,6 +260,11 @@ string MyLocalDateTime
 @timestampFormat("date-time")
 timestamp MyOffsetDateTime
 
+@offsetDateTimeFormat
+@timestampFormat("date-time")
+@protoCompactOffsetDateTime
+timestamp MyCompactOffsetDateTime
+
 @offsetTimeFormat
 string MyOffsetTime
 
@@ -265,6 +283,37 @@ integer MyYear
 @yearMonthFormat
 string MyYearMonth
 
+@yearMonthFormat
+@protoCompactYearMonth
+string MyCompactYearMonth
+
 @monthDayFormat
 string MyMonthDay
 
+@monthDayFormat
+@protoCompactMonthDay
+string MyCompactMonthDay
+
+structure ProtoCompactStruct {
+    @protoCompactUUID
+    uuid: UUID
+
+    @protoCompactLocalDate
+    localDate: LocalDate
+
+    @protoCompactYearMonth
+    yearMonth: YearMonth
+
+    @protoCompactMonthDay
+    monthDay: MonthDay
+
+    @protoCompactOffsetDateTime
+    offsetDateTime: OffsetDateTime
+
+    @protoCompactYearMonth
+    @yearMonthFormat 
+    yearMonth2: String
+
+    @protoCompactYearMonth
+    yearMonth3: MyYearMonth
+}

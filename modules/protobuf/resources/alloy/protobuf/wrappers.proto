@@ -15,13 +15,28 @@ message EpochMillisTimestampValue {
   alloy.protobuf.EpochMillisTimestamp value = 1;
 }
 
-
 message DocumentValue {
   google.protobuf.Value value = 1;
 }
 
 message CompactUUIDValue {
   alloy.protobuf.CompactUUID value = 1;
+}
+
+message CompactLocalDateValue {
+  alloy.protobuf.CompactLocalDate value = 1;
+}
+
+message CompactYearMonthValue {
+  alloy.protobuf.CompactYearMonth value = 1;
+}
+
+message CompactMonthDayValue {
+  alloy.protobuf.CompactMonthDay value = 1;
+}
+
+message CompactOffsetDateTimeValue {
+  alloy.protobuf.CompactOffsetDateTime value = 1;
 }
 
 message BigIntegerValue {
@@ -62,4 +77,48 @@ message SInt32Value {
 
 message SInt64Value {
   sint64 value = 1;
+}
+
+message LocalDateValue {
+  string value = 1;
+}
+
+message LocalTimeValue {
+  string value = 1;
+}
+
+message LocalDateTimeValue {
+  string value = 1;
+}
+
+message OffsetDateTimeValue {
+  string value = 1;
+}
+
+message OffsetTimeValue {
+  string value = 1;
+}
+
+message ZoneIdValue {
+  string value = 1;
+}
+
+message ZoneOffsetValue {
+  string value = 1;
+}
+
+message ZonedDateTimeValue {
+  string value = 1;
+}
+
+message YearValue {
+  uint32 value = 1;
+}
+
+message YearMonth {
+  string value = 1;
+}
+
+message MonthDay {
+  string value = 1;
 }

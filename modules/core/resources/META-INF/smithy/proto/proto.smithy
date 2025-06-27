@@ -111,6 +111,54 @@ structure protoWrapped {}
 // indicates that string abiding by @alloy#uuidFormat should
 // be encoded using a proto message containing 2 long values.
 @trait(
-    selector: ":test(string [trait|alloy#uuidFormat], member > string [trait|alloy#uuidFormat])"
+    selector: ":test(
+        string [trait|alloy#uuidFormat],
+        member > string [trait|alloy#uuidFormat],
+        member [trait|alloy#uuidFormat] > string
+    )"
 )
 structure protoCompactUUID {}
+
+// indicate that strings that have the @alloy#dateFormat applied or
+// referencing @alloy#LocalDate should use a proto message containing 3 ints for the year, month, day
+@trait(
+    selector: ":test(
+        string [trait|alloy#dateFormat],
+        member > string [trait|alloy#dateFormat],
+        member [trait|alloy#dateFormat] > string
+    )"
+)
+structure protoCompactLocalDate {}
+
+// indicate that strings that have the @alloy#yearMonthFormat applied or
+// referencing @alloy#YearMonth should use a proto message containing 2 ints for the year and month
+@trait(
+    selector: ":test(
+        string [trait|alloy#yearMonthFormat],
+        member > string [trait|alloy#yearMonthFormat],
+        member [trait|alloy#yearMonthFormat] > string
+    )"
+)
+structure protoCompactYearMonth {}
+
+// indicate that strings that have the @alloy#monthDayFormat applied or
+// referencing @alloy#MonthDay should use a proto message containing 2 ints for the month and day
+@trait(
+    selector: ":test(
+        string [trait|alloy#monthDayFormat],
+        member > string [trait|alloy#monthDayFormat],
+        member [trait|alloy#monthDayFormat] > string
+    )"
+)
+structure protoCompactMonthDay {}
+
+// indicate that strings that have the @alloy#offsetDateTimeFormat applied or
+// referencing @alloy#OffsetDateTime should use a proto message containing 3 fields
+@trait(
+    selector: ":test(
+        timestamp [trait|alloy#offsetDateTimeFormat],
+        member > timestamp [trait|alloy#offsetDateTimeFormat],
+        member [trait|alloy#offsetDateTimeFormat] > timestamp
+    )"
+)
+structure protoCompactOffsetDateTime {}

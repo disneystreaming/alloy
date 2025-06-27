@@ -31,6 +31,10 @@ alloy.openapi.OpenApiExtensionsTrait$Provider
 alloy.openapi.SummaryTrait$Provider
 alloy.proto.GrpcTrait$Provider
 alloy.proto.ProtoCompactUUIDTrait$Provider
+alloy.proto.ProtoCompactLocalDateTrait$Provider
+alloy.proto.ProtoCompactMonthDayTrait$Provider
+alloy.proto.ProtoCompactOffsetDateTimeTrait$Provider
+alloy.proto.ProtoCompactYearMonthTrait$Provider
 alloy.proto.ProtoEnabledTrait$Provider
 alloy.proto.ProtoIndexTrait$Provider
 alloy.proto.ProtoInlinedOneOfTrait$Provider
