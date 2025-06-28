@@ -28,6 +28,7 @@ import scala.jdk.CollectionConverters._
 final class OpenApiConversionSpec extends munit.FunSuite {
 
   test("OpenAPI conversion from alloy#simpleRestJson protocol") {
+    def runTest(version: OpenApiVersion, expectedFile: os.ResourcePath) = {
     val model = Model
       .assembler()
       .addImport(getClass().getClassLoader().getResource("foo.smithy"))
@@ -35,12 +36,16 @@ final class OpenApiConversionSpec extends munit.FunSuite {
       .assemble()
       .unwrap()
 
-    val result = convert(model, None)
+    val result = convertWithConfig(model, None, buildConfig = _ => {
+      val config = new OpenApiConfig()
+      config.setVersion(version)
+      config
+    })
       .map(_.contents)
       .mkString
       .filterNot(_.isWhitespace)
 
-    val expected = os.read(os.resource / "foo.json").filterNot(_.isWhitespace)
+    val expected = os.read(expectedFile).filterNot(_.isWhitespace)
 
     if (result != expected) {
       val tmp = os.pwd / "actual" / "foo.json"
@@ -54,6 +59,10 @@ final class OpenApiConversionSpec extends munit.FunSuite {
         s"Values are not the same. Wrote current output to $tmp for easier debugging."
       )
     }
+
+    }
+    runTest(OpenApiVersion.VERSION_3_0_2, os.resource / "foo.json")
+    runTest(OpenApiVersion.VERSION_3_1_0, os.resource / "foo_3.1.0.json")
   }
 
   test(
