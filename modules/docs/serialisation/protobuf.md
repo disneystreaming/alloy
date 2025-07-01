@@ -24,27 +24,30 @@ Below is a table describing how smithy shapes translate to proto constructs.
 Protobuf supports a number of [scalar types](https://developers.google.com/protocol-buffers/docs/proto3#scalar) that do not have first class support in smithy. In order to allow for expressing some of these in smithy, `alloy` provides a `alloy.proto#protoNumType` trait that can refine the meaning of `Integer` or `Long` types in protobuf semantics.
 
 
-| Smithy type          | @protoNumType | @protoTimestampFormat | Proto                                         |
-| -------------------- | ------------- | --------------------- | --------------------------------------------- |
-| boolean              | N/A           | N/A                   | bool                                          |
-| bigDecimal           | N/A           | N/A                   | string                                        |
-| bigInteger           | N/A           | N/A                   | string                                        |
-| blob                 | N/A           | N/A                   | bytes                                         |
-| double               | N/A           | N/A                   | double                                        |
-| float                | N/A           | N/A                   | float                                         |
-| string               | N/A           | N/A                   | string                                        |
-| integer, byte, short | N/A           | N/A                   | int32                                         |
-| integer, byte, short | FIXED         | N/A                   | fixed32                                       |
-| integer, byte, short | FIXED_SIGNED  | N/A                   | sfixed32                                      |
-| integer, byte, short | SIGNED        | N/A                   | sint32                                        |
-| integer, byte, short | UNSIGNED      | N/A                   | uint32                                        |
-| long                 | N/A           | N/A                   | int64                                         |
-| long                 | FIXED         | N/A                   | fixed64                                       |
-| long                 | FIXED_SIGNED  | N/A                   | sfixed64                                      |
-| long                 | SIGNED        | N/A                   | sint64                                        |
-| long                 | UNSIGNED      | N/A                   | uint64                                        |
-| timestamp            | N/A           | none or PROTOBUF      | message { long seconds = 1; long nanos = 2; } |
-| timestamp            | N/A           | EPOCH_MILLIS          | message { long milliseconds = 1;              |
+| Smithy type          | @protoNumType | @protoTimestampFormat | @protoEnumFromat | Proto                                         |
+| -------------------- | ------------- | --------------------- | ---------------- | --------------------------------------------- |
+| boolean              | N/A           | N/A                   | N/A              | bool                                          |
+| bigDecimal           | N/A           | N/A                   | N/A              | string                                        |
+| bigInteger           | N/A           | N/A                   | N/A              | string                                        |
+| blob                 | N/A           | N/A                   | N/A              | bytes                                         |
+| double               | N/A           | N/A                   | N/A              | double                                        |
+| float                | N/A           | N/A                   | N/A              | float                                         |
+| string               | N/A           | N/A                   | N/A              | string                                        |
+| integer, byte, short | N/A           | N/A                   | N/A              | int32                                         |
+| integer, byte, short | FIXED         | N/A                   | N/A              | fixed32                                       |
+| integer, byte, short | FIXED_SIGNED  | N/A                   | N/A              | sfixed32                                      |
+| integer, byte, short | SIGNED        | N/A                   | N/A              | sint32                                        |
+| integer, byte, short | UNSIGNED      | N/A                   | N/A              | uint32                                        |
+| long                 | N/A           | N/A                   | N/A              | int64                                         |
+| long                 | FIXED         | N/A                   | N/A              | fixed64                                       |
+| long                 | FIXED_SIGNED  | N/A                   | N/A              | sfixed64                                      |
+| long                 | SIGNED        | N/A                   | N/A              | sint64                                        |
+| long                 | UNSIGNED      | N/A                   | N/A              | uint64                                        |
+| timestamp            | N/A           | none or PROTOBUF      | N/A              | message { long seconds = 1; long nanos = 2; } |
+| timestamp            | N/A           | EPOCH_MILLIS          | N/A              | message { long milliseconds = 1; }            |
+| timestamp            | N/A           | RFC3339_STRING        | N/A              | string                                        |
+| enum                 | N/A           | N/A                   | none or ORDINAL  | int32                                         |
+| enum                 | N/A           | N/A                   | STRING_VALUE     | string                                        |
 
 #### alloy.proto#protoWrapped
 
@@ -103,7 +106,20 @@ See [here](https://protobuf.dev/programming-guides/proto3/#scalar) for documenta
 
 Timestamp shapes can be annotated with the `@alloy.proto#protoTimestampFormat` trait in order to signal what type of encoding should be used for timestamps in proto serialisation/deserialisation.
 
-Possible values are `PROTOBUF` and `EPOCH_MILLIS`. `PROTOBUF` is the default that is used in the absence of this trait. When `EPOCH_MILLIS` is specified then the timestamp will be represented as a wrapped `int64` in the corresponding proto definition.
+Possible values are `PROTOBUF`, `EPOCH_MILLIS` and `RFC3339_STRING`. `PROTOBUF` is the default that is used in the absence of this trait. When `EPOCH_MILLIS` is specified then the timestamp will be represented as a wrapped `int64` in the corresponding proto definition. When `RFC3339_STRING` is specified, the timestmap should be serialized as a `string` in the format described by [RFC3339 section 5.6](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6).
+
+#### alloy.protoEnumFormat
+
+Enum shapes can be annotated with the `@alloy.proto#protoEnumFormat` trait to indicate the encoding that should be used to serialize enumeration values in protobuf.
+
+Possible values are `ORDINAL` and `STRING_VALUE`. `ORDINAL` is the default encoding that will be use in the absence of the trait and means that enumeration values should be encoded using an `int32` reprensenting the index associated with each enumeration value. When `STRING_VALUE` is specified, enumeration values should be encoded as a `string` containing the value defined in the smithy specification. For instance, the `APPLE` value from the following definition will be serialized as the `apple` string.
+
+```
+@alloy.proto#protoEnumFormat("STRING_VALUE")
+enum Fruit {
+  APPLE = "apple"
+}
+```
 
 #### UUIDs
 
