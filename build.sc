@@ -59,7 +59,7 @@ trait BasePublishModule extends BaseModule with SonatypeCentralPublishModule {
 
   def pomSettings = PomSettings(
     description = "Common Smithy Shapes",
-    organization = "io.github.disneystreaming.alloy",
+    organization = "com.disneystreaming.alloy",
     url = "https://github.com/disneystreaming/alloy",
     licenses = Seq(
       License(
