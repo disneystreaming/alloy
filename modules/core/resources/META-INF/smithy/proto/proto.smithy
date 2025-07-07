@@ -58,6 +58,23 @@ enum protoTimestampFormat {
   RFC3339_STRING
 }
 
+/// Specifies which representation should be used when encoding an
+/// offsetDateTime timestamp
+/// PROTOBUF indicates that the timesamp should be encoded using
+/// message { int64 seconds = 1; int32 nanos = 2; string zone_offset = 3; }
+/// RFC3339_STRING indicates that the timestamp should be encoded as a string
+/// using the format described in RFC3339 section 5.6.
+@trait(
+    selector: ":test(
+        * [trait|alloy#offsetDateTimeFormat],
+        member > * [trait|alloy#offsetDateTimeFormat]
+    )"
+)
+enum protoOffsetDateTimeFormat {
+  PROTOBUF
+  RFC3339_STRING
+}
+
 /// Specifies how enumeration value should be encodeds in protobuf.
 /// ORDINAL indicates that the enum value should be encoded as an integer.
 /// STRING_VALUE indicates that the enum value should be encoded as the
@@ -166,14 +183,3 @@ structure protoCompactYearMonth {}
     )"
 )
 structure protoCompactMonthDay {}
-
-// indicate that strings that have the @alloy#offsetDateTimeFormat applied or
-// referencing @alloy#OffsetDateTime should use a proto message containing 3 fields
-@trait(
-    selector: ":test(
-        timestamp [trait|alloy#offsetDateTimeFormat],
-        member > timestamp [trait|alloy#offsetDateTimeFormat],
-        member [trait|alloy#offsetDateTimeFormat] > timestamp
-    )"
-)
-structure protoCompactOffsetDateTime {}
