@@ -25,6 +25,7 @@ import software.amazon.smithy.model.traits.StringTrait;
 public final class ProtoTimestampFormatTrait extends StringTrait {
 	public static final String PROTOBUF = "PROTOBUF";
 	public static final String EPOCH_MILLIS = "EPOCH_MILLIS";
+	public static final String RFC3339_STRING = "RFC3339_STRING";
 	public static final String UNKNOWN = "UNKNOWN";
 
 	public static final ShapeId ID = ShapeId.from("alloy.proto#protoTimestampFormat");
@@ -57,7 +58,7 @@ public final class ProtoTimestampFormatTrait extends StringTrait {
 	 * The known {@code protoTimestampFormat} values.
 	 */
 	public enum TimestampFormat {
-		PROTOBUF, EPOCH_MILLIS, UNKNOWN;
+		PROTOBUF, EPOCH_MILLIS, RFC3339_STRING, UNKNOWN;
 
 		/**
 		 * Create a {@code TimestampFormat} from a string that would appear in a model.
