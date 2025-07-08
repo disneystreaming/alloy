@@ -35,7 +35,7 @@ use alloy.proto#protoCompactUUID
 use alloy.proto#protoCompactLocalDate
 use alloy.proto#protoCompactYearMonth
 use alloy.proto#protoCompactMonthDay
-use alloy.proto#protoCompactOffsetDateTime
+use alloy.proto#protoOffsetDateTimeFormat
 use alloy.proto#protoWrapped
 use alloy.proto#protoReservedFields
 use alloy#localTimeFormat
@@ -269,7 +269,7 @@ timestamp MyOffsetDateTime
 
 @offsetDateTimeFormat
 @timestampFormat("date-time")
-@protoCompactOffsetDateTime
+@protoOffsetDateTimeFormat("PROTOBUF")
 timestamp MyCompactOffsetDateTime
 
 @offsetTimeFormat
@@ -314,11 +314,20 @@ structure ProtoCompactStruct {
     @protoCompactMonthDay
     monthDay: MonthDay
 
-    @protoCompactOffsetDateTime
+    @protoOffsetDateTimeFormat("PROTOBUF")
     offsetDateTime: OffsetDateTime
 
+    @protoOffsetDateTimeFormat("PROTOBUF")
+    @offsetDateTimeFormat
+    @timestampFormat("date-time")
+    OffsetDateTime2: Timestamp
+
+    @protoOffsetDateTimeFormat("PROTOBUF")
+    offsetDateTime3: MyOffsetDateTime
+
+
     @protoCompactYearMonth
-    @yearMonthFormat 
+    @yearMonthFormat
     yearMonth2: String
 
     @protoCompactYearMonth
