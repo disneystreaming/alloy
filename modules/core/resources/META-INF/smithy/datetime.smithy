@@ -146,3 +146,11 @@ structure monthDayFormat { }
 
 @monthDayFormat
 string MonthDay
+
+/// This trait indicates a bigDecimal that will represent a duration in seconds with the
+/// decimal portion going up to nanosecond precision
+@trait(selector: "bigDecimal")
+structure durationFormat {}
+
+@durationFormat
+bigDecimal Duration
