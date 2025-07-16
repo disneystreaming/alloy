@@ -156,8 +156,8 @@ string MonthDay
     member > bigDecimal [trait|range|min >= 0]
   )"
 )
-structure durationFormat {}
+structure durationSecondsFormat {}
 
-@durationFormat
+@durationSecondsFormat
 @range(min: 0)
 bigDecimal Duration
