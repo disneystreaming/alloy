@@ -149,8 +149,15 @@ string MonthDay
 
 /// This trait indicates a bigDecimal that will represent a duration in seconds with the
 /// decimal portion going up to nanosecond precision
-@trait(selector: "bigDecimal")
+@trait(
+  selector: ":test(
+    bigDecimal [trait|range|min >= 0],
+    member [trait|range|min >= 0] > bigDecimal,
+    member > bigDecimal [trait|range|min >= 0]
+  )"
+)
 structure durationFormat {}
 
 @durationFormat
+@range(min: 0)
 bigDecimal Duration
