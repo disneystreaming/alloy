@@ -2,6 +2,7 @@ alloy.DataExamplesTrait$Provider
 alloy.DateFormatTrait$Provider
 alloy.DefaultValueTrait$Provider
 alloy.DiscriminatedUnionTrait$Provider
+alloy.DurationSecondsFormat$Provider
 alloy.JsonUnknownTrait$Provider
 alloy.LocalDateTimeFormatTrait$Provider
 alloy.LocalTimeFormatTrait$Provider
