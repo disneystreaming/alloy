@@ -39,9 +39,12 @@ enum Month {
 }
 
 message CompactLocalDate {
-  uint32 year = 1;
-  uint32 month = 2;
-  uint32 day = 3;
+  int32 epochDay = 1;
+}
+
+message CompactLocalTime {
+  int32 seconds = 1;
+  int32 nanos = 2;
 }
 
 message CompactYearMonth {
