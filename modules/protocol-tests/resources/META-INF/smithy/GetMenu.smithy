@@ -11,14 +11,13 @@ apply GetMenu @httpRequestTests([
     {
         id: "GetMenuRequest"
         protocol: simpleRestJson
-        uri: "/restaurant/unclemikes/menu"
+        uri: "/restaurant/uncle%3Amikes/menu"
         method: "GET"
         params: {
-            restaurant: "unclemikes"
+            restaurant: "uncle:mikes"
         }
     }
 ])
-
 
 apply GetMenu @httpResponseTests([
     {
