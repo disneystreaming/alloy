@@ -62,3 +62,8 @@ message CompactOffsetDateTime {
   int32 nanos = 2;
   string zone_offset = 3;
 }
+
+message Duration {
+  int64 seconds = 1;
+  int32 nanos = 2;
+}

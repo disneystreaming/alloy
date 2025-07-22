@@ -2,7 +2,7 @@ alloy.DataExamplesTrait$Provider
 alloy.DateFormatTrait$Provider
 alloy.DefaultValueTrait$Provider
 alloy.DiscriminatedUnionTrait$Provider
-alloy.DurationSecondsFormat$Provider
+alloy.DurationSecondsFormatTrait$Provider
 alloy.JsonUnknownTrait$Provider
 alloy.LocalDateTimeFormatTrait$Provider
 alloy.LocalTimeFormatTrait$Provider
@@ -32,6 +32,7 @@ alloy.openapi.OpenApiExtensionsTrait$Provider
 alloy.openapi.SummaryTrait$Provider
 alloy.proto.GrpcTrait$Provider
 alloy.proto.ProtoCompactLocalDateTrait$Provider
+alloy.proto.ProtoCompactLocalTimeTrait$Provider
 alloy.proto.ProtoCompactMonthDayTrait$Provider
 alloy.proto.ProtoCompactUUIDTrait$Provider
 alloy.proto.ProtoCompactYearMonthTrait$Provider

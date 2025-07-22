@@ -126,3 +126,7 @@ message YearMonthValue {
 message MonthDayValue {
   string value = 1;
 }
+
+message DurationValue {
+  alloy.protobuf.Duration value = 1;
+}

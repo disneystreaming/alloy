@@ -19,16 +19,16 @@ import software.amazon.smithy.model.node.Node;
 import software.amazon.smithy.model.shapes.ShapeId;
 import software.amazon.smithy.model.traits.AnnotationTrait;
 
-public final class DurationSecondsFormat extends AnnotationTrait {
+public final class DurationSecondsFormatTrait extends AnnotationTrait {
 	public static ShapeId ID = ShapeId.from("alloy#durationSecondsFormat");
 
-	public DurationSecondsFormat() {
+	public DurationSecondsFormatTrait() {
 		super(ID, Node.objectNode());
 	}
 
-	public static final class Provider extends AnnotationTrait.Provider<DurationSecondsFormat> {
+	public static final class Provider extends AnnotationTrait.Provider<DurationSecondsFormatTrait> {
 		public Provider() {
-			super(ID, (node) -> new DurationSecondsFormat());
+			super(ID, (node) -> new DurationSecondsFormatTrait());
 		}
 	}
 }
