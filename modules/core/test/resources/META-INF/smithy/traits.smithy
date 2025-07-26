@@ -33,6 +33,7 @@ use alloy.proto#protoNumType
 use alloy.proto#protoTimestampFormat
 use alloy.proto#protoCompactUUID
 use alloy.proto#protoCompactLocalDate
+use alloy.proto#protoCompactLocalTime
 use alloy.proto#protoCompactYearMonth
 use alloy.proto#protoCompactMonthDay
 use alloy.proto#protoOffsetDateTimeFormat
@@ -259,6 +260,10 @@ map UnknownProps {
 
 @localTimeFormat
 string MyLocalTime
+
+@localTimeFormat
+@protoCompactLocalTime
+string MyCompactTime
 
 @localDateTimeFormat
 string MyLocalDateTime

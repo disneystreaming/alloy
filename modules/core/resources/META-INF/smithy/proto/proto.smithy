@@ -152,7 +152,7 @@ structure protoWrapped {}
 structure protoCompactUUID {}
 
 // indicate that strings that have the @alloy#dateFormat applied or
-// referencing @alloy#LocalDate should use a proto message containing 3 ints for the year, month, day
+// referencing @alloy#LocalDate should use a proto message containing a single int representing the epoch day
 @trait(
     selector: ":test(
         string [trait|alloy#dateFormat],
