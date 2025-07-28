@@ -14,6 +14,7 @@ use alloy#Year
 use alloy#YearMonth
 use alloy#MonthDay
 use alloy#simpleRestJson
+use alloy#Duration
 
 @simpleRestJson
 service DateTimeService {
@@ -40,4 +41,5 @@ structure Test {
   year: Year
   yearMonth: YearMonth
   monthDay: MonthDay
+  duration: Duration
 }

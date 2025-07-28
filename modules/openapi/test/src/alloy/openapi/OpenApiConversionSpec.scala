@@ -201,7 +201,8 @@ final class OpenApiConversionSpec extends munit.FunSuite {
       """"zonedDateTime":{"type":"string","x-format":"zoned-date-time"}""",
       """"year":{"type":"integer","format":"int32","x-format":"year"}""",
       """"yearMonth":{"type":"string","x-format":"year-month"}""",
-      """"monthDay":{"type":"string","x-format":"month-day"}"""
+      """"monthDay":{"type":"string","x-format":"month-day"}""",
+      """"duration":{"type":"number","x-format":"duration"}"""
     )
 
     expected.foreach { expected =>
