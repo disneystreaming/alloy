@@ -249,5 +249,5 @@ object Deps {
     val all = Agg(munit, scalaCheck)
   }
 
-  val oslib = ivy"com.lihaoyi::os-lib:0.11.4"
+  val oslib = ivy"com.lihaoyi::os-lib:0.11.5"
 }
