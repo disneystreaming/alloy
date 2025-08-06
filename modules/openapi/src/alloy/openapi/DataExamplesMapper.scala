@@ -43,12 +43,13 @@ class DataExamplesMapper() extends JsonSchemaMapper {
       .toList
     implicit val ordering: Ordering[OpenApiVersion] =
       Ordering.fromLessThan[OpenApiVersion]((a, b) => a.compareTo(b) < 0)
+    val configExtension = config.getExtensions(classOf[OpenApiConfigExtension])
     if (examples.isEmpty)
       schemaBuilder
     else
       config match {
         case openApiConfig: OpenApiConfig
-            if openApiConfig.getVersion >= OpenApiVersion.VERSION_3_1_0 =>
+            if openApiConfig.getVersion >= OpenApiVersion.VERSION_3_1_0 && configExtension.getEnableMultipleExamples =>
           putMultipleExamples(examples, schemaBuilder)
         case _ =>
           putSingleExample(examples.head, schemaBuilder)

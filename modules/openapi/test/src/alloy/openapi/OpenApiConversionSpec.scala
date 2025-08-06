@@ -39,6 +39,11 @@ final class OpenApiConversionSpec extends munit.FunSuite {
     val result = convertWithConfig(model, None, buildConfig = _ => {
       val config = new OpenApiConfig()
       config.setVersion(version)
+      if(version == OpenApiVersion.VERSION_3_1_0) config.putExtensions {
+        val ext = new OpenApiConfigExtension()
+        ext.setEnableMultipleExamples(true)
+        ext
+      }
       config
     })
       .map(_.contents)
