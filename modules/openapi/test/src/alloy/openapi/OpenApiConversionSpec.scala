@@ -61,7 +61,7 @@ final class OpenApiConversionSpec extends munit.FunSuite {
         createFolders = true
       )
 
-      val diffText = os.proc("diff", "-u", expectedFile.toString, tmp.toString).call().out.text()
+      val diffText = os.proc("diff", "-u", expectedFile.toString, tmp.toString).call(check = false).out.text()
 
       fail(
         s"Values are not the same. Wrote current output to $tmp for easier debugging. Diff:\n$diffText"
