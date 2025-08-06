@@ -56,12 +56,18 @@ final class OpenApiConversionSpec extends munit.FunSuite {
       val tmp = os.pwd / "actual" / "foo.json"
 
       os.write.over(
+        os.pwd / "expected" / "foo.json",
+        Node.prettyPrintJson(Node.parse(expected)),
+        createFolders = true
+      )
+
+      os.write.over(
         tmp,
         Node.prettyPrintJson(Node.parse(result)),
         createFolders = true
       )
 
-      val diffText = os.proc("diff", "-u", expectedFile.toString, tmp.toString).call(check = false).out.text()
+      val diffText = os.proc("diff", "-u", os.pwd / "expected" / "foo.json", tmp).call(check = false).out.text()
 
       fail(
         s"Values are not the same. Wrote current output to $tmp for easier debugging. Diff:\n$diffText"
