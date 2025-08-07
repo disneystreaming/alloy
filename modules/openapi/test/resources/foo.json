@@ -10,7 +10,7 @@
         "operationId": "GetUnion",
         "responses": {
           "200": {
-            "description": "GetUnion200response",
+            "description": "GetUnion 200 response",
             "content": {
               "application/json": {
                 "schema": {
@@ -20,7 +20,7 @@
             }
           },
           "500": {
-            "description": "GeneralServerError500response",
+            "description": "GeneralServerError 500 response",
             "content": {
               "application/json": {
                 "schema": {
@@ -36,7 +36,7 @@
       "get": {
         "summary": "A simple greeting operation",
         "externalDocs": {
-          "description": "APIHomepage2",
+          "description": "API Homepage 2",
           "url": "https://www.example2.com/"
         },
         "operationId": "Greet",
@@ -108,7 +108,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Greet200response",
+            "description": "Greet 200 response",
             "content": {
               "application/json": {
                 "schema": {
@@ -118,7 +118,7 @@
             }
           },
           "404": {
-            "description": "404Response",
+            "description": "404 Response",
             "headers": {
               "x-error-one": {
                 "schema": {
@@ -129,7 +129,7 @@
             }
           },
           "500": {
-            "description": "GeneralServerError500response",
+            "description": "GeneralServerError 500 response",
             "content": {
               "application/json": {
                 "schema": {
@@ -153,17 +153,17 @@
               "examples": {
                 "ONE": {
                   "value": {
-                    "in": "testinput"
+                    "in": "test input"
                   }
                 },
                 "THREE": {
                   "value": {
-                    "in": "testinputthree"
+                    "in": "test input three"
                   }
                 },
                 "TWO": {
                   "value": {
-                    "in": "testinputtwo"
+                    "in": "test input two"
                   }
                 }
               }
@@ -173,7 +173,7 @@
         },
         "responses": {
           "200": {
-            "description": "TestErrorsInExamples200response",
+            "description": "TestErrorsInExamples 200 response",
             "content": {
               "application/json": {
                 "schema": {
@@ -182,7 +182,7 @@
                 "examples": {
                   "ONE": {
                     "value": {
-                      "out": "testoutput"
+                      "out": "test output"
                     }
                   }
                 }
@@ -190,7 +190,7 @@
             }
           },
           "404": {
-            "description": "404Response",
+            "description": "404 Response",
             "headers": {
               "x-one": {
                 "schema": {
@@ -223,12 +223,12 @@
                 "examples": {
                   "THREE": {
                     "value": {
-                      "messageTwo": "Notfoundmessagetwo"
+                      "messageTwo": "Not found message two"
                     }
                   },
                   "TWO": {
                     "value": {
-                      "message": "Notfoundmessage"
+                      "message": "Not found message"
                     }
                   }
                 }
@@ -236,7 +236,7 @@
             }
           },
           "500": {
-            "description": "GeneralServerError500response",
+            "description": "GeneralServerError 500 response",
             "content": {
               "application/json": {
                 "schema": {
@@ -253,7 +253,7 @@
         "operationId": "GetValues",
         "responses": {
           "200": {
-            "description": "GetValues200response",
+            "description": "GetValues 200 response",
             "content": {
               "application/json": {
                 "schema": {
@@ -263,7 +263,7 @@
             }
           },
           "500": {
-            "description": "GeneralServerError500response",
+            "description": "GeneralServerError 500 response",
             "content": {
               "application/json": {
                 "schema": {
@@ -694,7 +694,7 @@
     }
   },
   "externalDocs": {
-    "description": "APIHomepage",
+    "description": "API Homepage",
     "url": "https://www.example.com/"
   }
 }

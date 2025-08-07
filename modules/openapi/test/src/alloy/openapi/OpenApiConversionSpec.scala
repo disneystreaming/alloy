@@ -17,13 +17,13 @@ package alloy.openapi
 
 import _root_.software.amazon.smithy.model.Model
 
-import scala.io.Source
-import scala.util.Using
 import software.amazon.smithy.model.node.Node
 import software.amazon.smithy.openapi.OpenApiConfig
 import software.amazon.smithy.openapi.OpenApiVersion
 
 import scala.jdk.CollectionConverters._
+import os.ResourcePath
+import munit.diff.Printer
 
 final class OpenApiConversionSpec extends munit.FunSuite {
 
@@ -37,23 +37,15 @@ final class OpenApiConversionSpec extends munit.FunSuite {
 
     val result = convert(model, None)
       .map(_.contents)
-      .mkString
-      .filterNot(_.isWhitespace)
+      .map(Node.parse)
+      .requireOnly
 
-    val expected = os.read(os.resource / "foo.json").filterNot(_.isWhitespace)
+    val expected = readAndParse(os.resource / "foo.json")
 
-    if (result != expected) {
-      val tmp = os.pwd / "actual" / "foo.json"
-
-      os.write.over(
-        tmp,
-        Node.prettyPrintJson(Node.parse(result)),
-        createFolders = true
-      )
-      fail(
-        s"Values are not the same. Wrote current output to $tmp for easier debugging."
-      )
-    }
+    assertEquals(
+      result,
+      expected
+    )
   }
 
   test(
@@ -69,13 +61,10 @@ final class OpenApiConversionSpec extends munit.FunSuite {
 
     val result = convert(model, Some(Set("bar")))
       .map(_.contents)
-      .mkString
-      .filterNot(_.isWhitespace)
+      .map(Node.parse)
+      .requireOnly
 
-    val expected = Using
-      .resource(Source.fromResource("bar.json"))(
-        _.getLines().mkString.filterNot(_.isWhitespace)
-      )
+    val expected = readAndParse(os.resource / "bar.json")
 
     assertEquals(result, expected)
   }
@@ -93,13 +82,10 @@ final class OpenApiConversionSpec extends munit.FunSuite {
 
     val result = convert(model, Some(Set("baz")))
       .map(_.contents)
-      .mkString
-      .filterNot(_.isWhitespace)
+      .map(Node.parse)
+      .requireOnly
 
-    val expected = Using
-      .resource(Source.fromResource("baz.json"))(
-        _.getLines().mkString.filterNot(_.isWhitespace)
-      )
+    val expected = readAndParse(os.resource / "baz.json")
 
     assertEquals(result, expected)
   }
@@ -114,13 +100,11 @@ final class OpenApiConversionSpec extends munit.FunSuite {
 
     val result = convert(model, None)
       .map(_.contents)
-      .mkString
-      .filterNot(_.isWhitespace)
+      .map(Node.parse)
+      .requireOnly
 
-    val expected = Using
-      .resource(Source.fromResource("baz.json"))(
-        _.getLines().mkString.filterNot(_.isWhitespace)
-      )
+    val expected = readAndParse(os.resource / "baz.json")
+
     assertEquals(result, expected)
   }
 
@@ -142,10 +126,19 @@ final class OpenApiConversionSpec extends munit.FunSuite {
       }
     )
       .map(_.contents)
-      .mkString
-      .filterNot(_.isWhitespace)
+      .map(Node.parse)
+      .requireOnly
 
-    assert(result.contains("\"openapi\":\"3.1.0"))
+    val resultOpenApiVersion =
+      result.expectObjectNode().expectStringMember("openapi").getValue()
+
+    assertEquals(resultOpenApiVersion, "3.1.0")
+  }
+
+  override def printer: Printer = super.printer.orElse {
+    Printer(Printer.defaultHeight) { case node: Node =>
+      Node.prettyPrintJson(node)
+    }
   }
 
   test("OpenAPI conversion with JSON manipulating config") {
@@ -159,24 +152,25 @@ final class OpenApiConversionSpec extends munit.FunSuite {
     val config = new OpenApiConfig()
     config.setJsonAdd(
       Map[String, Node](
-        "/info/title" -> Node.from("Customtitlegoeshere")
+        "/info/title" -> Node.from("Custom title goes here")
       ).asJava
     )
     config.setSubstitutions(
       Map[String, Node]("X-Bamtech-Partner" -> Node.from("X-Foo")).asJava
     )
 
-    val result = convertWithConfig(
-      model,
-      None,
-      _ => config
-    ).map(_.contents)
-      .mkString
-      .filterNot(_.isWhitespace)
+    val result =
+      convertWithConfig(
+        model,
+        None,
+        _ => config
+      ).map(_.contents)
+        .map(dropWhitespaceInJson)
+        .requireOnly
 
-    assert(result.contains("\"title\":\"Customtitlegoeshere\""))
-    assert(!result.contains("X-Bamtech-Partner"))
-    assert(result.contains("\"name\":\"X-Foo\""))
+    assert(clue(result).contains("\"title\":\"Custom title goes here\""))
+    assert(!clue(result).contains("X-Bamtech-Partner"))
+    assert(clue(result).contains("\"name\":\"X-Foo\""))
   }
 
   test("OpenAPI conversion of date time types") {
@@ -188,7 +182,10 @@ final class OpenApiConversionSpec extends munit.FunSuite {
       .unwrap()
 
     val result =
-      convert(model, None).map(_.contents).mkString.filterNot(_.isWhitespace)
+      convert(model, None)
+        .map(_.contents)
+        .map(dropWhitespaceInJson)
+        .requireOnly
 
     val expected = List(
       """"localDate":{"type":"string","x-format":"local-date"}""",
@@ -208,4 +205,20 @@ final class OpenApiConversionSpec extends munit.FunSuite {
       assert(result.contains(expected))
     }
   }
+
+  private def dropWhitespaceInJson(s: String): String =
+    Node.printJson(Node.parse(s))
+
+  private def readAndParse(path: ResourcePath) = Node.parse(os.read(path))
+
+  implicit class CollectionOnlyOps[T](private val coll: List[T]) {
+    def requireOnly: T = {
+      assert(
+        coll.size == 1,
+        s"Expected exactly 1 element, got ${coll.size}: $coll"
+      )
+      coll.head
+    }
+  }
+
 }
