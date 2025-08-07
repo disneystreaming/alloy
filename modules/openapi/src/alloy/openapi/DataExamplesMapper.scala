@@ -24,6 +24,9 @@ import scala.jdk.CollectionConverters._
 import alloy.DataExamplesTrait
 import software.amazon.smithy.model.node.ObjectNode
 import software.amazon.smithy.model.node.Node
+import software.amazon.smithy.openapi.OpenApiConfig
+import software.amazon.smithy.openapi.OpenApiVersion
+import scala.math.Ordering.Implicits._
 
 class DataExamplesMapper() extends JsonSchemaMapper {
 
@@ -32,25 +35,52 @@ class DataExamplesMapper() extends JsonSchemaMapper {
       schemaBuilder: Builder,
       config: JsonSchemaConfig
   ): Builder = if (shape.hasTrait(classOf[DataExamplesTrait])) {
-    shape
+    val examples = shape
       .getTrait(classOf[DataExamplesTrait])
       .get
       .getExamples()
       .asScala
-      .headOption match {
-      case Some(example)
-          if example.getExampleType != DataExamplesTrait.DataExampleType.STRING =>
-        schemaBuilder.putExtension("example", example.getContent())
-      case Some(example)
-          if example.getExampleType == DataExamplesTrait.DataExampleType.STRING =>
-        val maybeStrNode = example.getContent().asStringNode()
-        val res = if (maybeStrNode.isPresent) {
-          Node.parse(maybeStrNode.get.getValue)
-        } else {
-          ObjectNode.builder().build()
-        }
-        schemaBuilder.putExtension("example", res)
-      case _ => schemaBuilder
-    }
+      .toList
+    implicit val ordering: Ordering[OpenApiVersion] =
+      Ordering.fromLessThan[OpenApiVersion]((a, b) => a.compareTo(b) < 0)
+    val configExtension = config.getExtensions(classOf[OpenApiConfigExtension])
+    if (examples.isEmpty)
+      schemaBuilder
+    else
+      config match {
+        case openApiConfig: OpenApiConfig
+            if openApiConfig.getVersion >= OpenApiVersion.VERSION_3_1_0 && configExtension.getEnableMultipleExamples =>
+          putMultipleExamples(examples, schemaBuilder)
+        case _ =>
+          putSingleExample(examples.head, schemaBuilder)
+      }
   } else schemaBuilder
+
+  private def convertExample(example: DataExamplesTrait.DataExample) = {
+    if (example.getExampleType == DataExamplesTrait.DataExampleType.STRING) {
+      val maybeStrNode = example.getContent().asStringNode()
+      if (maybeStrNode.isPresent) {
+        Node.parse(maybeStrNode.get.getValue)
+      } else {
+        ObjectNode.builder().build()
+      }
+    } else {
+      example.getContent()
+    }
+  }
+
+  private def putSingleExample(
+      example: DataExamplesTrait.DataExample,
+      schemaBuilder: Builder
+  ) =
+    schemaBuilder.putExtension("example", convertExample(example))
+
+  private def putMultipleExamples(
+      examples: List[DataExamplesTrait.DataExample],
+      schemaBuilder: Builder
+  ) = {
+    val array = Node.arrayNode(examples.map(convertExample) *)
+    schemaBuilder.putExtension("examples", array)
+  }
+
 }
