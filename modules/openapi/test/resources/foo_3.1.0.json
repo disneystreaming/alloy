@@ -1,0 +1,712 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "HelloWorldService",
+        "version": "0.0.1"
+    },
+    "paths": {
+        "/default": {
+            "get": {
+                "operationId": "GetUnion",
+                "responses": {
+                    "200": {
+                        "description": "GetUnion 200 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetUnionResponseContent"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "GeneralServerError 500 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GeneralServerErrorResponseContent"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/hello/{name}/{ts}": {
+            "get": {
+                "summary": "A simple greeting operation",
+                "externalDocs": {
+                    "description": "API Homepage 2",
+                    "url": "https://www.example2.com/"
+                },
+                "operationId": "Greet",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    },
+                    {
+                        "name": "ts",
+                        "in": "path",
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        },
+                        "required": true
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "whenThree",
+                        "in": "header",
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "whenFour",
+                        "in": "header",
+                        "schema": {
+                            "type": "string",
+                            "format": "epoch-seconds"
+                        }
+                    },
+                    {
+                        "name": "X-Bamtech-Partner",
+                        "in": "header",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "when",
+                        "in": "header",
+                        "schema": {
+                            "type": "string",
+                            "format": "http-date"
+                        }
+                    },
+                    {
+                        "name": "whenAlso",
+                        "in": "header",
+                        "schema": {
+                            "type": "string",
+                            "format": "http-date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Greet 200 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GreetOutputPayload"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "404 Response",
+                        "headers": {
+                            "x-error-one": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "required": true
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "GeneralServerError 500 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GeneralServerErrorResponseContent"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/test_errors": {
+            "post": {
+                "operationId": "TestErrorsInExamples",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TestErrorsInExamplesRequestContent"
+                            },
+                            "examples": {
+                                "ONE": {
+                                    "value": {
+                                        "in": "test input"
+                                    }
+                                },
+                                "THREE": {
+                                    "value": {
+                                        "in": "test input three"
+                                    }
+                                },
+                                "TWO": {
+                                    "value": {
+                                        "in": "test input two"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "TestErrorsInExamples 200 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TestErrorsInExamplesResponseContent"
+                                },
+                                "examples": {
+                                    "ONE": {
+                                        "value": {
+                                            "out": "test output"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "404 Response",
+                        "headers": {
+                            "x-one": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "x-three": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "x-two": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "$ref": "#/components/schemas/NotFoundResponseContent"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/NotFoundTwoResponseContent"
+                                        }
+                                    ]
+                                },
+                                "examples": {
+                                    "THREE": {
+                                        "value": {
+                                            "messageTwo": "Not found message two"
+                                        }
+                                    },
+                                    "TWO": {
+                                        "value": {
+                                            "message": "Not found message"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "GeneralServerError 500 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GeneralServerErrorResponseContent"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/values": {
+            "get": {
+                "operationId": "GetValues",
+                "responses": {
+                    "200": {
+                        "description": "GetValues 200 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetValuesResponseContent"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "GeneralServerError 500 response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GeneralServerErrorResponseContent"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Cat": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "examples": [
+                    {
+                        "name": "Meow"
+                    },
+                    {
+                        "name": "Miau"
+                    }
+                ]
+            },
+            "CatOrDog": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/CatOrDogCat"
+                    },
+                    {
+                        "$ref": "#/components/schemas/CatOrDogDog"
+                    }
+                ],
+                "externalDocs": {
+                    "description": "Homepage",
+                    "url": "https://www.example.com/"
+                },
+                "discriminator": {
+                    "propertyName": "type",
+                    "mapping": {
+                        "cat": "#/components/schemas/CatOrDogCat",
+                        "dog": "#/components/schemas/CatOrDogDog"
+                    }
+                }
+            },
+            "CatOrDogCat": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Cat"
+                    },
+                    {
+                        "$ref": "#/components/schemas/CatOrDogMixin"
+                    }
+                ]
+            },
+            "CatOrDogDog": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Dog"
+                    },
+                    {
+                        "$ref": "#/components/schemas/CatOrDogMixin"
+                    }
+                ]
+            },
+            "CatOrDogMixin": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "type"
+                ]
+            },
+            "CatOrDogOpen": {
+                "oneOf": [
+                    {
+                        "type": "object",
+                        "title": "cat",
+                        "properties": {
+                            "cat": {
+                                "$ref": "#/components/schemas/Cat"
+                            }
+                        },
+                        "required": [
+                            "cat"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "title": "dog",
+                        "properties": {
+                            "dog": {
+                                "$ref": "#/components/schemas/Dog"
+                            }
+                        },
+                        "required": [
+                            "dog"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "title": "other"
+                    }
+                ]
+            },
+            "CatOrDogOpenDiscriminated": {
+                "oneOf": [
+                    {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/CatOrDogOpenDiscriminatedCat"
+                            },
+                            {
+                                "$ref": "#/components/schemas/CatOrDogOpenDiscriminatedDog"
+                            }
+                        ],
+                        "discriminator": {
+                            "propertyName": "type",
+                            "mapping": {
+                                "cat": "#/components/schemas/CatOrDogOpenDiscriminatedCat",
+                                "dog": "#/components/schemas/CatOrDogOpenDiscriminatedDog"
+                            }
+                        }
+                    },
+                    {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/CatOrDogOpenDiscriminatedMixin"
+                            },
+                            {
+                                "additionalProperties": true
+                            }
+                        ]
+                    }
+                ]
+            },
+            "CatOrDogOpenDiscriminatedCat": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Cat"
+                    },
+                    {
+                        "$ref": "#/components/schemas/CatOrDogOpenDiscriminatedMixin"
+                    }
+                ]
+            },
+            "CatOrDogOpenDiscriminatedDog": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Dog"
+                    },
+                    {
+                        "$ref": "#/components/schemas/CatOrDogOpenDiscriminatedMixin"
+                    }
+                ]
+            },
+            "CatOrDogOpenDiscriminatedMixin": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "type"
+                ]
+            },
+            "Dog": {
+                "type": "object",
+                "additionalProperties": true,
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "breed": {
+                        "type": "string"
+                    }
+                },
+                "examples": [
+                    {
+                        "name": "Woof"
+                    },
+                    {
+                        "name": "Hau hau"
+                    }
+                ]
+            },
+            "DoubleOrFloat": {
+                "oneOf": [
+                    {
+                        "type": "object",
+                        "title": "float",
+                        "properties": {
+                            "float": {
+                                "type": "number",
+                                "format": "float"
+                            }
+                        },
+                        "required": [
+                            "float"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "title": "double",
+                        "properties": {
+                            "double": {
+                                "type": "number",
+                                "format": "double"
+                            }
+                        },
+                        "required": [
+                            "double"
+                        ]
+                    }
+                ]
+            },
+            "GeneralServerErrorResponseContent": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    },
+                    "count": {
+                        "type": "integer",
+                        "format": "int32",
+                        "nullable": true
+                    }
+                }
+            },
+            "GetUnionResponseContent": {
+                "type": "object",
+                "properties": {
+                    "intOrString": {
+                        "$ref": "#/components/schemas/IntOrString"
+                    },
+                    "doubleOrFloat": {
+                        "$ref": "#/components/schemas/DoubleOrFloat"
+                    },
+                    "catOrDog": {
+                        "$ref": "#/components/schemas/CatOrDog"
+                    },
+                    "catOrDogOpen": {
+                        "$ref": "#/components/schemas/CatOrDogOpen"
+                    },
+                    "catOrDogOpenDiscriminated": {
+                        "$ref": "#/components/schemas/CatOrDogOpenDiscriminated"
+                    },
+                    "vehicle": {
+                        "$ref": "#/components/schemas/Vehicle"
+                    }
+                }
+            },
+            "GetValuesResponseContent": {
+                "type": "object",
+                "properties": {
+                    "values": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SomeValue"
+                        }
+                    }
+                },
+                "examples": [
+                    {
+                        "values": []
+                    }
+                ]
+            },
+            "GreetOutputPayload": {
+                "type": "string"
+            },
+            "IntOrString": {
+                "oneOf": [
+                    {
+                        "type": "object",
+                        "title": "int",
+                        "properties": {
+                            "int": {
+                                "type": "integer",
+                                "format": "int32"
+                            }
+                        },
+                        "required": [
+                            "int"
+                        ]
+                    },
+                    {
+                        "type": "object",
+                        "title": "string",
+                        "properties": {
+                            "string": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "string"
+                        ]
+                    }
+                ]
+            },
+            "NotFoundResponseContent": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "message"
+                ]
+            },
+            "NotFoundTwoResponseContent": {
+                "type": "object",
+                "properties": {
+                    "messageTwo": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "messageTwo"
+                ]
+            },
+            "SomeValue": {
+                "oneOf": [
+                    {
+                        "type": "string",
+                        "title": "message"
+                    },
+                    {
+                        "type": "integer",
+                        "title": "value",
+                        "format": "int32"
+                    }
+                ]
+            },
+            "TestErrorsInExamplesRequestContent": {
+                "type": "object",
+                "properties": {
+                    "in": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "in"
+                ]
+            },
+            "TestErrorsInExamplesResponseContent": {
+                "type": "object",
+                "properties": {
+                    "out": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "out"
+                ]
+            },
+            "Vehicle": {
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/VehicleCarCase"
+                    },
+                    {
+                        "$ref": "#/components/schemas/VehiclePlaneCase"
+                    }
+                ],
+                "discriminator": {
+                    "propertyName": "type",
+                    "mapping": {
+                        "car": "#/components/schemas/VehicleCarCase",
+                        "plane": "#/components/schemas/VehiclePlaneCase"
+                    }
+                }
+            },
+            "VehicleCar": {
+                "type": "object",
+                "properties": {
+                    "year": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "model": {
+                        "type": "string"
+                    },
+                    "make": {
+                        "type": "string"
+                    }
+                }
+            },
+            "VehicleCarCase": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/VehicleCar"
+                    },
+                    {
+                        "$ref": "#/components/schemas/VehicleMixin"
+                    }
+                ]
+            },
+            "VehicleMixin": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "type"
+                ]
+            },
+            "VehiclePlane": {
+                "type": "object",
+                "properties": {
+                    "model": {
+                        "type": "string"
+                    }
+                }
+            },
+            "VehiclePlaneCase": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/VehiclePlane"
+                    },
+                    {
+                        "$ref": "#/components/schemas/VehicleMixin"
+                    }
+                ]
+            }
+        }
+    },
+    "externalDocs": {
+        "description": "API Homepage",
+        "url": "https://www.example.com/"
+    }
+}

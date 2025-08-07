@@ -10,7 +10,7 @@
         "operationId": "BarOp",
         "responses": {
           "200": {
-            "description": "BarOp200response",
+            "description": "BarOp 200 response",
             "content": {
               "application/json": {
                 "schema": {
