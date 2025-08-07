@@ -49,6 +49,43 @@ final class OpenApiConversionSpec extends munit.FunSuite {
   }
 
   test(
+    "OpenAPI conversion from alloy#simpleRestJson protocol (3.1.0 with multiple examples)"
+  ) {
+    val model = Model
+      .assembler()
+      .addImport(getClass().getClassLoader().getResource("foo.smithy"))
+      .discoverModels()
+      .assemble()
+      .unwrap()
+
+    val result = convertWithConfig(
+      model,
+      None,
+      buildConfig = _ => {
+        val config = new OpenApiConfig()
+        config.setVersion(OpenApiVersion.VERSION_3_1_0)
+        config.putExtensions {
+          val ext = new OpenApiConfigExtension()
+          ext.setEnableMultipleExamples(true)
+          ext
+        }
+        config
+      }
+    )
+      .map(_.contents)
+      .map(Node.parse)
+      .requireOnly
+
+    val expected = readAndParse(os.resource / "foo_3.1.0.json")
+
+    assertEquals(
+      result,
+      expected,
+      "Values are not the same"
+    )
+  }
+
+  test(
     "OpenAPI conversion from alloy#simpleRestJson protocol with multiple namespaces"
   ) {
     val model = Model
