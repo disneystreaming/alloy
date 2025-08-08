@@ -27,6 +27,10 @@ message CompactLocalDateValue {
   alloy.protobuf.CompactLocalDate value = 1;
 }
 
+message CompactLocalTimeValue {
+  alloy.protobuf.CompactLocalTime value = 1;
+}
+
 message CompactYearMonthValue {
   alloy.protobuf.CompactYearMonth value = 1;
 }
@@ -121,4 +125,8 @@ message YearMonthValue {
 
 message MonthDayValue {
   string value = 1;
+}
+
+message DurationValue {
+  alloy.protobuf.Duration value = 1;
 }

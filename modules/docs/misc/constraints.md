@@ -268,3 +268,17 @@ structure Test {
 ```
 
 For convenience alloy provides the type `alloy#MonthDay` which is equivalent to an `String` annotated with the `monthDayFormat` trait.
+
+#### alloy#durationSecondsFormat
+
+This trait indicates that a `BigDecimal` contains a duration that is represented in seconds with the decimal portion providing nanosecond precision 
+
+Example: `86400.1` would represent a day with 1000000000 nanoseconds, or `.1` seconds
+
+```smithy
+
+structure Test {
+  @durationSecondsFormat
+  duration: BigDecimal
+}
+```
