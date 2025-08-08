@@ -121,9 +121,8 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
           .foreach(builder.requestBody)
         createResponses(context, bindingIndex, operation)
           .foreach { case (k, values) =>
-            combineResponseContent(values, k).foreach(v =>
-              builder.putResponse(k, v)
-            )
+            combineResponseContent(values, k)
+              .foreach(v => builder.putResponse(k, v))
           }
         Operation.create(method, uri, builder)
       })
@@ -134,8 +133,8 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
       statusCode: String
   ): Option[ResponseObject] = {
     responses match {
-      case Nil         => None
-      case head :: Nil => Some(head)
+      case Nil          => None
+      case head :: Nil  => Some(head)
       case head :: tail =>
         val all = head +: tail
         val mediaTypeObjects: List[MediaTypeObject] =
@@ -346,7 +345,7 @@ abstract class AlloyAbstractRestProtocol[T <: Trait]
       val visitor = new HeaderSchemaVisitor[T](context, startingSchema, member)
       val visitedSchema = target.accept(visitor)
       val schemaVerified = getHeaderTimestampFormat(context, member) match {
-        case None => visitedSchema
+        case None         => visitedSchema
         case Some(format) =>
           val copiedBuilder = ModelUtils.convertSchemaToStringBuilder(
             visitedSchema
