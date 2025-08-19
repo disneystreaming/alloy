@@ -31,6 +31,10 @@ namespace alloy
         alloy#untagged
         alloy#jsonUnknown
         alloy#openEnum
+        alloy#durationSecondsFormat
+        alloy#dateFormat
+        alloy#localTimeFormat
+        alloy#offsetDateTimeFormat
     ]
 )
 @trait(selector: "service")
