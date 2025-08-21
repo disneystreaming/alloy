@@ -10,7 +10,7 @@ use alloy#discriminated
 service PizzaAdminService {
     version: "1.0.0",
     errors: [GenericServerError, GenericClientError],
-    operations: [AddMenuItem, GetMenu, Version, Health, HeaderEndpoint, RoundTrip, GetEnum, GetIntEnum, CustomCode, HttpPayloadWithDefault, HttpPayloadRequiredWithDefault, OpenUnions]
+    operations: [AddMenuItem, GetMenu, Version, Health, HeaderEndpoint, RoundTrip, GetEnum, GetIntEnum, CustomCode, HttpPayloadWithDefault, HttpPayloadRequiredWithDefault, OpenUnions, Primitives]
 }
 
 @http(method: "POST", uri: "/restaurant/{restaurant}/menu/item", code: 201)
@@ -361,4 +361,23 @@ union OpenDiscriminatedUnion {
 
 structure SmallStruct {
     @required content: String
+}
+
+@http(uri: "/primitive/encoding", method: "POST", code: 200)
+operation Primitives {
+    input: PrimitiveEncodings
+    output: PrimitiveEncodings
+}
+
+structure PrimitiveEncodings {
+    @required
+    uuid: alloy#UUID
+    @required
+    localDate: alloy#LocalDate
+    @required
+    localTime: alloy#LocalTime
+    @required
+    duration: alloy#Duration
+    @required
+    offsetDateTime: alloy#OffsetDateTime
 }

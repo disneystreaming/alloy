@@ -6,6 +6,7 @@ GetMenu.smithy
 HeaderEndpoint.smithy
 Health.smithy
 Pizza.smithy
+Primitives.smithy
 RoundTrip.smithy
 Version.smithy
 HttpPayloadWithDefault.smithy
