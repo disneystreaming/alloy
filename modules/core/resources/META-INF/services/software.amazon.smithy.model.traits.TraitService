@@ -11,6 +11,7 @@ alloy.NullableTrait$Provider
 alloy.OffsetDateTimeFormatTrait$Provider
 alloy.OffsetTimeFormatTrait$Provider
 alloy.OpenEnumTrait$Provider
+alloy.PreserveKeyOrderTrait$Provider
 alloy.SimpleRestJsonTrait$Provider
 alloy.StructurePatternTrait$Provider
 alloy.UncheckedExamplesTrait$Provider
