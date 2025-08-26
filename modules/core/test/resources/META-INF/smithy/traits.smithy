@@ -53,6 +53,7 @@ use alloy#LocalDate
 use alloy#YearMonth
 use alloy#MonthDay
 use alloy#OffsetDateTime
+use alloy#preserveKeyOrder
 
 @dateFormat
 string MyDate
@@ -256,6 +257,12 @@ structure TestJsonUnknown {
 map UnknownProps {
     key: String
     value: Document
+}
+
+@preserveKeyOrder
+map TestOrderedMap {
+    key: String
+    value: String
 }
 
 @localTimeFormat
