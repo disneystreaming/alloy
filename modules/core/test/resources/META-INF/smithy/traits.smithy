@@ -260,9 +260,19 @@ map UnknownProps {
 }
 
 @preserveKeyOrder
+document MyDocument
+
+@preserveKeyOrder
 map TestOrderedMap {
     key: String
     value: String
+}
+
+structure StructureWithOrderedMapMember {
+    @preserveKeyOrder
+    foo: UnknownProps
+    @preserveKeyOrder
+    bar: Document
 }
 
 @localTimeFormat

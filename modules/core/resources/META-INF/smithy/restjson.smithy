@@ -35,6 +35,7 @@ namespace alloy
         alloy#dateFormat
         alloy#localTimeFormat
         alloy#offsetDateTimeFormat
+        alloy#preserveKeyOrder
     ]
 )
 @trait(selector: "service")

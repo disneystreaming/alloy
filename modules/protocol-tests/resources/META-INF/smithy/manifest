@@ -12,5 +12,6 @@ Version.smithy
 HttpPayloadWithDefault.smithy
 test-config.json
 OpenUnions.smithy
+PreserveKeyOrder.smithy
 routing/Routing.smithy
 routing/RoutingSpec.smithy
