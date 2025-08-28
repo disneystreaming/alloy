@@ -86,7 +86,7 @@ package object openapi {
       model.getServiceShapes().asScala.toSet[Shape]
 
     val filteredServices = allowedNS match {
-      case None => serviceShapes
+      case None             => serviceShapes
       case Some(namespaces) =>
         serviceShapes.filter(s => namespaces.contains(s.getId.getNamespace()))
     }
