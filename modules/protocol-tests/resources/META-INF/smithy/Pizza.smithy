@@ -5,12 +5,13 @@ namespace alloy.test
 use alloy#simpleRestJson
 use alloy#jsonUnknown
 use alloy#discriminated
+use alloy#preserveKeyOrder
 
 @simpleRestJson
 service PizzaAdminService {
     version: "1.0.0",
     errors: [GenericServerError, GenericClientError],
-    operations: [AddMenuItem, GetMenu, Version, Health, HeaderEndpoint, RoundTrip, GetEnum, GetIntEnum, CustomCode, HttpPayloadWithDefault, HttpPayloadRequiredWithDefault, OpenUnions, Primitives]
+    operations: [AddMenuItem, GetMenu, Version, Health, HeaderEndpoint, RoundTrip, GetEnum, GetIntEnum, CustomCode, HttpPayloadWithDefault, HttpPayloadRequiredWithDefault, OpenUnions, Primitives, PreserveOrder]
 }
 
 @http(method: "POST", uri: "/restaurant/{restaurant}/menu/item", code: 201)
@@ -380,4 +381,22 @@ structure PrimitiveEncodings {
     duration: alloy#Duration
     @required
     offsetDateTime: alloy#OffsetDateTime
+}
+
+@preserveKeyOrder
+map MyMap {
+    key: String,
+    value: Integer
+}
+
+@http(uri: "/preserveKeyOrder", method: "POST", code: 200)
+operation PreserveOrder {
+    input: PreserveOrderStruct
+    output: PreserveOrderStruct
+}
+
+structure PreserveOrderStruct {
+    map: MyMap
+    @preserveKeyOrder
+    document: Document
 }
