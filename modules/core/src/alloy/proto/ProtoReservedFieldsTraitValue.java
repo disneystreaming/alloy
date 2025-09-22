@@ -18,6 +18,9 @@ package alloy.proto;
 import software.amazon.smithy.model.node.*;
 import software.amazon.smithy.utils.SmithyBuilder;
 
+import java.util.stream.Stream;
+import java.util.Objects;
+
 public final class ProtoReservedFieldsTraitValue {
 
 	public static final String NUMBER = "number";
@@ -29,6 +32,13 @@ public final class ProtoReservedFieldsTraitValue {
 	public final Range range;
 
 	public ProtoReservedFieldsTraitValue(Builder builder) {
+		if (Stream.of(
+					builder.number,
+					builder.name,
+					builder.range
+				).filter(Objects::nonNull).count() != 1) {
+			throw new IllegalArgumentException("ProtoReservedFieldsTraitValue must be of exactly one type");
+		}
 		this.number = builder.number;
 		this.name = builder.name;
 		this.range = builder.range;
