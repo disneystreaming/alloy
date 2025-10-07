@@ -167,7 +167,7 @@ object core extends BaseJavaModule with BaseMimaModule {
 
 object protobuf extends BaseJavaModule {}
 
-val scala213 = "2.13.16"
+val scala213 = "2.13.17"
 val scalaVersionsMap =
   Map("2.13" -> scala213, "2.12" -> "2.12.20", "3" -> "3.3.6")
 object openapi extends Cross[OpenapiModule](scalaVersionsMap.keys.toList)
