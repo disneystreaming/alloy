@@ -67,6 +67,7 @@ final class OpenApiConversionSpec extends munit.FunSuite {
         config.putExtensions {
           val ext = new OpenApiConfigExtension()
           ext.setEnableMultipleExamples(true)
+          ext.setEnableOpenEnumsExtension(true)
           ext
         }
         config

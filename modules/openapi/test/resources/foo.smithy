@@ -21,6 +21,7 @@ service HelloWorldService {
         Greet
         GetUnion
         GetValues
+        GetEnums
         TestErrorsInExamples
     ]
 }
@@ -130,6 +131,40 @@ operation GetUnion {
 operation GetValues {
     output: ValuesResponse
 }
+
+@readonly
+@http(method: "GET", uri: "/enum")
+operation GetEnums {
+    output := {
+        closedString: ClosedStringEnum
+        openString: OpenStringEnum
+        closedInt: ClosedIntEnum
+        openInt: OpenIntEnum
+    }
+}
+
+enum ClosedStringEnum {
+    FOO = "foo",
+    BAR = "bar"
+}
+
+@alloy#openEnum
+enum OpenStringEnum {
+    BAZ = "baz",
+    QUX = "qux"
+}
+
+intEnum ClosedIntEnum {
+    FOO = 1,
+    BAR = 2
+}
+
+@alloy#openEnum
+intEnum OpenIntEnum {
+    BAZ = 3,
+    QUX = 4
+}
+
 
 structure Person {
     @httpLabel

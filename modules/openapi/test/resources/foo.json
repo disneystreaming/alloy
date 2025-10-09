@@ -32,6 +32,33 @@
         }
       }
     },
+    "/enum": {
+      "get": {
+        "operationId": "GetEnums",
+        "responses": {
+          "200": {
+            "description": "GetEnums 200 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetEnumsResponseContent"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "GeneralServerError 500 response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GeneralServerErrorResponseContent"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/hello/{name}/{ts}": {
       "get": {
         "summary": "A simple greeting operation",
@@ -436,6 +463,21 @@
           "type"
         ]
       },
+      "ClosedIntEnum": {
+        "type": "integer",
+        "format": "int32",
+        "enum": [
+          1,
+          2
+        ]
+      },
+      "ClosedStringEnum": {
+        "type": "string",
+        "enum": [
+          "foo",
+          "bar"
+        ]
+      },
       "Dog": {
         "type": "object",
         "additionalProperties": true,
@@ -491,6 +533,23 @@
             "type": "integer",
             "format": "int32",
             "nullable": true
+          }
+        }
+      },
+      "GetEnumsResponseContent": {
+        "type": "object",
+        "properties": {
+          "closedString": {
+            "$ref": "#/components/schemas/ClosedStringEnum"
+          },
+          "openString": {
+            "$ref": "#/components/schemas/OpenStringEnum"
+          },
+          "closedInt": {
+            "$ref": "#/components/schemas/ClosedIntEnum"
+          },
+          "openInt": {
+            "$ref": "#/components/schemas/OpenIntEnum"
           }
         }
       },
@@ -583,6 +642,21 @@
         },
         "required": [
           "messageTwo"
+        ]
+      },
+      "OpenIntEnum": {
+        "type": "integer",
+        "format": "int32",
+        "enum": [
+          3,
+          4
+        ]
+      },
+      "OpenStringEnum": {
+        "type": "string",
+        "enum": [
+          "baz",
+          "qux"
         ]
       },
       "SomeValue": {
