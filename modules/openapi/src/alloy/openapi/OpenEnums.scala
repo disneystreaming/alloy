@@ -20,7 +20,6 @@ import _root_.software.amazon.smithy.jsonschema.Schema.Builder
 import _root_.software.amazon.smithy.model.shapes.Shape
 import alloy.OpenEnumTrait
 import software.amazon.smithy.model.node.ArrayNode
-import scala.jdk.OptionConverters.*
 import scala.jdk.CollectionConverters.*
 import software.amazon.smithy.model.shapes.EnumShape
 import software.amazon.smithy.model.shapes.IntEnumShape
