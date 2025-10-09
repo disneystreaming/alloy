@@ -23,6 +23,7 @@ import software.amazon.smithy.model.node.ArrayNode
 import scala.jdk.CollectionConverters.*
 import software.amazon.smithy.model.shapes.EnumShape
 import software.amazon.smithy.model.shapes.IntEnumShape
+import software.amazon.smithy.model.node.Node
 
 class OpenEnums() extends JsonSchemaMapper {
 
@@ -39,22 +40,10 @@ class OpenEnums() extends JsonSchemaMapper {
     val extensibleEnumValues = shape match {
       case stringEnum: EnumShape if isOpen =>
         val values = stringEnum.getEnumValues().asScala.values
-        Some(
-          values
-            .foldLeft(ArrayNode.builder()) { case (arr, elem) =>
-              arr.withValue(elem)
-            }
-            .build()
-        )
+        Some(Node.arrayNode(values.map(Node.from(_)).toList: _*))
       case intEnum: IntEnumShape if isOpen =>
         val values = intEnum.getEnumValues().asScala.values
-        Some(
-          values
-            .foldLeft(ArrayNode.builder()) { case (arr, elem) =>
-              arr.withValue(elem)
-            }
-            .build()
-        )
+        Some(Node.arrayNode(values.map(Node.from(_)).toList: _*))
       case _ => None
     }
 
