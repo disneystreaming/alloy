@@ -49,7 +49,7 @@ final class OpenApiConversionSpec extends munit.FunSuite {
   }
 
   test(
-    "OpenAPI conversion from alloy#simpleRestJson protocol (3.1.0 with multiple examples)"
+    "OpenAPI conversion from alloy#simpleRestJson protocol (3.1.0 with optional feature flags)"
   ) {
     val model = Model
       .assembler()
