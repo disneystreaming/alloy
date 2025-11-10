@@ -4,6 +4,7 @@ namespace alloy.openapi
 
 /// This traits allows the encoding of OpenAPI Extensions
 /// as defined in https://swagger.io/docs/specification/openapi-extensions/.
+@sparse // to be able to handle `null` values
 @trait
 map openapiExtensions {
     key: String
