@@ -225,7 +225,7 @@ object docs extends BasePublishModule {
 
 object Deps {
   val smithy = new {
-    val smithyVersion = "1.63.0"
+    val smithyVersion = "1.64.0"
     val model = ivy"software.amazon.smithy:smithy-model:$smithyVersion"
     val awsTraits = ivy"software.amazon.smithy:smithy-aws-traits:$smithyVersion"
     val awsProtocolTestTraits =
