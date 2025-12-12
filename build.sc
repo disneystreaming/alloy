@@ -169,7 +169,7 @@ object protobuf extends BaseJavaModule {}
 
 val scala213 = "2.13.16"
 val scalaVersionsMap =
-  Map("2.13" -> scala213, "2.12" -> "2.12.20", "3" -> "3.3.7")
+  Map("2.13" -> scala213, "2.12" -> "2.12.21", "3" -> "3.3.7")
 object openapi extends Cross[OpenapiModule](scalaVersionsMap.keys.toList)
 trait OpenapiModule extends BaseCrossScalaModule {
   val crossVersion = crossValue
