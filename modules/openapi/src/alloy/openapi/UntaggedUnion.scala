@@ -24,7 +24,6 @@ import alloy.UntaggedUnionTrait
 import scala.jdk.CollectionConverters._
 
 class UntaggedUnions() extends JsonSchemaMapper {
-  private final val COMPONENTS = "components"
 
   override def updateSchema(
       shape: Shape,

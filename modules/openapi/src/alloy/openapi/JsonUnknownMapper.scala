@@ -27,7 +27,6 @@ import alloy.DiscriminatedUnionTrait
 import software.amazon.smithy.jsonschema.Schema
 
 class JsonUnknownMapper() extends JsonSchemaMapper {
-  private final val ADDITIONAL_PROPERTIES = "additionalProperties"
 
   override def updateSchema(
       context: JsonSchemaMapperContext,
