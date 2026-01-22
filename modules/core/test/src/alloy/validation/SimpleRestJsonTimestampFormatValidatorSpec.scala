@@ -94,7 +94,7 @@ final class SimpleRestJsonTimestampFormatValidatorSpec extends munit.FunSuite {
         )
         .build()
     )
-    assertEquals(result, expected)
+    assertEquals(result.sortBy(_.toString), expected.sortBy(_.toString))
   }
 
   test(
