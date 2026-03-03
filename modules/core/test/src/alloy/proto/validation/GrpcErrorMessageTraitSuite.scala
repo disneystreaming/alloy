@@ -75,7 +75,6 @@ class GrpcErrorMessageTraitSuite extends FunSuite {
          |}
          |""".stripMargin
 
-
     def normalize(e: ValidationEvent): ValidationEvent =
       e.toBuilder.sourceLocation(SourceLocation.NONE).build()
 
