@@ -32,5 +32,8 @@ structure grpcError {
     message: String
 }
 
-@trait(selector: "structure[trait|alloy.proto#grpcError] > member :test(> string)")
+@trait(
+    selector: "structure[trait|alloy.proto#grpcError] > member :test(> string)"
+    structurallyExclusive: "member"
+)
 structure grpcErrorMessage {}

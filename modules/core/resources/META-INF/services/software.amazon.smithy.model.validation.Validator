@@ -1,6 +1,5 @@
 alloy.proto.validation.GrpcTraitValidator
 alloy.proto.validation.GrpcErrorTraitValidator
-alloy.proto.validation.GrpcErrorMessageTraitValidator
 alloy.proto.validation.ProtoIndexTraitValidator
 alloy.proto.validation.ProtoInlinedOneOfValidator
 alloy.proto.validation.ProtoReservedFieldsTraitValidator
