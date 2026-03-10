@@ -2,7 +2,7 @@
 
 The constraints described in this document are meant to extend the set of constraints and behavioural traits provided by the smithy standard library (such as `smithy.api#pattern` or `smithy.api#length`).
 
-Users defining new protocols/tools MAY use to implement support for these traits. In particular, [smithy-translate](https://github.com/disneystreaming/smithy-translate) makes use of these traits to capture in smithy some semantics described in openapi.
+Users defining new protocols/tools MAY choose to implement support for these traits. In particular, [smithy-translate](https://github.com/disneystreaming/smithy-translate) makes use of these traits to capture in smithy some semantics described in openapi.
 
 #### alloy#nullable
 
