@@ -54,7 +54,6 @@ jobs:
       - name: Publish ${{ github.ref }}
         if: startsWith(github.ref, 'refs/tags/v') ||
           (github.event_name == 'workflow_dispatch' && github.event.inputs.publishSnapshot == 'true')
-        # TODO: IS THIS CORRECT WITHOUT THE PGP PASSPHRASE?
         run: ./mill -k --ticker false mill.javalib.SonatypeCentralPublishModule/
         env:
           MILL_PGP_SECRET_BASE64: ${{ secrets.PGP_SECRET }}
