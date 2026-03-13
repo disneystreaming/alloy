@@ -1,27 +1,17 @@
-import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.4.1`
-import de.tobiasroeser.mill.vcs.version.VcsVersion
-import $ivy.`io.github.davidgregory084::mill-tpolecat::0.3.5`
-import $ivy.`com.lewisjkl::header-mill-plugin::0.0.4`
-import header._
-import $ivy.`com.lihaoyi::mill-contrib-sonatypecentral:`
-import mill.contrib.sonatypecentral.SonatypeCentralPublishModule
-import io.github.davidgregory084.TpolecatModule
-import $ivy.`com.github.lolgab::mill-mima::0.1.1`
-import com.github.lolgab.mill.mima._
+//| mvnDeps:
+//|   - "com.github.lolgab::mill-mima::0.2.1"
+//|   - "com.lewisjkl::header-mill-plugin::0.1.0"
 
+package build
+
+import mill.*, scalalib.*, scalalib.publish.*
 import mill.scalalib.scalafmt.ScalafmtModule
-import mill._
-import mill.modules.Jvm
-import mill.scalalib._
-import mill.scalalib.publish._
-import mill.define.ExternalModule
-import mill.eval.Evaluator
-import $ivy.`de.tototec::de.tobiasroeser.mill.vcs.version::0.4.1`
-import de.tobiasroeser.mill.vcs.version.VcsVersion
+import com.github.lolgab.mill.mima.*
+import header.*
 
 trait BaseModule extends Module with HeaderModule {
-  def millSourcePath: os.Path = {
-    val originalPath = super.millSourcePath
+  def moduleDir: os.Path = {
+    val originalPath = super.moduleDir
     (originalPath / os.up) / "modules" / originalPath.last
   }
 
@@ -43,19 +33,22 @@ trait BaseModule extends Module with HeaderModule {
 }
 
 trait BaseMunitTests extends TestModule.Munit {
-  def ivyDeps = Deps.munit.all
+  def mvnDeps = Deps.munit.all
 }
 
-trait BasePublishModule extends BaseModule with SonatypeCentralPublishModule {
+trait BasePublishModule
+    extends BaseModule
+    with PublishModule
+    with mill.util.VcsVersion {
 
-  override def publishVersion: T[String] = T {
-    if (isCI()) VcsVersion.vcsState().format() else "dev-SNAPSHOT"
+  override def publishVersion = Task {
+    if (isCI()) vcsState().format() else "dev-SNAPSHOT"
   }
 
-  def isCI = T.input(T.ctx().env.contains("CI"))
+  def isCI = Task.Input { Task.ctx().env.contains("CI") }
 
   def artifactName =
-    s"alloy-${millModuleSegments.parts.mkString("-")}"
+    s"alloy-${moduleSegments.parts.mkString("-")}"
 
   def pomSettings = PomSettings(
     description = "Common Smithy Shapes",
@@ -78,7 +71,7 @@ trait BasePublishModule extends BaseModule with SonatypeCentralPublishModule {
     )
   )
 
-  override def javacOptions = T {
+  override def javacOptions = Task {
     super.javacOptions() ++ Seq(
       "--release",
       "8"
@@ -90,15 +83,17 @@ trait BaseJavaModule extends JavaModule with BasePublishModule
 
 trait BaseScalaNoPublishModule
     extends ScalaModule
-    with ScalafmtModule
-    with TpolecatModule {
-  def scalaVersion = T.input(scala213)
+    with ScalafmtModule {
+  def scalaVersion = scala213
+  override def scalacOptions = Task {
+    getScalaOptions(scalaVersion())
+  }
 }
 
 trait BaseMimaModule extends BasePublishModule with Mima {
   def mimaPreviousVersions = Seq("0.2.0")
 
-  override def mimaPreviousArtifacts: Target[Agg[Dep]] = {
+  override def mimaPreviousArtifacts = Task {
     super.mimaPreviousArtifacts().map { dep =>
       val versionParts = dep.version.split('.').toList.lift
       val maybeMajor = versionParts(0).flatMap(_.toIntOption)
@@ -127,12 +122,15 @@ trait BaseScalaModule extends BaseScalaNoPublishModule with BaseMimaModule
 trait BaseCrossScalaModule
     extends ScalaModule
     with ScalafmtModule
-    with TpolecatModule
     with CrossScalaModule
-    with BaseMimaModule
+    with BaseMimaModule {
+  override def scalacOptions = Task {
+    getScalaOptions(scalaVersion())
+  }
+}
 
 object core extends BaseJavaModule with BaseMimaModule {
-  def ivyDeps = Agg(
+  def mvnDeps = Seq(
     Deps.smithy.model
   )
 
@@ -140,25 +138,27 @@ object core extends BaseJavaModule with BaseMimaModule {
     * packaged into the main jar (happens when scanning the classpath via the
     * ModelAssembler if sources jars were resolved).
     */
-  override def sourceJar: T[PathRef] = T {
+  override def sourceJar = Task {
     def underMetaInfSmithy(p: os.RelPath): Boolean =
       Seq("META-INF", "smithy").forall(p.segments.contains)
 
-    mill.util.Jvm.createJar(
+    val jarPath = mill.util.Jvm.createJar(
+      Task.dest / "sources.jar",
       (allSources() ++ resources())
         .map(_.path)
-        .filter(os.exists),
+        .filter(os.exists(_)),
       manifest(),
       fileFilter = (_, relPath) => !underMetaInfSmithy(relPath)
     )
+    PathRef(jarPath)
   }
 
   object test
       extends JavaTests
       with BaseScalaNoPublishModule
       with BaseMunitTests {
-    def ivyDeps = {
-      super.ivyDeps() ++ Agg(
+    def mvnDeps = {
+      super.mvnDeps() ++ Seq(
         Deps.smithy.awsTraits
       )
     }
@@ -176,7 +176,7 @@ trait OpenapiModule extends BaseCrossScalaModule {
   def artifactName = "alloy-openapi"
 
   def crossScalaVersion = scalaVersionsMap(crossVersion)
-  def scalacOptions = T {
+  def scalacOptions = Task {
     val base = super.scalacOptions()
     if (crossVersion == "3")
       base.filterNot(Set("-Werror", "-Ykind-projector"))
@@ -185,15 +185,15 @@ trait OpenapiModule extends BaseCrossScalaModule {
 
   def moduleDeps = Seq(core)
 
-  def ivyDeps = Agg(
+  def mvnDeps = Seq(
     Deps.scala.compat,
     Deps.smithy.openapi,
     Deps.cats.core
   )
 
   object test extends ScalaTests with BaseMunitTests {
-    override def ivyDeps: Target[Agg[Dep]] =
-      super.ivyDeps() ++ Seq(Deps.oslib)
+    override def mvnDeps =
+      Task { super.mvnDeps() ++ Seq(Deps.oslib) }
   }
 
   override def mimaBinaryIssueFilters = super.mimaBinaryIssueFilters() ++ Seq(
@@ -206,7 +206,7 @@ trait OpenapiModule extends BaseCrossScalaModule {
 object `protocol-tests` extends BaseJavaModule {
   def moduleDeps = Seq(core)
 
-  def ivyDeps = Agg(
+  def mvnDeps = Seq(
     Deps.smithy.awsProtocolTestTraits,
     Deps.smithy.awsTests
   )
@@ -215,39 +215,135 @@ object `protocol-tests` extends BaseJavaModule {
       extends BaseScalaNoPublishModule
       with JavaTests
       with TestModule.Munit {
-    def ivyDeps = Agg(Deps.munit.munit)
+    def mvnDeps = Seq(Deps.munit.munit)
   }
 }
 
 object docs extends BasePublishModule {
-  override def resources = T.sources(millSourcePath)
+  override def resources = Task.Sources(moduleDir)
+}
+
+/** Scalac options equivalent to what mill-tpolecat 0.3.5 provided. */
+def getScalaOptions(scalaVersion: String): Seq[String] = {
+  val sv = scalaVersion.split('.').map(_.toInt).toList
+  val is2 = sv.head == 2
+  val is3 = sv.head == 3
+  val is212 = is2 && sv(1) >= 12
+  val is213 = is2 && sv(1) >= 13
+
+  val common = Seq(
+    "-encoding", "utf8",
+    "-feature",
+    "-language:experimental.macros",
+    "-language:higherKinds",
+    "-language:implicitConversions",
+    "-unchecked",
+    "-Xfatal-warnings"
+  )
+
+  val scala2Only = if (is2) Seq(
+    "-Xsource:3",
+    "-explaintypes",
+    "-language:existentials",
+    "-Xcheckinit"
+  ) else Seq.empty
+
+  val scala3Only = if (is3) Seq(
+    "-explain-types",
+    "-explain",
+    "-Ykind-projector"
+  ) else Seq.empty
+
+  val scala212Only = if (is212 && !is213) Seq(
+    "-Xlint:adapted-args",
+    "-Xlint:constant",
+    "-Xlint:delayedinit-select",
+    "-Xlint:doc-detached",
+    "-Xlint:inaccessible",
+    "-Xlint:infer-any",
+    "-Xlint:missing-interpolator",
+    "-Xlint:nullary-unit",
+    "-Xlint:option-implicit",
+    "-Xlint:package-object-classes",
+    "-Xlint:poly-implicit-overload",
+    "-Xlint:private-shadow",
+    "-Xlint:stars-align",
+    "-Xlint:type-parameter-shadow",
+    "-Ywarn-dead-code",
+    "-Ywarn-extra-implicit",
+    "-Ywarn-nullary-override",
+    "-Ywarn-nullary-unit",
+    "-Ywarn-numeric-widen",
+    "-Ywarn-unused:implicits",
+    "-Ywarn-unused:imports",
+    "-Ywarn-unused:locals",
+    "-Ywarn-unused:params",
+    "-Ywarn-unused:patvars",
+    "-Ywarn-unused:privates",
+    "-Ywarn-value-discard"
+  ) else Seq.empty
+
+  val scala213Only = if (is213) Seq(
+    "-Xlint:adapted-args",
+    "-Xlint:constant",
+    "-Xlint:delayedinit-select",
+    "-Xlint:deprecation",
+    "-Xlint:doc-detached",
+    "-Xlint:implicit-recursion",
+    "-Xlint:inaccessible",
+    "-Xlint:infer-any",
+    "-Xlint:missing-interpolator",
+    "-Xlint:nullary-unit",
+    "-Xlint:option-implicit",
+    "-Xlint:package-object-classes",
+    "-Xlint:poly-implicit-overload",
+    "-Xlint:private-shadow",
+    "-Xlint:stars-align",
+    "-Xlint:type-parameter-shadow",
+    "-Wdead-code",
+    "-Wextra-implicit",
+    "-Wnumeric-widen",
+    "-Wvalue-discard",
+    "-Wunused:nowarn",
+    "-Wunused:implicits",
+    "-Wunused:explicits",
+    "-Wunused:imports",
+    "-Wunused:locals",
+    "-Wunused:params",
+    "-Wunused:patvars",
+    "-Wunused:privates",
+    "-Vimplicits",
+    "-Vtype-diffs"
+  ) else Seq.empty
+
+  common ++ scala2Only ++ scala3Only ++ scala212Only ++ scala213Only
 }
 
 object Deps {
-  val smithy = new {
+  object smithy {
     val smithyVersion = "1.68.0"
-    val model = ivy"software.amazon.smithy:smithy-model:$smithyVersion"
-    val awsTraits = ivy"software.amazon.smithy:smithy-aws-traits:$smithyVersion"
+    val model = mvn"software.amazon.smithy:smithy-model:$smithyVersion"
+    val awsTraits = mvn"software.amazon.smithy:smithy-aws-traits:$smithyVersion"
     val awsProtocolTestTraits =
-      ivy"software.amazon.smithy:smithy-protocol-test-traits:$smithyVersion"
+      mvn"software.amazon.smithy:smithy-protocol-test-traits:$smithyVersion"
     val awsTests =
-      ivy"software.amazon.smithy:smithy-aws-protocol-tests:$smithyVersion"
-    val openapi = ivy"software.amazon.smithy:smithy-openapi:$smithyVersion"
+      mvn"software.amazon.smithy:smithy-aws-protocol-tests:$smithyVersion"
+    val openapi = mvn"software.amazon.smithy:smithy-openapi:$smithyVersion"
   }
 
-  val cats = new {
-    val core = ivy"org.typelevel::cats-core:2.13.0"
+  object cats {
+    val core = mvn"org.typelevel::cats-core:2.13.0"
   }
 
-  val scala = new {
-    val compat = ivy"org.scala-lang.modules::scala-collection-compat:2.14.0"
+  object scala {
+    val compat = mvn"org.scala-lang.modules::scala-collection-compat:2.14.0"
   }
 
-  val munit = new {
-    val munit = ivy"org.scalameta::munit::1.2.4"
-    val scalaCheck = ivy"org.scalameta::munit-scalacheck::1.1.0"
-    val all = Agg(munit, scalaCheck)
+  object munit {
+    val munit = mvn"org.scalameta::munit::1.2.4"
+    val scalaCheck = mvn"org.scalameta::munit-scalacheck::1.1.0"
+    val all = Seq(munit, scalaCheck)
   }
 
-  val oslib = ivy"com.lihaoyi::os-lib:0.11.8"
+  val oslib = mvn"com.lihaoyi::os-lib:0.11.8"
 }

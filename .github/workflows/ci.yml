@@ -34,38 +34,29 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: adopt
-          java-version: 11
+          java-version: 17
 
       - name: Check formatting
-        run: ./mill -k --disable-ticker __.checkFormat
+        run: ./mill -k --ticker false __.checkFormat
 
       - name: Check headers
-        run: ./mill -k --disable-ticker __.headerCheck
+        run: ./mill -k --ticker false __.headerCheck
 
       - name: Compile
-        run: ./mill -k --disable-ticker __.compile
+        run: ./mill -k --ticker false __.compile
 
       - name: Run tests
-        run: ./mill -k --disable-ticker __.test
+        run: ./mill -k --ticker false __.test
 
       - name: Check Bincompat
-        run: ./mill -k --disable-ticker __.mimaReportBinaryIssues
+        run: ./mill -k --ticker false __.mimaReportBinaryIssues
 
       - name: Publish ${{ github.ref }}
         if: startsWith(github.ref, 'refs/tags/v') ||
           (github.event_name == 'workflow_dispatch' && github.event.inputs.publishSnapshot == 'true')
-        run: |
-              ./mill -i \
-              mill.contrib.sonatypecentral.SonatypeCentralPublishModule/publishAll \
-              --username $SONATYPE_USERNAME \
-              --password $SONATYPE_PASSWORD \
-              --gpgArgs --no-tty,--pinentry-mode,loopback,--batch,--yes,-a,-b \
-              --publishArtifacts __.publishArtifacts \
-              --readTimeout  36000 \
-              --awaitTimeout 36000 \
-              --connectTimeout 36000 \
-              --shouldRelease true
+        # TODO: IS THIS CORRECT WITHOUT THE PGP PASSPHRASE?
+        run: ./mill -k --ticker false mill.javalib.SonatypeCentralPublishModule/
         env:
           MILL_PGP_SECRET_BASE64: ${{ secrets.PGP_SECRET }}
-          SONATYPE_PASSWORD: ${{ secrets.CENTRAL_SONATYPE_PASSWORD }}
-          SONATYPE_USERNAME: ${{ secrets.CENTRAL_SONATYPE_USERNAME }}
+          MILL_SONATYPE_PASSWORD: ${{ secrets.CENTRAL_SONATYPE_PASSWORD }}
+          MILL_SONATYPE_USERNAME: ${{ secrets.CENTRAL_SONATYPE_USERNAME }}
