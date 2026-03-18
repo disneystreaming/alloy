@@ -6,6 +6,8 @@ examples.smithy
 openapi/openapi.smithy
 presence.smithy
 proto/proto.smithy
+proto/grpc-status.smithy
+proto/status.smithy
 restjson.smithy
 string.smithy
 jsonunknown.smithy

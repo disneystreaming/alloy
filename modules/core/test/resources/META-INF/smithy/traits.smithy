@@ -39,6 +39,8 @@ use alloy.proto#protoCompactMonthDay
 use alloy.proto#protoOffsetDateTimeFormat
 use alloy.proto#protoWrapped
 use alloy.proto#protoReservedFields
+use alloy.proto#grpcError
+use alloy.proto#grpcErrorMessage
 use alloy#localTimeFormat
 use alloy#localDateTimeFormat
 use alloy#offsetTimeFormat
@@ -147,6 +149,13 @@ structure ProtoStructTwo {
     test: Timestamp
     @protoEnumFormat("STRING_VALUE")
     enum: TestEnum
+}
+
+@error("client")
+@grpcError(code: "UNAUTHENTICATED")
+structure GrpcStatusError {
+    @grpcErrorMessage
+    message: String
 }
 
 enum TestEnum {

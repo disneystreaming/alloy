@@ -161,6 +161,27 @@ Documents should be serialised using a protobuf message equivalent to the [`goog
 
 Timestamps should be serialised using a protobuf message equivalent to the [`google.protobuf.Timestamp`](https://github.com/protocolbuffers/protobuf/blob/5ecfdd76ef25f069cd84fac0b0fb3b95e2d61a34/src/google/protobuf/timestamp.proto#L133) type, which is commonly used in the protobuf ecosystem to represent [Timestamp values](https://protobuf.dev/reference/protobuf/google.protobuf/#timestamp).
 
+### gRPC error
+
+Error structures can override their gRPC status code via `@alloy.proto#grpcError`. The trait takes a required `code` (a `GrpcStatusCode` value, accepted as either a string symbol or an integer) and an optional `message` string. For example:
+
+```smithy
+@error("client")
+@alloy.proto#grpcError(code: "UNAUTHENTICATED")
+structure AuthError {}
+
+@error("client")
+@alloy.proto#grpcError(code: 16, message: "authentication required")
+structure AuthErrorWithMessage {}
+```
+
+While gRPC Core defines status codes in the range 0..16, other integer codes can be observed on the wire; runtimes are permitted to either propagate them as-is or map them to `UNKNOWN`. A validation warning is emitted for codes outside that range.
+
+### gRPC status details
+
+For `grpc-status-details-bin`, use `alloy.proto#GoogleRpcStatus` with `alloy.proto#ProtobufAny` entries in `details`. These shapes are wire-compatible with `google.rpc.Status` and `google.protobuf.Any` without requiring google protos in models.
+
+ Recommended `typeUrl` convention: `type.googleapis.com/<protoFullName>`, where `<protoFullName>` is the fully-qualified protobuf message name (package + message, dot-separated) of the payload encoded in `value`. If you derive this from a Smithy shape ID, care must be taken to replace `#` with `.` (for example `com.foo#MyDetail` -> `com.foo.MyDetail`).
 
 ### Aggregate Types
 

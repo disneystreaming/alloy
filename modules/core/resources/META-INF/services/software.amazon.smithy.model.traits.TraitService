@@ -32,6 +32,8 @@ alloy.common.LanguageTagFormatTrait$Provider
 alloy.openapi.OpenApiExtensionsTrait$Provider
 alloy.openapi.SummaryTrait$Provider
 alloy.proto.GrpcTrait$Provider
+alloy.proto.GrpcErrorTrait$Provider
+alloy.proto.GrpcErrorMessageTrait$Provider
 alloy.proto.ProtoCompactLocalDateTrait$Provider
 alloy.proto.ProtoCompactLocalTimeTrait$Provider
 alloy.proto.ProtoCompactMonthDayTrait$Provider
