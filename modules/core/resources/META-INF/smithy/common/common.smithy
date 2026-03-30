@@ -29,3 +29,16 @@ structure languageTagFormat { }
 /// example: "#09C" (short) or "#0099CC" (full)
 @trait(selector: ":test(string, member > string)")
 structure hexColorCodeFormat { }
+
+/// IP Address, supporting both v4 and v6 addresses
+/// IETF RFC: https://www.rfc-editor.org/rfc/rfc791
+///   v6 RFC: https://www.rfc-editor.org/rfc/rfc1883
+/// example: "192.168.1.1", "::1"
+@trait(selector: ":test(string, member > string)")
+structure ipaddressFormat { }
+
+/// IP Address range using CIDR 
+/// IETF RFC: https://www.rfc-editor.org/rfc/rfc1817
+/// example: "192.0.2.0/24", "2001:db8::/32"
+@trait(selector: ":test(string, member > string)")
+structure cidrFormat { }
