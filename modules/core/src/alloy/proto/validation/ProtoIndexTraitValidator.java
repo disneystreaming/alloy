@@ -114,7 +114,7 @@ final public class ProtoIndexTraitValidator extends AbstractValidator {
 			} else {
 				openEnumChecks = Stream.of(ValidationEvent.builder().id(OPEN_ENUM_MUST_NOT_HAVE_INDEXES)
 						.message("Members of enumeration" + shape + "must not have the `@protoIndex` trait applied.")
-						.shape(shape).severity(Severity.ERROR).build());
+						.shape(shape).severity(Severity.WARNING).build());
 			}
 		} else {
 			Stream.empty();
