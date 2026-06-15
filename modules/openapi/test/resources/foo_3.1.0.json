@@ -599,7 +599,8 @@
                 "examples": [
                     {
                         "values": []
-                    }
+                    },
+                    "<values></values>"
                 ]
             },
             "GreetOutputPayload": {

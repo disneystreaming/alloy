@@ -60,7 +60,12 @@ class DataExamplesMapper() extends JsonSchemaMapper {
     if (example.getExampleType == DataExamplesTrait.DataExampleType.STRING) {
       val maybeStrNode = example.getContent().asStringNode()
       if (maybeStrNode.isPresent) {
-        Node.parse(maybeStrNode.get.getValue)
+        val strNode = maybeStrNode.get
+        // A STRING example may hold arbitrary content (e.g. XML or another
+        // non-JSON encoding). Parse it as JSON when possible so it renders as
+        // a structured example, otherwise fall back to the raw string node
+        // instead of failing the whole conversion.
+        scala.util.Try(Node.parse(strNode.getValue)).getOrElse(strNode)
       } else {
         ObjectNode.builder().build()
       }
