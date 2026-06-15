@@ -269,6 +269,9 @@ map Attributes {
     {
         string: "{\"values\": []}"
     }
+    {
+        string: "<values></values>"
+    }
 ])
 structure ValuesResponse {
     values: Values
