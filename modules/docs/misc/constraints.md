@@ -55,7 +55,9 @@ intEnum IntShape {
 
 ### alloy#structurePattern
 
-The `alloy#structurePattern` trait provides a way to specify that a given `String` will conform to a provided format and that it should be parsed into a `Structure` rather than a `String`. For example:
+The `alloy#structurePattern` trait provides a way to specify that a given `String` will conform to a provided format and that it should be parsed into a `Structure` or a `Union` rather than remaining an opaque `String`.
+
+#### Targeting a structure
 
 ```smithy
 @structurePattern(pattern: "{foo}_{bar}", target: FooBar)
@@ -69,11 +71,30 @@ structure FooBar {
 }
 ```
 
-Now wherever `FooBarString` is used, it will really be parsing the string into the structure `FooBar`. There are a few requirements for using the `structurePattern` trait that are checked by a validator:
+Now wherever `FooBarString` is used, it will really be parsing the string into the structure `FooBar`. There are a few requirements for using the `structurePattern` trait with a structure target that are checked by a validator:
 
-- The target structure must have all required members and all members must target simple shapes.
+- The target structure must have all required members and all members must target simple shapes (excluding document).
 - The provided pattern must have all parameters separated by at least one character. The reason for this is that if there is no separation (e.g. "{foo}{bar}") then a parser would not be able to tell when one starts and the other begins.
 - There must be a provided pattern parameter for each member of the target structure.
+
+#### Targeting a union
+
+When the target is a union, the pattern must use exactly the magic identifiers `{label}` and `{value}`. The `{label}` acts as a discriminator identifying which union member is active, and `{value}` carries the payload.
+
+```smithy
+@structurePattern(pattern: "{label}:{value}", target: MyUnion)
+string MyUnionString
+
+union MyUnion {
+  foo: String
+  bar: Integer
+}
+```
+
+Requirements when targeting a union:
+
+- The pattern must contain exactly `{label}` and `{value}`, separated by at least one character.
+- All union members must target simple shapes (excluding document).
 
 
 ### Datetime constraints

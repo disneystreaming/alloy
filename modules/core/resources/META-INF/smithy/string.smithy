@@ -7,6 +7,6 @@ structure structurePattern {
   @required
   pattern: String,
   @required
-  @idRef(selector: "structure")
+  @idRef(selector: ":is(structure, union)")
   target: String
 }
