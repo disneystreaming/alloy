@@ -19,6 +19,7 @@ import alloy.StructurePatternTrait
 import software.amazon.smithy.model.shapes.ShapeId
 import software.amazon.smithy.model.shapes.StringShape
 import software.amazon.smithy.model.shapes.StructureShape
+import software.amazon.smithy.model.shapes.UnionShape
 import software.amazon.smithy.model.Model
 import software.amazon.smithy.model.validation.ValidationEvent
 import software.amazon.smithy.model.validation.Severity
@@ -283,6 +284,236 @@ final class StructurePatternTraitValidatorSpec extends munit.FunSuite {
         .severity(Severity.ERROR)
         .message(
           "Params must be separated by at least one character"
+        )
+        .build()
+    )
+    assertEquals(result, expected)
+  }
+
+  test("union - no error") {
+    val targetId = ShapeId.fromParts("test", "MyUnion")
+    val patternTrait = StructurePatternTrait
+      .builder()
+      .setPattern("{label}:{value}")
+      .setTarget(targetId)
+      .build()
+    val stringShape = StringShape
+      .builder()
+      .id(ShapeId.fromParts("test", "MyString"))
+      .addTrait(patternTrait)
+      .build()
+    val unionShape = UnionShape
+      .builder()
+      .id(targetId)
+      .addMember(
+        MemberShape
+          .builder()
+          .id(targetId.withMember("one"))
+          .target(ShapeId.fromParts("smithy.api", "String"))
+          .build()
+      )
+      .addMember(
+        MemberShape
+          .builder()
+          .id(targetId.withMember("two"))
+          .target(ShapeId.fromParts("smithy.api", "Integer"))
+          .build()
+      )
+      .build()
+
+    val model =
+      Model.assembler.disableValidation
+        .addShapes(unionShape, stringShape)
+        .assemble()
+        .unwrap()
+
+    val result = validator.validate(model).asScala.toList
+
+    assertEquals(result, List.empty)
+  }
+
+  test("union - missing magic identifiers") {
+    val targetId = ShapeId.fromParts("test", "MyUnion")
+    val patternTrait = StructurePatternTrait
+      .builder()
+      .setPattern("{foo}-{bar}")
+      .setTarget(targetId)
+      .build()
+    val stringShape = StringShape
+      .builder()
+      .id(ShapeId.fromParts("test", "MyString"))
+      .addTrait(patternTrait)
+      .build()
+    val unionShape = UnionShape
+      .builder()
+      .id(targetId)
+      .addMember(
+        MemberShape
+          .builder()
+          .id(targetId.withMember("one"))
+          .target(ShapeId.fromParts("smithy.api", "String"))
+          .build()
+      )
+      .build()
+
+    val model =
+      Model.assembler.disableValidation
+        .addShapes(unionShape, stringShape)
+        .assemble()
+        .unwrap()
+
+    val result = validator.validate(model).asScala.toList
+
+    val expected = List(
+      ValidationEvent
+        .builder()
+        .id("StructurePatternTrait")
+        .shape(stringShape)
+        .severity(Severity.ERROR)
+        .message(
+          "When target is a union, the pattern must contain exactly '{label}' and '{value}'"
+        )
+        .build()
+    )
+    assertEquals(result, expected)
+  }
+
+  test("union - member targets non-simple shape") {
+    val targetId = ShapeId.fromParts("test", "MyUnion")
+    val patternTrait = StructurePatternTrait
+      .builder()
+      .setPattern("{label}:{value}")
+      .setTarget(targetId)
+      .build()
+    val stringShape = StringShape
+      .builder()
+      .id(ShapeId.fromParts("test", "MyString"))
+      .addTrait(patternTrait)
+      .build()
+    val otherStruct = StructureShape
+      .builder()
+      .id(ShapeId.fromParts("test", "OtherStruct"))
+      .build()
+    val unionShape = UnionShape
+      .builder()
+      .id(targetId)
+      .addMember(
+        MemberShape
+          .builder()
+          .id(targetId.withMember("one"))
+          .target(otherStruct.toShapeId)
+          .build()
+      )
+      .build()
+
+    val model =
+      Model.assembler.disableValidation
+        .addShapes(otherStruct, unionShape, stringShape)
+        .assemble()
+        .unwrap()
+
+    val result = validator.validate(model).asScala.toList
+
+    val expected = List(
+      ValidationEvent
+        .builder()
+        .id("StructurePatternTrait")
+        .shape(stringShape)
+        .severity(Severity.ERROR)
+        .message(
+          "Union members must target simple shapes (excluding document), but 'one' targets 'test#OtherStruct', which is a 'structure'"
+        )
+        .build()
+    )
+    assertEquals(result, expected)
+  }
+
+  test("union - no separator between params") {
+    val targetId = ShapeId.fromParts("test", "MyUnion")
+    val patternTrait = StructurePatternTrait
+      .builder()
+      .setPattern("{label}{value}")
+      .setTarget(targetId)
+      .build()
+    val stringShape = StringShape
+      .builder()
+      .id(ShapeId.fromParts("test", "MyString"))
+      .addTrait(patternTrait)
+      .build()
+    val unionShape = UnionShape
+      .builder()
+      .id(targetId)
+      .addMember(
+        MemberShape
+          .builder()
+          .id(targetId.withMember("one"))
+          .target(ShapeId.fromParts("smithy.api", "String"))
+          .build()
+      )
+      .build()
+
+    val model =
+      Model.assembler.disableValidation
+        .addShapes(unionShape, stringShape)
+        .assemble()
+        .unwrap()
+
+    val result = validator.validate(model).asScala.toList
+
+    val expected = List(
+      ValidationEvent
+        .builder()
+        .id("StructurePatternTrait")
+        .shape(stringShape)
+        .severity(Severity.ERROR)
+        .message(
+          "Params must be separated by at least one character"
+        )
+        .build()
+    )
+    assertEquals(result, expected)
+  }
+
+  test("union - member targets document shape") {
+    val targetId = ShapeId.fromParts("test", "MyUnion")
+    val patternTrait = StructurePatternTrait
+      .builder()
+      .setPattern("{label}:{value}")
+      .setTarget(targetId)
+      .build()
+    val stringShape = StringShape
+      .builder()
+      .id(ShapeId.fromParts("test", "MyString"))
+      .addTrait(patternTrait)
+      .build()
+    val unionShape = UnionShape
+      .builder()
+      .id(targetId)
+      .addMember(
+        MemberShape
+          .builder()
+          .id(targetId.withMember("one"))
+          .target(ShapeId.fromParts("smithy.api", "Document"))
+          .build()
+      )
+      .build()
+
+    val model =
+      Model.assembler.disableValidation
+        .addShapes(unionShape, stringShape)
+        .assemble()
+        .unwrap()
+
+    val result = validator.validate(model).asScala.toList
+
+    val expected = List(
+      ValidationEvent
+        .builder()
+        .id("StructurePatternTrait")
+        .shape(stringShape)
+        .severity(Severity.ERROR)
+        .message(
+          "Union members must target simple shapes (excluding document), but 'one' targets 'smithy.api#Document', which is a 'document'"
         )
         .build()
     )

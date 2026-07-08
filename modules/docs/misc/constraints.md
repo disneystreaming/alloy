@@ -55,7 +55,9 @@ intEnum IntShape {
 
 ### alloy#structurePattern
 
-The `alloy#structurePattern` trait provides a way to specify that a given `String` will conform to a provided format and that it should be parsed into a `Structure` rather than a `String`. For example:
+The `alloy#structurePattern` trait provides a way to specify that a given `String` will conform to a provided format and that it should be parsed into a `Structure` or a `Union` rather than remaining an opaque `String`.
+
+#### Targeting a structure
 
 ```smithy
 @structurePattern(pattern: "{foo}_{bar}", target: FooBar)
@@ -69,11 +71,134 @@ structure FooBar {
 }
 ```
 
-Now wherever `FooBarString` is used, it will really be parsing the string into the structure `FooBar`. There are a few requirements for using the `structurePattern` trait that are checked by a validator:
+Now wherever `FooBarString` is used, it will really be parsing the string into the structure `FooBar`. There are a few requirements for using the `structurePattern` trait with a structure target that are checked by a validator:
 
-- The target structure must have all required members and all members must target simple shapes.
+- The target structure must have all required members and all members must target simple shapes (excluding document).
 - The provided pattern must have all parameters separated by at least one character. The reason for this is that if there is no separation (e.g. "{foo}{bar}") then a parser would not be able to tell when one starts and the other begins.
 - There must be a provided pattern parameter for each member of the target structure.
+
+The following examples are **invalid** and will produce validation errors:
+
+```smithy
+// ERROR: pattern params must not target optional structure members
+@structurePattern(pattern: "{foo}_{bar}", target: FooBar)
+string FooBarString
+
+structure FooBar {
+  @required
+  foo: String
+  bar: Integer // missing @required
+}
+```
+
+```smithy
+// ERROR: pattern params must target simple shapes only
+@structurePattern(pattern: "{foo}_{bar}", target: FooBar)
+string FooBarString
+
+structure FooBar {
+  @required
+  foo: String
+  @required
+  bar: SomeStructure // not a simple shape
+}
+
+structure SomeStructure {}
+```
+
+```smithy
+// ERROR: params must be separated by at least one character
+@structurePattern(pattern: "{foo}{bar}", target: FooBar)
+string FooBarString
+
+structure FooBar {
+  @required
+  foo: String
+  @required
+  bar: Integer
+}
+```
+
+```smithy
+// ERROR: did not find pattern params for the following members: baz
+@structurePattern(pattern: "{foo}_{bar}", target: FooBar)
+string FooBarString
+
+structure FooBar {
+  @required
+  foo: String
+  @required
+  bar: Integer
+  @required
+  baz: String // no matching {baz} in pattern
+}
+```
+
+#### Targeting a union
+
+When the target is a union, the pattern must use exactly the magic identifiers `{label}` and `{value}`. The `{label}` acts as a discriminator identifying which union member is active, and `{value}` carries the payload.
+
+```smithy
+@structurePattern(pattern: "{label}:{value}", target: MyUnion)
+string MyUnionString
+
+union MyUnion {
+  foo: String
+  bar: Integer
+}
+```
+
+Requirements when targeting a union:
+
+- The pattern must contain exactly `{label}` and `{value}`, separated by at least one character.
+- All union members must target simple shapes (excluding document).
+
+The following examples are **invalid** and will produce validation errors:
+
+```smithy
+// ERROR: pattern must contain exactly '{label}' and '{value}'
+@structurePattern(pattern: "{foo}-{bar}", target: MyUnion)
+string MyUnionString
+
+union MyUnion {
+  one: String
+  two: Integer
+}
+```
+
+```smithy
+// ERROR: params must be separated by at least one character
+@structurePattern(pattern: "{label}{value}", target: MyUnion)
+string MyUnionString
+
+union MyUnion {
+  one: String
+}
+```
+
+```smithy
+// ERROR: union members must target simple shapes (excluding document),
+//        but 'one' targets 'SomeStructure', which is a 'structure'
+@structurePattern(pattern: "{label}:{value}", target: MyUnion)
+string MyUnionString
+
+union MyUnion {
+  one: SomeStructure // not a simple shape
+}
+
+structure SomeStructure {}
+```
+
+```smithy
+// ERROR: union members must target simple shapes (excluding document),
+//        but 'one' targets 'Document', which is a 'document'
+@structurePattern(pattern: "{label}:{value}", target: MyUnion)
+string MyUnionString
+
+union MyUnion {
+  one: Document // document is excluded
+}
+```
 
 
 ### Datetime constraints

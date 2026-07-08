@@ -17,9 +17,12 @@ package alloy.validation;
 
 import alloy.StructurePatternTrait;
 import software.amazon.smithy.model.Model;
+import software.amazon.smithy.model.shapes.DocumentShape;
 import software.amazon.smithy.model.shapes.Shape;
 import software.amazon.smithy.model.shapes.SimpleShape;
+import software.amazon.smithy.model.shapes.StringShape;
 import software.amazon.smithy.model.shapes.StructureShape;
+import software.amazon.smithy.model.shapes.UnionShape;
 import software.amazon.smithy.model.traits.RequiredTrait;
 import software.amazon.smithy.model.validation.AbstractValidator;
 import software.amazon.smithy.model.validation.ValidationEvent;
@@ -34,36 +37,70 @@ public final class StructurePatternTraitValidator extends AbstractValidator {
 	@Override
 	public List<ValidationEvent> validate(Model model) {
 		List<ValidationEvent> events = new ArrayList<>();
+
 		model.getStringShapesWithTrait(StructurePatternTrait.class).forEach(patternShape -> {
 			StructurePatternTrait trt = patternShape.expectTrait(StructurePatternTrait.class);
-			List<String> patternParams = getParamNamesInPattern(trt.getPattern());
-			StructureShape struct = model.expectShape(trt.getTarget()).asStructureShape().get();
-			ArrayList<String> structureParamNames = new ArrayList<>(struct.getMemberNames());
-			structureParamNames.removeAll(patternParams);
+			Shape targetShape = model.expectShape(trt.getTarget());
 
-			if (!structureParamNames.isEmpty()) {
-				events.add(error(patternShape, "Did not find pattern params for the following members: "
-						+ String.join(", ", structureParamNames)));
+			if (targetShape instanceof StructureShape) {
+				validateStructureTarget(model, patternShape, trt, (StructureShape) targetShape, events);
+			} else if (targetShape instanceof UnionShape) {
+				validateUnionTarget(model, patternShape, trt, (UnionShape) targetShape, events);
 			}
 
-			struct.getAllMembers().forEach((key, value) -> {
-				Shape targetShape = model.expectShape(value.getTarget());
-				if (!(targetShape instanceof SimpleShape)) {
-					events.add(error(patternShape,
-							String.format("Pattern params must target simple shapes only, but '%s' targets '%s'", key,
-									targetShape.toShapeId())));
-				}
-                if (!value.hasTrait(RequiredTrait.class)) {
-                    events.add(error(patternShape, String.format("Pattern params must not target optional structure members, but '%s' is optional", key)));
-                }
-			});
-
-            if (trt.getPattern().contains("}{")) {
-                events.add(error(patternShape, "Params must be separated by at least one character"));
-            }
+			if (trt.getPattern().contains("}{")) {
+				events.add(error(patternShape, "Params must be separated by at least one character"));
+			}
 		});
 
 		return events;
+	}
+
+	private void validateStructureTarget(Model model, StringShape patternShape, StructurePatternTrait trt,
+			StructureShape struct, List<ValidationEvent> events) {
+		List<String> patternParams = getParamNamesInPattern(trt.getPattern());
+		ArrayList<String> structureParamNames = new ArrayList<>(struct.getMemberNames());
+		structureParamNames.removeAll(patternParams);
+
+		if (!structureParamNames.isEmpty()) {
+			events.add(error(patternShape, "Did not find pattern params for the following members: "
+					+ String.join(", ", structureParamNames)));
+		}
+
+		struct.getAllMembers().forEach((key, value) -> {
+			Shape memberTarget = model.expectShape(value.getTarget());
+			if (!(memberTarget instanceof SimpleShape) || memberTarget instanceof DocumentShape) {
+				events.add(error(patternShape,
+						String.format("Pattern params must target simple shapes only, but '%s' targets '%s'", key,
+								memberTarget.toShapeId())));
+			}
+			if (!value.hasTrait(RequiredTrait.class)) {
+				events.add(error(patternShape, String.format(
+						"Pattern params must not target optional structure members, but '%s' is optional", key)));
+			}
+		});
+	}
+
+	private void validateUnionTarget(Model model, StringShape patternShape, StructurePatternTrait trt,
+			UnionShape union, List<ValidationEvent> events) {
+		List<String> patternParams = getParamNamesInPattern(trt.getPattern());
+
+		if (patternParams.size() != 2 || !patternParams.contains("label") || !patternParams.contains("value")) {
+			events.add(error(patternShape,
+					"When target is a union, the pattern must contain exactly '{label}' and '{value}'"));
+			return;
+		}
+
+		union.getAllMembers().forEach((key, value) -> {
+			Shape memberTarget = model.expectShape(value.getTarget());
+			if (!(memberTarget instanceof SimpleShape) || memberTarget instanceof DocumentShape) {
+				events.add(error(patternShape,
+						String.format(
+								"Union members must target simple shapes (excluding document), but '%s' targets '%s', which is a '%s'",
+								key, memberTarget.toShapeId(), memberTarget.getType())));
+			}
+		});
+
 	}
 
 	private List<String> getParamNamesInPattern(String pattern) {
@@ -71,9 +108,7 @@ public final class StructurePatternTraitValidator extends AbstractValidator {
 		Matcher matcher = pat.matcher(pattern);
 		ArrayList<String> results = new ArrayList<>();
 		while (matcher.find()) {
-			for (int j = 0; j <= matcher.groupCount(); j++) {
-				results.add(matcher.group(j));
-			}
+			results.add(matcher.group(1));
 		}
 		return results;
 	}
