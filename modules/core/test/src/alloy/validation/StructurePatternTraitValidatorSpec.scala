@@ -421,7 +421,7 @@ final class StructurePatternTraitValidatorSpec extends munit.FunSuite {
         .shape(stringShape)
         .severity(Severity.ERROR)
         .message(
-          "Union members must target simple shapes (excluding document), but 'one' targets 'test#OtherStruct'"
+          "Union members must target simple shapes (excluding document), but 'one' targets 'test#OtherStruct', which is a 'structure'"
         )
         .build()
     )
@@ -513,7 +513,7 @@ final class StructurePatternTraitValidatorSpec extends munit.FunSuite {
         .shape(stringShape)
         .severity(Severity.ERROR)
         .message(
-          "Union members must target simple shapes (excluding document), but 'one' targets 'smithy.api#Document'"
+          "Union members must target simple shapes (excluding document), but 'one' targets 'smithy.api#Document', which is a 'document'"
         )
         .build()
     )

@@ -37,6 +37,7 @@ public final class StructurePatternTraitValidator extends AbstractValidator {
 	@Override
 	public List<ValidationEvent> validate(Model model) {
 		List<ValidationEvent> events = new ArrayList<>();
+
 		model.getStringShapesWithTrait(StructurePatternTrait.class).forEach(patternShape -> {
 			StructurePatternTrait trt = patternShape.expectTrait(StructurePatternTrait.class);
 			Shape targetShape = model.expectShape(trt.getTarget());
@@ -95,8 +96,8 @@ public final class StructurePatternTraitValidator extends AbstractValidator {
 			if (!(memberTarget instanceof SimpleShape) || memberTarget instanceof DocumentShape) {
 				events.add(error(patternShape,
 						String.format(
-								"Union members must target simple shapes (excluding document), but '%s' targets '%s'",
-								key, memberTarget.toShapeId())));
+								"Union members must target simple shapes (excluding document), but '%s' targets '%s', which is a '%s'",
+								key, memberTarget.toShapeId(), memberTarget.getType())));
 			}
 		});
 

@@ -77,6 +77,63 @@ Now wherever `FooBarString` is used, it will really be parsing the string into t
 - The provided pattern must have all parameters separated by at least one character. The reason for this is that if there is no separation (e.g. "{foo}{bar}") then a parser would not be able to tell when one starts and the other begins.
 - There must be a provided pattern parameter for each member of the target structure.
 
+The following examples are **invalid** and will produce validation errors:
+
+```smithy
+// ERROR: pattern params must not target optional structure members
+@structurePattern(pattern: "{foo}_{bar}", target: FooBar)
+string FooBarString
+
+structure FooBar {
+  @required
+  foo: String
+  bar: Integer // missing @required
+}
+```
+
+```smithy
+// ERROR: pattern params must target simple shapes only
+@structurePattern(pattern: "{foo}_{bar}", target: FooBar)
+string FooBarString
+
+structure FooBar {
+  @required
+  foo: String
+  @required
+  bar: SomeStructure // not a simple shape
+}
+
+structure SomeStructure {}
+```
+
+```smithy
+// ERROR: params must be separated by at least one character
+@structurePattern(pattern: "{foo}{bar}", target: FooBar)
+string FooBarString
+
+structure FooBar {
+  @required
+  foo: String
+  @required
+  bar: Integer
+}
+```
+
+```smithy
+// ERROR: did not find pattern params for the following members: baz
+@structurePattern(pattern: "{foo}_{bar}", target: FooBar)
+string FooBarString
+
+structure FooBar {
+  @required
+  foo: String
+  @required
+  bar: Integer
+  @required
+  baz: String // no matching {baz} in pattern
+}
+```
+
 #### Targeting a union
 
 When the target is a union, the pattern must use exactly the magic identifiers `{label}` and `{value}`. The `{label}` acts as a discriminator identifying which union member is active, and `{value}` carries the payload.
@@ -95,6 +152,53 @@ Requirements when targeting a union:
 
 - The pattern must contain exactly `{label}` and `{value}`, separated by at least one character.
 - All union members must target simple shapes (excluding document).
+
+The following examples are **invalid** and will produce validation errors:
+
+```smithy
+// ERROR: pattern must contain exactly '{label}' and '{value}'
+@structurePattern(pattern: "{foo}-{bar}", target: MyUnion)
+string MyUnionString
+
+union MyUnion {
+  one: String
+  two: Integer
+}
+```
+
+```smithy
+// ERROR: params must be separated by at least one character
+@structurePattern(pattern: "{label}{value}", target: MyUnion)
+string MyUnionString
+
+union MyUnion {
+  one: String
+}
+```
+
+```smithy
+// ERROR: union members must target simple shapes (excluding document),
+//        but 'one' targets 'SomeStructure', which is a 'structure'
+@structurePattern(pattern: "{label}:{value}", target: MyUnion)
+string MyUnionString
+
+union MyUnion {
+  one: SomeStructure // not a simple shape
+}
+
+structure SomeStructure {}
+```
+
+```smithy
+// ERROR: union members must target simple shapes (excluding document),
+//        but 'one' targets 'Document', which is a 'document'
+@structurePattern(pattern: "{label}:{value}", target: MyUnion)
+string MyUnionString
+
+union MyUnion {
+  one: Document // document is excluded
+}
+```
 
 
 ### Datetime constraints
