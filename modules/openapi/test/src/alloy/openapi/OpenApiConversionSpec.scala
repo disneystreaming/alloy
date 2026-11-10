@@ -87,6 +87,43 @@ final class OpenApiConversionSpec extends munit.FunSuite {
   }
 
   test(
+    "OpenAPI conversion with only the open enums extension enabled"
+  ) {
+    val model = Model
+      .assembler()
+      .addImport(getClass().getClassLoader().getResource("foo.smithy"))
+      .discoverModels()
+      .assemble()
+      .unwrap()
+
+    val result = convertWithConfig(
+      model,
+      None,
+      buildConfig = _ => {
+        val config = new OpenApiConfig()
+        config.putExtensions {
+          val ext = new OpenApiConfigExtension()
+          ext.setEnableOpenEnumsExtension(true)
+          ext
+        }
+        config
+      }
+    )
+      .map(_.contents)
+      .map(dropWhitespaceInJson)
+      .requireOnly
+
+    val expected = List(
+      """"OpenIntEnum":{"type":"integer","format":"int32","x-extensible-enum":[3,4]}""",
+      """"OpenStringEnum":{"type":"string","x-extensible-enum":["baz","qux"]}"""
+    )
+
+    expected.foreach { expected =>
+      assert(result.contains(expected))
+    }
+  }
+
+  test(
     "OpenAPI conversion from alloy#simpleRestJson protocol with multiple namespaces"
   ) {
     val model = Model
