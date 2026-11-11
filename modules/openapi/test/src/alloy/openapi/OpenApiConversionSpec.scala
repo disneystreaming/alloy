@@ -245,6 +245,63 @@ final class OpenApiConversionSpec extends munit.FunSuite {
     }
   }
 
+  test("OpenAPI conversion of a PATCH operation whose errors carry headers") {
+    val model = Model
+      .assembler()
+      .addUnparsedModel(
+        "patch.smithy",
+        """|$version: "2"
+           |namespace patch
+           |use alloy#simpleRestJson
+           |
+           |@simpleRestJson
+           |service ThingService {
+           |    version: "0.0.1"
+           |    operations: [UpdateThing]
+           |}
+           |
+           |@idempotent
+           |@http(method: "PATCH", uri: "/things/{id}")
+           |operation UpdateThing {
+           |    input := { @required @httpLabel id: String }
+           |    errors: [Overloaded, Unavailable]
+           |}
+           |
+           |@error("server")
+           |@httpError(503)
+           |structure Overloaded {
+           |    @httpHeader("Retry-After") @required retryAfter: Integer
+           |}
+           |
+           |@error("server")
+           |@httpError(503)
+           |structure Unavailable {
+           |    @httpHeader("X-Reason") @required reason: String
+           |}
+           |""".stripMargin
+      )
+      .discoverModels()
+      .assemble()
+      .unwrap()
+
+    val headers = convert(model, None)
+      .map(_.contents)
+      .map(Node.parse)
+      .requireOnly
+      .expectObjectNode()
+      .expectObjectMember("paths")
+      .expectObjectMember("/things/{id}")
+      .expectObjectMember("patch")
+      .expectObjectMember("responses")
+      .expectObjectMember("503")
+      .expectObjectMember("headers")
+
+    assertEquals(headers.getMembers().keySet().toString, "[Retry-After, X-Reason]")
+    headers.getMembers().values().forEach { header =>
+      assert(!header.expectObjectNode().getBooleanMemberOrDefault("required", false))
+    }
+  }
+
   private def dropWhitespaceInJson(s: String): String =
     Node.printJson(Node.parse(s))
 
