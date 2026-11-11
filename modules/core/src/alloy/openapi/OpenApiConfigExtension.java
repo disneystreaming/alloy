@@ -35,6 +35,14 @@ public final class OpenApiConfigExtension {
         return this.enableMultipleExamples;
     }
 
+    public boolean getEnableOpenEnumsExtension() {
+        return this.enableOpenEnumsExtension;
+    }
+
+    /**
+     * @deprecated Use {@link #getEnableOpenEnumsExtension()}.
+     */
+    @Deprecated
     public boolean getEnableOpenEnumExtensions() {
         return this.enableOpenEnumsExtension;
     }

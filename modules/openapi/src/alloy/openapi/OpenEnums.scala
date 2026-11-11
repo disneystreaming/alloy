@@ -35,7 +35,7 @@ class OpenEnums() extends JsonSchemaMapper {
   ): Builder = {
     val isOpen = shape.hasTrait(classOf[OpenEnumTrait]) && config
       .getExtensions(classOf[OpenApiConfigExtension])
-      .getEnableMultipleExamples()
+      .getEnableOpenEnumsExtension()
     val extensibleEnumValues = shape match {
       case stringEnum: EnumShape if isOpen =>
         val values = stringEnum.getEnumValues().asScala.values
