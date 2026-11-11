@@ -104,6 +104,7 @@ final class MakeHeadersOptionalMapper extends OpenApiMapper {
     case "DELETE"  => pi.delete(op)
     case "OPTIONS" => pi.options(op)
     case "HEAD"    => pi.head(op)
+    case "PATCH"   => pi.patch(op)
     case "TRACE"   => pi.trace(op)
   }
 }
