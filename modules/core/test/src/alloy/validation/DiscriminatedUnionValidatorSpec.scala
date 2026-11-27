@@ -150,4 +150,75 @@ final class DiscriminatedUnionValidatorSpec extends munit.FunSuite {
     assertEquals(result, List.empty)
   }
 
+  private def mismatchEvents(unionTraits: String): List[ValidationEvent] = {
+    val source =
+      s"""|$$version: "2"
+          |
+          |namespace test
+          |
+          |$unionTraits
+          |union MyUnion {
+          |  first: First
+          |}
+          |
+          |structure First {}
+          |""".stripMargin
+
+    Model.assembler
+      .discoverModels()
+      .addUnparsedModel("/test.smithy", source)
+      .assemble()
+      .getValidationEvents()
+      .asScala
+      .toList
+      .filter(_.getId() == "DiscriminatedUnion.DiscriminatorMismatch")
+  }
+
+  test("warn when alloy and smithy discriminators differ") {
+    val events = mismatchEvents(
+      """|@alloy#discriminated("type")
+         |@smithy.api#discriminated("kind")""".stripMargin
+    )
+
+    assertEquals(events.map(_.getSeverity()), List(Severity.WARNING))
+    assertEquals(
+      events.map(_.getShapeId().get()),
+      List(ShapeId.from("test#MyUnion"))
+    )
+    assertEquals(
+      events.map(_.getMessage()),
+      List(
+        "Union has both alloy#discriminated(\"type\") and smithy.api#discriminated(\"kind\") with different discriminators"
+      )
+    )
+  }
+
+  test(
+    "warn when smithy discriminator defaults to __type and alloy's differs"
+  ) {
+    val events = mismatchEvents(
+      """|@alloy#discriminated("type")
+         |@smithy.api#discriminated""".stripMargin
+    )
+
+    assertEquals(events.map(_.getSeverity()), List(Severity.WARNING))
+  }
+
+  test("no warning when alloy and smithy discriminators match") {
+    assertEquals(
+      mismatchEvents(
+        """|@alloy#discriminated("type")
+           |@smithy.api#discriminated("type")""".stripMargin
+      ),
+      Nil
+    )
+    assertEquals(
+      mismatchEvents(
+        """|@alloy#discriminated("__type")
+           |@smithy.api#discriminated""".stripMargin
+      ),
+      Nil
+    )
+  }
+
 }

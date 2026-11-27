@@ -27,6 +27,7 @@ namespace alloy
         smithy.api#timestampFormat
         alloy#uuidFormat
         alloy#discriminated
+        smithy.api#discriminated
         alloy#nullable
         alloy#untagged
         alloy#jsonUnknown
